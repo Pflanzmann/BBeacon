@@ -1,4 +1,4 @@
-package com.bbeacon.Models;
+package com.bbeacon.models;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconDataNotifier;

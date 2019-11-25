@@ -1,4 +1,4 @@
-package com.bbeacon.Models;
+package com.bbeacon.models;
 
 public class Position {
 

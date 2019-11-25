@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_controller"
+    app:startDestination="@id/mainMapFragment">
+
+    <fragment
+        android:id="@+id/configRoomFragment"
+        android:name="com.bbeacon.uI.fragments_ViewModels.ConfigRoomFragment"
+        android:label="config_room_fragment"
+        tools:layout="@layout/config_room_fragment" />
+    <fragment
+        android:id="@+id/createRoomFragment"
+        android:name="com.bbeacon.uI.fragments_ViewModels.CreateRoomFragment"
+        android:label="create_room_fragment"
+        tools:layout="@layout/create_room_fragment" >
+        <action
+            android:id="@+id/action_createRoomFragment_to_createRoomConfirmFragment"
+            app:destination="@id/createRoomConfirmFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainMapFragment"
+        android:name="com.bbeacon.uI.fragments_ViewModels.BeaconFinderFragment"
+        android:label="main_map_fragment"
+        tools:layout="@layout/beacon_finder_fragment" >
+        <action
+            android:id="@+id/action_mainMapFragment_to_createRoomFragment"
+            app:destination="@id/createRoomFragment" />
+        <action
+            android:id="@+id/action_mainMapFragment_to_configRoomFragment"
+            app:destination="@id/configRoomFragment" />
+        <action
+            android:id="@+id/action_mainMapFragment_to_roomStorageFragment"
+            app:destination="@id/roomStorageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createRoomConfirmFragment"
+        android:name="com.bbeacon.uI.fragments_ViewModels.CreateRoomConfirmFragment"
+        android:label="create_room_confirm_fragment"
+        tools:layout="@layout/create_room_confirm_fragment" />
+    <fragment
+        android:id="@+id/roomStorageFragment"
+        android:name="com.bbeacon.uI.fragments_ViewModels.RoomStorageFragment"
+        android:label="room_storage_fragment"
+        tools:layout="@layout/room_storage_fragment" />
+    <action
+        android:id="@+id/action_global_mainMapFragment"
+        app:destination="@id/mainMapFragment"
+        app:popUpTo="@id/navigation_controller"
+        app:popUpToInclusive="true" />
+</navigation>
