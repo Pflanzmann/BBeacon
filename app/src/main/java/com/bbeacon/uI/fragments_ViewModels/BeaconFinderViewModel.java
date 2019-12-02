@@ -5,18 +5,18 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.bbeacon.R;
+import com.bbeacon.backend.beaconRanger.BluetoothRanger;
+import com.bbeacon.backend.beaconRanger.Ranger;
+import com.bbeacon.models.UnknownBeacon;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.RawRes;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -24,6 +24,15 @@ import androidx.lifecycle.ViewModel;
 public class BeaconFinderViewModel extends ViewModel {
 
     private MutableLiveData<String> currentRSSI;
+    private MutableLiveData<ArrayList<UnknownBeacon>> foundBLEDevices;
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public BeaconFinderViewModel() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
+
+        ranger = new BluetoothRanger(bluetoothAdapter, leScanner);
+    }
 
     public MutableLiveData<String> getCurrentRSSI() {
         if (currentRSSI == null) {
@@ -32,73 +41,69 @@ public class BeaconFinderViewModel extends ViewModel {
         return currentRSSI;
     }
 
+    public MutableLiveData<ArrayList<UnknownBeacon>> getFoundBLEDevices() {
+        if (foundBLEDevices == null) {
+            foundBLEDevices = new MutableLiveData<ArrayList<UnknownBeacon>>();
+            foundBLEDevices.setValue(new ArrayList<UnknownBeacon>());
+        }
+        return foundBLEDevices;
+    }
+
+    Ranger ranger;
+    ScanCallback leScanCallback;
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void findBluetoothDevices() {
 
-        Log.d("OwnLog", "Start App");
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        final BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
-        final ScanFilter filter = new ScanFilter.Builder().build();
-
-        ArrayList<ScanFilter> filters = new ArrayList<>();
-        filters.add(filter);
-
-        final ScanCallback leScanCallback =
-                new ScanCallback() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-                    public void onBatchScanResults(List<ScanResult> results) {
-                        super.onBatchScanResults(results);
-                        Log.d("OwnLog", "We found some devices");
-                        for (ScanResult result : results) {
-
-                            //if(result.getDevice().getName() != null)
-//                            currentRSSI.postValue("deviceMac: " + result.getDevice().getAddress()
-//                                    + "\nName: " + result.getDevice().getName()
-//                                    + "\nRSSI: " + result.getRssi()
-//                            );
-
-                            Log.d("OwnLog", "deviceMac: " + result.getDevice().getAddress()
-                                    + "\tName: " + result.getDevice().getName()
-                                    + "\tRSSI: " + result.getRssi()
-                            );
-                        }
-                    }
-
-                    @Override
-                    public void onScanResult(int callbackType, ScanResult result) {
-                        super.onScanResult(callbackType, result);
-
-                        Log.d("OwnLog", "Found Some: " + result.getDevice().getName());
-                    }
-                };
-
-        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-            Handler mHandler = new Handler();
-            mHandler.postDelayed(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.M)
-                @Override
-                public void run() {
-                    leScanner.stopScan(leScanCallback);
-
-                    ScanSettings settings = new ScanSettings.Builder()
-                            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                            .setReportDelay(1l)
-                            .build();
-
-                    Log.d("OwnLog", "The setting are " + settings.getReportDelayMillis());
-                    leScanner.startScan(Collections.singletonList(filter), settings, leScanCallback);
+        leScanCallback = new ScanCallback() {
+            @Override
+            public void onBatchScanResults(List<ScanResult> results) {
+                super.onBatchScanResults(results);
+                for (ScanResult result : results) {
+                    Log.d("OwnLog", "deviceMac: " + result.getDevice().getAddress()
+                            + "\tName: " + result.getDevice().getName()
+                            + "\tRSSI: " + result.getRssi()
+                    );
                 }
-            }, 0);
-            try {
-                leScanner.startScan(leScanCallback);
-            } catch (Exception e) {
-                Log.d("OwnLog", "error");
+                addToList(results);
             }
-        }
-        Log.d("OwnLog", "Ende");
+
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+                Log.d("OwnLog", "SOLO RESULT!");
+            }
+        };
+
+        ranger.startScanning(new ArrayList<ScanFilter>(0), leScanCallback);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void addToList(List<ScanResult> results) {
+
+        UnknownBeacon unknownBeacon;
+        ArrayList<UnknownBeacon> beacons = getFoundBLEDevices().getValue();
+
+        for (ScanResult result : results) {
+            String address = result.getDevice().getAddress();
+            String name = result.getDevice().getName();
+
+            if (address == null)
+                address = "";
+            if (name == null)
+                name = "";
+
+            unknownBeacon = new UnknownBeacon(address, name);
+
+            if (beacons == null)
+                return;
+            if (beacons.contains(unknownBeacon)) {
+                return;
+            }
+            beacons.add(unknownBeacon);
+            getFoundBLEDevices().postValue(beacons);
+        }
+    }
 
 }
