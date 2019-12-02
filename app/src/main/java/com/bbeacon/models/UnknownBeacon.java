@@ -1,5 +1,6 @@
 package com.bbeacon.models;
 
+<<<<<<< HEAD
 import androidx.annotation.Nullable;
 
 public class UnknownBeacon {
@@ -31,4 +32,7 @@ public class UnknownBeacon {
 
         return false;
     }
+=======
+public class UnknownBeacon {
+>>>>>>> refs/remotes/origin/master
 }
