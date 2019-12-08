@@ -13,13 +13,13 @@ import java.util.ArrayList;
 
 import androidx.annotation.RequiresApi;
 
-public class BluetoothRanger implements Ranger {
+public class BluetoothFinder implements Ranger {
 
     BluetoothAdapter bluetoothAdapter;
 
     BluetoothLeScanner leScanner;
 
-    public BluetoothRanger(BluetoothAdapter bluetoothAdapter, BluetoothLeScanner leScanner) {
+    public BluetoothFinder(BluetoothAdapter bluetoothAdapter, BluetoothLeScanner leScanner) {
         this.bluetoothAdapter = bluetoothAdapter;
         this.leScanner = leScanner;
     }

@@ -3,50 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_controller"
-    app:startDestination="@id/mainMapFragment">
-
+    app:startDestination="@id/beaconFinderFragment">
     <fragment
-        android:id="@+id/configRoomFragment"
-        android:name="com.bbeacon.uI.fragments_ViewModels.ConfigRoomFragment"
-        android:label="config_room_fragment"
-        tools:layout="@layout/config_room_fragment" />
-    <fragment
-        android:id="@+id/createRoomFragment"
-        android:name="com.bbeacon.uI.fragments_ViewModels.CreateRoomFragment"
-        android:label="create_room_fragment"
-        tools:layout="@layout/create_room_fragment" >
-        <action
-            android:id="@+id/action_createRoomFragment_to_createRoomConfirmFragment"
-            app:destination="@id/createRoomConfirmFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/mainMapFragment"
+        android:id="@+id/beaconFinderFragment"
         android:name="com.bbeacon.uI.fragments_ViewModels.BeaconFinderFragment"
-        android:label="main_map_fragment"
+        android:label="beacon_finder_fragment"
         tools:layout="@layout/beacon_finder_fragment" >
         <action
-            android:id="@+id/action_mainMapFragment_to_createRoomFragment"
-            app:destination="@id/createRoomFragment" />
-        <action
-            android:id="@+id/action_mainMapFragment_to_configRoomFragment"
-            app:destination="@id/configRoomFragment" />
-        <action
-            android:id="@+id/action_mainMapFragment_to_roomStorageFragment"
-            app:destination="@id/roomStorageFragment" />
+            android:id="@+id/action_beaconFinderFragment_to_calibrateBeaconFragment"
+            app:destination="@+id/calibrateBeaconFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/createRoomConfirmFragment"
-        android:name="com.bbeacon.uI.fragments_ViewModels.CreateRoomConfirmFragment"
-        android:label="create_room_confirm_fragment"
-        tools:layout="@layout/create_room_confirm_fragment" />
-    <fragment
-        android:id="@+id/roomStorageFragment"
-        android:name="com.bbeacon.uI.fragments_ViewModels.RoomStorageFragment"
-        android:label="room_storage_fragment"
-        tools:layout="@layout/room_storage_fragment" />
-    <action
-        android:id="@+id/action_global_mainMapFragment"
-        app:destination="@id/mainMapFragment"
-        app:popUpTo="@id/navigation_controller"
-        app:popUpToInclusive="true" />
+        android:id="@+id/calibrateBeaconFragment"
+        android:name="com.bbeacon.uI.fragments_ViewModels.calibrateBeaconFragment"
+        android:label="calibrate_beacon_fragment"
+        tools:layout="@layout/calibrate_beacon_fragment" >
+        <argument
+            android:name="calibratingBeacon"
+            app:argType="string" />
+    </fragment>
 </navigation>

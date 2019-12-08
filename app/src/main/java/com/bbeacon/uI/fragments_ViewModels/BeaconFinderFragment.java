@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bbeacon.R;
 import com.bbeacon.models.UnknownBeacon;
+import com.bbeacon.uI.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,11 +21,14 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class BeaconFinderFragment extends Fragment {
 
     private BeaconFinderViewModel viewModel;
-    TextView textview;
+    RecyclerViewAdapter recyclerViewAdapter;
+    RecyclerView recyclerView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -39,23 +43,20 @@ public class BeaconFinderFragment extends Fragment {
         viewModel = ViewModelProviders.of(this).get(BeaconFinderViewModel.class);
         // TODO: Use the ViewModel);
 
-        textview = (TextView) getView().findViewById(R.id.exampleText);
+//        textview = (TextView) getView().findViewById(R.id.exampleText);
+        recyclerView = getView().findViewById(R.id.recyclerView);
+        recyclerViewAdapter = new RecyclerViewAdapter(getContext(), new ArrayList<UnknownBeacon>(0));
+
+        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         viewModel.findBluetoothDevices();
 
         viewModel.getFoundBLEDevices().observe(this, new Observer<ArrayList<UnknownBeacon>>() {
             @Override
             public void onChanged(ArrayList<UnknownBeacon> unknownBeacons) {
-
-                String text = "";
-
-                for (UnknownBeacon unknownBeacon: unknownBeacons) {
-                    text += unknownBeacon.getMacAddress() + "\t" + unknownBeacon.getDeviceName() + "\n";
-                }
-
-                text += "---------------";
-                textview.setText(text);
-                Log.d("OwnLog", "Something changed");
+                Log.d("OwnLog", "Beacons changed");
+                recyclerViewAdapter.setBeaconList(unknownBeacons);
             }
         });
     }

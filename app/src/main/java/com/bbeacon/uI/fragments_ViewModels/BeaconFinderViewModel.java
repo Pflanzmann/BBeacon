@@ -8,15 +8,13 @@ import android.bluetooth.le.ScanResult;
 import android.os.Build;
 import android.util.Log;
 
-import com.bbeacon.backend.beaconRanger.BluetoothRanger;
+import com.bbeacon.backend.beaconRanger.BluetoothFinder;
 import com.bbeacon.backend.beaconRanger.Ranger;
 import com.bbeacon.models.UnknownBeacon;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.RawRes;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -31,7 +29,7 @@ public class BeaconFinderViewModel extends ViewModel {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
 
-        ranger = new BluetoothRanger(bluetoothAdapter, leScanner);
+        ranger = new BluetoothFinder(bluetoothAdapter, leScanner);
     }
 
     public MutableLiveData<String> getCurrentRSSI() {
