@@ -1,0 +1,6 @@
+<resources>
+    <string name="calibration_start_button">Start</string>
+
+    <string name="calibration_instructions_text_start">Legen sie den Sender auf die jeweilige Entfernung und starten sie die Kalibration.</string>
+    <string name="calibration_instructions_text_parameter1">1 Meter</string>
+</resources>

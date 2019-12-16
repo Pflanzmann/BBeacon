@@ -1,23 +1,24 @@
 package com.bbeacon.uI.fragments_ViewModels;
 
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.bbeacon.R;
+import com.bbeacon.models.TaskSuccessfulCallback;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.bbeacon.R;
+import androidx.lifecycle.ViewModelProviders;
 
 public class calibrateBeaconFragment extends Fragment {
 
-    private CalibrateBeaconViewModel mViewModel;
+    private CalibrateBeaconViewModel viewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -28,10 +29,37 @@ public class calibrateBeaconFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(CalibrateBeaconViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(CalibrateBeaconViewModel.class);
 
+        Button startButton = getView().findViewById(R.id.startButton);
 
-        TextView textView = getView().findViewById(R.id.textFeld);
-        textView.setText(getArguments().getString("mac"));
+        startButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                if (getArguments() != null) {
+                    viewModel.calibrate(
+                            getArguments().getString("calibratingBeacon"),
+                            getArguments().getInt("calibrationStep"),
+                            new TaskSuccessfulCallback() {
+                                @Override
+                                public void onTaskFinished() {
+                                    Log.d("OwnLog", "finished");
+
+                                    Toast.makeText(getContext(), "FINISHED", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onTaskFailed(String message, Exception e) {
+                                    Log.d("OwnLog", "error");
+
+                                    Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                    );
+                }
+            }
+        });
     }
 }

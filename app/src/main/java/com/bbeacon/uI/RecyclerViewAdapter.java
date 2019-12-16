@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bbeacon.R;
 import com.bbeacon.models.UnknownBeacon;
@@ -14,9 +13,6 @@ import com.bbeacon.models.UnknownBeacon;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.ActivityNavigator;
-import androidx.navigation.NavDestination;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,15 +42,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         else
             holder.nameText.setText(beacons.get(position).getDeviceName());
 
-        holder.rssiText.setText(beacons.get(position).getMacAddress());
+        holder.macAddress.setText(beacons.get(position).getMacAddress());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, holder.nameText.getText(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, holder.nameText.getText(), Toast.LENGTH_SHORT).show();
 
                 Bundle bundle = new Bundle();
-                bundle.putString("mac", holder.rssiText.getText().toString());
+                bundle.putString("calibratingBeacon", holder.macAddress.getText().toString());
 
                 Navigation.findNavController(view).navigate(R.id.action_beaconFinderFragment_to_calibrateBeaconFragment, bundle);
             }
@@ -73,13 +69,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameText;
-        TextView rssiText;
+        TextView macAddress;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             nameText = itemView.findViewById(R.id.nameTextView);
-            rssiText = itemView.findViewById(R.id.rssiTextView);
+            macAddress = itemView.findViewById(R.id.macAddressTextView);
         }
     }
+
+
 }

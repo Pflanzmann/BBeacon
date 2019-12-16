@@ -57,7 +57,6 @@ public class BluetoothFinder implements Ranger {
         Log.d("OwnLog", "Ende");
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void stopScanning(ScanCallback scanCallback) {
