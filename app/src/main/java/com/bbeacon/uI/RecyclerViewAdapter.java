@@ -9,21 +9,35 @@ import android.widget.TextView;
 
 import com.bbeacon.R;
 import com.bbeacon.models.UnknownBeacon;
+import com.bbeacon.uI.fragments_ViewModels.BeaconFinderViewModel;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     ArrayList<UnknownBeacon> beacons = new ArrayList<>();
+    private BeaconFinderViewModel viewModel;
     private Context context;
+    private LifecycleOwner lifecycleOwner;
 
-    public RecyclerViewAdapter(Context context, ArrayList<UnknownBeacon> beacons) {
-        this.beacons = beacons;
+    public RecyclerViewAdapter(Context context, BeaconFinderViewModel viewModel, LifecycleOwner lifecycleOwner) {
+        this.viewModel = viewModel;
         this.context = context;
+        this.lifecycleOwner = lifecycleOwner;
+
+        viewModel.getFoundBLEDevices().observe(lifecycleOwner, new Observer<ArrayList<UnknownBeacon>>() {
+            @Override
+            public void onChanged(ArrayList<UnknownBeacon> unknownBeacons) {
+                beacons = unknownBeacons;
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @NonNull
@@ -52,6 +66,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Bundle bundle = new Bundle();
                 bundle.putString("calibratingBeacon", holder.macAddress.getText().toString());
 
+                viewModel.stopBluetoothScan();
+
                 Navigation.findNavController(view).navigate(R.id.action_beaconFinderFragment_to_calibrateBeaconFragment, bundle);
             }
         });
@@ -62,16 +78,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return beacons.size();
     }
 
-    public void setBeaconList(ArrayList<UnknownBeacon> newBeacons) {
-        beacons = newBeacons;
-        notifyDataSetChanged();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameText;
         TextView macAddress;
 
-        public ViewHolder(@NonNull View itemView) {
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             nameText = itemView.findViewById(R.id.nameTextView);

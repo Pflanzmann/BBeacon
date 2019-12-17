@@ -25,11 +25,10 @@ public class BluetoothFinder implements Ranger {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void startScanning(final ArrayList<ScanFilter> filters, final ScanCallback scanCallback) {
 
-        Log.d("OwnLog", "Start App");
+        Log.d("OwnLog", "Start BLE scan");
 
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
             Handler mHandler = new Handler();
@@ -40,7 +39,7 @@ public class BluetoothFinder implements Ranger {
                     leScanner.stopScan(scanCallback);
 
                     ScanSettings settings = new ScanSettings.Builder()
-                            .setScanMode(ScanSettings.CALLBACK_TYPE_FIRST_MATCH)
+                            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                             .setReportDelay(1l)
                             .build();
 
@@ -51,13 +50,12 @@ public class BluetoothFinder implements Ranger {
             try {
                 leScanner.startScan(scanCallback);
             } catch (Exception e) {
-                Log.d("OwnLog", "error");
+                Log.d("OwnLog", "leScan failure: \n" + e);
             }
         }
-        Log.d("OwnLog", "Ende");
+        Log.d("OwnLog", "BLE scanner done");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void stopScanning(ScanCallback scanCallback) {
         leScanner.stopScan(scanCallback);

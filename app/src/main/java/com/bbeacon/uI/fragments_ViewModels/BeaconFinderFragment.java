@@ -38,19 +38,11 @@ public class BeaconFinderFragment extends Fragment {
         viewModel = ViewModelProviders.of(this).get(BeaconFinderViewModel.class);
 
         recyclerView = getView().findViewById(R.id.recyclerView);
-        recyclerViewAdapter = new RecyclerViewAdapter(getContext(), new ArrayList<UnknownBeacon>(0));
+        recyclerViewAdapter = new RecyclerViewAdapter(getContext(), viewModel, getViewLifecycleOwner());
 
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         viewModel.findBluetoothDevices();
-
-        viewModel.getFoundBLEDevices().observe(this, new Observer<ArrayList<UnknownBeacon>>() {
-            @Override
-            public void onChanged(ArrayList<UnknownBeacon> unknownBeacons) {
-                Log.d("OwnLog", "Beacons changed");
-                recyclerViewAdapter.setBeaconList(unknownBeacons);
-            }
-        });
     }
 }

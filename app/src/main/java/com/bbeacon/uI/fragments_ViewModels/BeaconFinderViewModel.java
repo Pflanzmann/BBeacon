@@ -24,25 +24,6 @@ public class BeaconFinderViewModel extends ViewModel {
 
     Ranger ranger;
 
-    public BeaconFinderViewModel() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
-
-        ranger = new BluetoothFinder(bluetoothAdapter, leScanner);
-    }
-
-    public LiveData<ArrayList<UnknownBeacon>> getFoundBLEDevices() {
-        if (foundBLEDevices == null) {
-            foundBLEDevices = new MutableLiveData<ArrayList<UnknownBeacon>>();
-            foundBLEDevices.setValue(new ArrayList<UnknownBeacon>());
-        }
-        return foundBLEDevices;
-    }
-
-    public void findBluetoothDevices() {
-        ranger.startScanning(new ArrayList<ScanFilter>(0), leScanCallback);
-    }
-
     ScanCallback leScanCallback = new ScanCallback() {
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
@@ -56,6 +37,29 @@ public class BeaconFinderViewModel extends ViewModel {
             addToList(results);
         }
     };
+
+    public BeaconFinderViewModel() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
+
+        ranger = new BluetoothFinder(bluetoothAdapter, leScanner);
+    }
+
+    public LiveData<ArrayList<UnknownBeacon>> getFoundBLEDevices() {
+        if (foundBLEDevices == null) {
+            foundBLEDevices = new MutableLiveData<>();
+            foundBLEDevices.setValue(new ArrayList<UnknownBeacon>());
+        }
+        return foundBLEDevices;
+    }
+
+    public void findBluetoothDevices() {
+        ranger.startScanning(new ArrayList<ScanFilter>(0), leScanCallback);
+    }
+
+    public void stopBluetoothScan(){
+        ranger.stopScanning(leScanCallback);
+    }
 
     private void addToList(List<ScanResult> results) {
 
@@ -83,4 +87,10 @@ public class BeaconFinderViewModel extends ViewModel {
         }
     }
 
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+
+        ranger.stopScanning(leScanCallback);
+    }
 }
