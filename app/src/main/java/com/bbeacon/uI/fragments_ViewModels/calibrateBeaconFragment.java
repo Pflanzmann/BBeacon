@@ -1,11 +1,13 @@
 package com.bbeacon.uI.fragments_ViewModels;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bbeacon.R;
@@ -14,11 +16,13 @@ import com.bbeacon.models.TaskSuccessfulCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 public class calibrateBeaconFragment extends Fragment {
 
     private CalibrateBeaconViewModel viewModel;
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -31,35 +35,52 @@ public class calibrateBeaconFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(CalibrateBeaconViewModel.class);
 
-        Button startButton = getView().findViewById(R.id.startButton);
+        final Button startButton = getView().findViewById(R.id.startButton);
+        progressBar = getView().findViewById(R.id.progressBar);
 
         startButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
-                if (getArguments() != null) {
-                    viewModel.calibrate(
-                            getArguments().getString("calibratingBeacon"),
-                            getArguments().getInt("calibrationStep"),
-                            new TaskSuccessfulCallback() {
-                                @Override
-                                public void onTaskFinished() {
-                                    Log.d("OwnLog", "finished");
-
-                                    Toast.makeText(getContext(), "FINISHED", Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onTaskFailed(String message, Exception e) {
-                                    Log.d("OwnLog", "error");
-
-                                    Toast.makeText(getContext(), "ERROR!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                    );
-                }
+                calibrationButtonPressed();
             }
         });
+
+        viewModel.getCurrentState().observe(getViewLifecycleOwner(), new Observer<CalibrateBeaconViewModel.CalibrationState>() {
+            @Override
+            public void onChanged(CalibrateBeaconViewModel.CalibrationState calibrationState) {
+                handleCalibrationState(calibrationState);
+            }
+        });
+    }
+
+    public void calibrationButtonPressed() {
+        if (getArguments() != null) {
+            viewModel.calibrate(
+                    getArguments().getString("calibratingBeacon"),
+                    getArguments().getInt("calibrationStep"));
+        }
+    }
+
+    private void handleCalibrationState(CalibrateBeaconViewModel.CalibrationState state) {
+        switch (state) {
+            case IDLE:
+                progressBar.setVisibility(View.INVISIBLE);
+                break;
+
+            case ERROR:
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getContext(), "Calibration failed, try again", Toast.LENGTH_SHORT).show();
+                break;
+
+            case CALIBRATION:
+                progressBar.setVisibility(View.VISIBLE);
+                break;
+
+            case DONE:
+                progressBar.setVisibility(View.INVISIBLE);
+                break;
+        }
+
     }
 }

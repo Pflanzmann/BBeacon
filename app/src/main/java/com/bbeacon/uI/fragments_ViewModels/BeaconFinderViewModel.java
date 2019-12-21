@@ -28,12 +28,12 @@ public class BeaconFinderViewModel extends ViewModel {
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
             super.onBatchScanResults(results);
-            for (ScanResult result : results) {
-                Log.d("OwnLog", "deviceMac: " + result.getDevice().getAddress()
-                        + "\tName: " + result.getDevice().getName()
-                        + "\tRSSI: " + result.getRssi()
-                );
-            }
+//            for (ScanResult result : results) {
+//                Log.d("OwnLog", "deviceMac: " + result.getDevice().getAddress()
+//                        + "\tName: " + result.getDevice().getName()
+//                        + "\tRSSI: " + result.getRssi()
+//                );
+//            }
             addToList(results);
         }
     };

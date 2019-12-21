@@ -27,13 +27,11 @@ public class BluetoothFinder implements Ranger {
 
     @Override
     public void startScanning(final ArrayList<ScanFilter> filters, final ScanCallback scanCallback) {
-
         Log.d("OwnLog", "Start BLE scan");
 
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
             Handler mHandler = new Handler();
             mHandler.postDelayed(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public void run() {
                     leScanner.stopScan(scanCallback);
@@ -48,12 +46,12 @@ public class BluetoothFinder implements Ranger {
                 }
             }, 0);
             try {
-                leScanner.startScan(scanCallback);
             } catch (Exception e) {
                 Log.d("OwnLog", "leScan failure: \n" + e);
             }
         }
         Log.d("OwnLog", "BLE scanner done");
+
     }
 
     @Override
