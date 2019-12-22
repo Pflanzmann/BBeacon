@@ -52,6 +52,13 @@ public class calibrateBeaconFragment extends Fragment {
                 handleCalibrationState(calibrationState);
             }
         });
+
+        viewModel.getCurrentProgress().observe(getViewLifecycleOwner(), new Observer<Integer>(){
+            @Override
+            public void onChanged(Integer integer) {
+                Log.d("OwnLog", "this is the progress: " + integer);
+            }
+        });
     }
 
     public void calibrationButtonPressed() {
@@ -71,6 +78,7 @@ public class calibrateBeaconFragment extends Fragment {
             case ERROR:
                 progressBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(getContext(), "Calibration failed, try again", Toast.LENGTH_SHORT).show();
+                viewModel.quitErrororReset();
                 break;
 
             case CALIBRATION:
@@ -79,6 +87,8 @@ public class calibrateBeaconFragment extends Fragment {
 
             case DONE:
                 progressBar.setVisibility(View.INVISIBLE);
+                viewModel.quitErrororReset();
+                Toast.makeText(getContext(), "Calibration done", Toast.LENGTH_SHORT).show();
                 break;
         }
 

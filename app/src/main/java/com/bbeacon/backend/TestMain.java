@@ -1,38 +1,38 @@
 package com.bbeacon.backend;
 
-import java.util.concurrent.CompletableFuture;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
+
+import com.bbeacon.models.TaskSuccessfulCallback;
+
 import java.util.concurrent.ExecutionException;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class TestMain {
     public static void main(String[] args) {
+        System.out.println("Start Main");
 
-        final CompletableFuture<String> testString = new CompletableFuture<>();
+        String test = "testDefault";
 
-        new Thread(){
-            @Override
-            public synchronized void start() {
-                super.start();
-                System.out.println("start Thead");
-
-                try {
-                    sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        Observable testObservable =  Observable.create(emitter -> {
+            TaskSuccessfulCallback callback = new TaskSuccessfulCallback() {
+                @Override
+                public void onTaskFinished() {
+                    emitter.onNext("1");
                 }
+            };
 
-                testString.complete("Test");
-                System.out.println("ende Thead");
-            }
-        }.start();
+            callback.onTaskFinished();
+            callback.onTaskFinished();
 
-        try {
-            System.out.println(testString.get());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        });
+
 
         System.out.println("ende Main");
+
+        System.out.println("ende Programm");
     }
 }

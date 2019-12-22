@@ -1,8 +1,6 @@
 package com.bbeacon.uI.fragments_ViewModels;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
@@ -15,15 +13,16 @@ import com.bbeacon.models.RawDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class CalibrateBeaconViewModel extends ViewModel {
 
-    private final int STEP_COUNT = 5;
-    private final int MAX_FAILURE_MEASSUREMENTS = 5;
+    private final int MESSUREMENT_COUNT = 5;
 
     public LiveData<CalibrationState> getCurrentState() {
         return currentState;
@@ -36,48 +35,13 @@ public class CalibrateBeaconViewModel extends ViewModel {
     private MutableLiveData<CalibrationState> currentState = new MutableLiveData<>(CalibrationState.IDLE);
     private MutableLiveData<Integer> currentProgress = new MutableLiveData<>(0);
 
-    private int currentStep;
-    private Ranger ranger;
+    private BluetoothFinder ranger;
     private BeaconCalibrationEvaluator evaluator;
-
-    private ArrayList<Integer> tempMeasurements = new ArrayList<>();
-    private int meassureFailures = 5;
-
-    private final ScanCallback scanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-
-            Log.d("OwnLog", "Solo ScanResult");
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            Log.d("OwnLog", "Scan FAILED!!!!");
-        }
-
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            if (results.size() == 1 && tempMeasurements.size() < STEP_COUNT) {
-                Log.d("OwnLog", "Scan Result: " + results.get(0).getRssi());
-
-                tempMeasurements.add(results.get(0).getRssi());
-            } else {
-                Log.d("OwnLog", "Result failure: " + meassureFailures);
-
-                meassureFailures--;
-                if (meassureFailures == MAX_FAILURE_MEASSUREMENTS) {
-                    currentState.postValue(CalibrationState.ERROR);
-                }
-            }
-            maxMessurements();
-        }
-    };
 
     public CalibrateBeaconViewModel() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
 
-        ranger = new BluetoothFinder(bluetoothAdapter, leScanner);
+        ranger = new BluetoothFinder(bluetoothAdapter);
         evaluator = new BeaconCalibrationEvaluator();
     }
 
@@ -86,32 +50,33 @@ public class CalibrateBeaconViewModel extends ViewModel {
             return;
 
         Log.d("OwnLog", "calibration started");
-
         currentState.postValue(CalibrationState.CALIBRATION);
-        currentStep = currentDistance;
 
         final ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
         filters.add(new ScanFilter.Builder().setDeviceAddress(macAddress).build());
 
-        ranger.startScanning(filters, scanCallback);
+        ranger.getScanningObservable(filters)
+                .doOnNext(lists -> currentProgress.postValue(currentProgress.getValue() + 1))
+                .buffer(MESSUREMENT_COUNT)
+                .subscribe(lists -> {
+                    ranger.stopScanning();
 
+                    ArrayList<Integer> tempMeasurements = new ArrayList<>();
+
+                    for (List<ScanResult> results : lists)
+                        for (ScanResult result : results) {
+                            tempMeasurements.add(result.getRssi());
+                            Log.d("OwnLog", "those are the result RSSI : " + result.getRssi());
+                        }
+
+                    evaluator.insertRawDataSet(new RawDataSet<>(currentDistance, tempMeasurements.toArray(new Integer[5])));
+                    currentState.postValue(CalibrationState.DONE);
+                });
         Log.d("OwnLog", "calibration method done");
     }
 
-    private void maxMessurements() {
-        if (tempMeasurements.size() != STEP_COUNT)
-            return;
-
-        evaluator.insertRawDataSet(new RawDataSet<>(currentStep, tempMeasurements.toArray(new Integer[5])));
-
-        ranger.stopScanning(scanCallback);
-        currentState.postValue(CalibrationState.DONE);
-    }
-
-    private void quitError(){
-        tempMeasurements = new ArrayList<>();
-        meassureFailures = 0;
-        ranger.stopScanning(scanCallback);
+    public void quitErrororReset() {
+        ranger.stopScanning();
 
         currentState.postValue(CalibrationState.IDLE);
     }

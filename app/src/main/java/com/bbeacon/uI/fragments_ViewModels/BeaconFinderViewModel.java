@@ -24,25 +24,11 @@ public class BeaconFinderViewModel extends ViewModel {
 
     Ranger ranger;
 
-    ScanCallback leScanCallback = new ScanCallback() {
-        @Override
-        public void onBatchScanResults(List<ScanResult> results) {
-            super.onBatchScanResults(results);
-//            for (ScanResult result : results) {
-//                Log.d("OwnLog", "deviceMac: " + result.getDevice().getAddress()
-//                        + "\tName: " + result.getDevice().getName()
-//                        + "\tRSSI: " + result.getRssi()
-//                );
-//            }
-            addToList(results);
-        }
-    };
-
     public BeaconFinderViewModel() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
 
-        ranger = new BluetoothFinder(bluetoothAdapter, leScanner);
+        ranger = new BluetoothFinder(bluetoothAdapter);
     }
 
     public LiveData<ArrayList<UnknownBeacon>> getFoundBLEDevices() {
@@ -54,11 +40,11 @@ public class BeaconFinderViewModel extends ViewModel {
     }
 
     public void findBluetoothDevices() {
-        ranger.startScanning(new ArrayList<ScanFilter>(0), leScanCallback);
+        ranger.getScanningObservable(new ArrayList<ScanFilter>()).subscribe(scanResults -> addToList(scanResults)) ;
     }
 
     public void stopBluetoothScan(){
-        ranger.stopScanning(leScanCallback);
+        ranger.stopScanning();
     }
 
     private void addToList(List<ScanResult> results) {
@@ -91,6 +77,6 @@ public class BeaconFinderViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
 
-        ranger.stopScanning(leScanCallback);
+        ranger.stopScanning();
     }
 }
