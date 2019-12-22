@@ -1,4 +1,4 @@
-package com.bbeacon.backend.beaconRanger;
+package com.bbeacon.managers;
 
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 
-public interface Ranger {
+public interface BluetoothManagerType {
 
     Observable<List<ScanResult>> getScanningObservable(ArrayList<ScanFilter> filters);
 

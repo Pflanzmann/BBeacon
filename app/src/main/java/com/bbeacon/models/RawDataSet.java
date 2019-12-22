@@ -1,6 +1,8 @@
 package com.bbeacon.models;
 
-public class RawDataSet<T> {
+import java.io.Serializable;
+
+public class RawDataSet<T> implements Serializable {
 
     private int key;
     private T[] set;

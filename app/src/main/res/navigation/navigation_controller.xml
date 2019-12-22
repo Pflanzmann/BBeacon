@@ -24,9 +24,5 @@
         <argument
             android:name="calibratingBeacon"
             app:argType="string" />
-        <argument
-            android:name="calibrationStep"
-            app:argType="integer"
-            android:defaultValue="0" />
     </fragment>
 </navigation>

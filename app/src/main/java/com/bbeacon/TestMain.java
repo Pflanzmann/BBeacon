@@ -1,4 +1,4 @@
-package com.bbeacon.backend;
+package com.bbeacon;
 
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;

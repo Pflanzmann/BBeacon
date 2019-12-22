@@ -2,13 +2,11 @@ package com.bbeacon.uI.fragments_ViewModels;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
-import android.util.Log;
 
-import com.bbeacon.backend.beaconRanger.BluetoothFinder;
-import com.bbeacon.backend.beaconRanger.Ranger;
+import com.bbeacon.managers.BluetoothManager;
+import com.bbeacon.managers.BluetoothManagerType;
 import com.bbeacon.models.UnknownBeacon;
 
 import java.util.ArrayList;
@@ -22,13 +20,13 @@ public class BeaconFinderViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<UnknownBeacon>> foundBLEDevices;
 
-    Ranger ranger;
+    BluetoothManagerType ranger;
 
     public BeaconFinderViewModel() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
 
-        ranger = new BluetoothFinder(bluetoothAdapter);
+        ranger = new BluetoothManager(bluetoothAdapter);
     }
 
     public LiveData<ArrayList<UnknownBeacon>> getFoundBLEDevices() {

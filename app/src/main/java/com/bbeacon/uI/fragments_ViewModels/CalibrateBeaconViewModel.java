@@ -1,19 +1,17 @@
 package com.bbeacon.uI.fragments_ViewModels;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.util.Log;
 
-import com.bbeacon.backend.BeaconCalibrationEvaluator;
-import com.bbeacon.backend.beaconRanger.BluetoothFinder;
-import com.bbeacon.backend.beaconRanger.Ranger;
+import com.bbeacon.backend.Evaluator;
+import com.bbeacon.managers.BluetoothManager;
 import com.bbeacon.models.RawDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
+import java.util.concurrent.TimeUnit;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -23,6 +21,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 public class CalibrateBeaconViewModel extends ViewModel {
 
     private final int MESSUREMENT_COUNT = 5;
+    private final int MAX_STEPS = 10;
 
     public LiveData<CalibrationState> getCurrentState() {
         return currentState;
@@ -32,20 +31,27 @@ public class CalibrateBeaconViewModel extends ViewModel {
         return currentProgress;
     }
 
+    public LiveData<Integer> getCurrentStep() {
+        return currentStep;
+    }
+
     private MutableLiveData<CalibrationState> currentState = new MutableLiveData<>(CalibrationState.IDLE);
     private MutableLiveData<Integer> currentProgress = new MutableLiveData<>(0);
+    private MutableLiveData<Integer> currentStep = new MutableLiveData<>(0);
 
-    private BluetoothFinder ranger;
-    private BeaconCalibrationEvaluator evaluator;
+    private BluetoothManager ranger;
+    private Evaluator evaluator;
+
+    Disposable disposable;
 
     public CalibrateBeaconViewModel() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        ranger = new BluetoothFinder(bluetoothAdapter);
-        evaluator = new BeaconCalibrationEvaluator();
+        ranger = new BluetoothManager(bluetoothAdapter);
+        evaluator = new Evaluator();
     }
 
-    public void calibrate(final String macAddress, int currentDistance) {
+    public void calibrate(final String macAddress) {
         if (currentState.getValue() != CalibrationState.IDLE)
             return;
 
@@ -55,8 +61,13 @@ public class CalibrateBeaconViewModel extends ViewModel {
         final ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
         filters.add(new ScanFilter.Builder().setDeviceAddress(macAddress).build());
 
-        ranger.getScanningObservable(filters)
+        disposable = ranger.getScanningObservable(filters)
                 .doOnNext(lists -> currentProgress.postValue(currentProgress.getValue() + 1))
+                .timeout(10, TimeUnit.SECONDS, observer -> {
+                    Log.d("OwnLog", "calibration disposed");
+                    currentState.postValue(CalibrationState.ERROR);
+                    disposable.dispose();
+                })
                 .buffer(MESSUREMENT_COUNT)
                 .subscribe(lists -> {
                     ranger.stopScanning();
@@ -69,17 +80,28 @@ public class CalibrateBeaconViewModel extends ViewModel {
                             Log.d("OwnLog", "those are the result RSSI : " + result.getRssi());
                         }
 
-                    evaluator.insertRawDataSet(new RawDataSet<>(currentDistance, tempMeasurements.toArray(new Integer[5])));
+                    evaluator.insertRawDataSet(new RawDataSet<>(currentStep.getValue(), tempMeasurements.toArray(new Integer[MESSUREMENT_COUNT])));
+
+                    if (currentStep.getValue() == MAX_STEPS) {
+                        evaluator.printAll();
+                        return;
+                    }
+
+                    currentStep.postValue(currentStep.getValue() + 1);
                     currentState.postValue(CalibrationState.DONE);
+                    disposable.dispose();
                 });
         Log.d("OwnLog", "calibration method done");
     }
 
-    public void quitErrororReset() {
+    public void quitErrorReset() {
         ranger.stopScanning();
+        currentProgress.setValue(0);
+        disposable.dispose();
 
         currentState.postValue(CalibrationState.IDLE);
     }
+
 
     public enum CalibrationState {
         IDLE,

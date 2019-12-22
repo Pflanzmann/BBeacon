@@ -1,7 +1,6 @@
-package com.bbeacon.backend.beaconRanger;
+package com.bbeacon.managers;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
@@ -15,14 +14,14 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 
-public class BluetoothFinder implements Ranger {
+public class BluetoothManager implements BluetoothManagerType {
 
     BluetoothAdapter bluetoothAdapter;
     BluetoothLeScanner scanner;
 
     ScanCallback scanCallback;
 
-    public BluetoothFinder(BluetoothAdapter bluetoothAdapter) {
+    public BluetoothManager(BluetoothAdapter bluetoothAdapter) {
         this.bluetoothAdapter = bluetoothAdapter;
 
         scanner = bluetoothAdapter.getBluetoothLeScanner();
@@ -38,6 +37,11 @@ public class BluetoothFinder implements Ranger {
                         emitter.onNext(results);
                     }
                 }
+
+                @Override
+                public void onScanFailed(int errorCode) {
+                    Log.d("OwnLog", "BLE scanner failed");
+                }
             };
 
             if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
@@ -48,13 +52,14 @@ public class BluetoothFinder implements Ranger {
                         scanner.stopScan(scanCallback);
                         scanner.flushPendingScanResults(scanCallback);
                         ScanSettings settings = new ScanSettings.Builder()
-                                .setScanMode(ScanSettings.CALLBACK_TYPE_FIRST_MATCH)
+                                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                                 .setReportDelay(1l)
                                 .build();
 
-                        Log.d("OwnLog", "The setting are " + settings.getReportDelayMillis());
+                        Log.d("OwnLog", "The reportDelay is: " + settings.getReportDelayMillis());
                         scanner.flushPendingScanResults(scanCallback);
                         scanner.startScan(filters, settings, scanCallback);
+
                     }
                 }, 0);
                 try {
@@ -68,6 +73,8 @@ public class BluetoothFinder implements Ranger {
 
     @Override
     public void stopScanning() {
-        scanner.stopScan(scanCallback);
+        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+            scanner.stopScan(scanCallback);
+        }
     }
 }
