@@ -1,26 +1,27 @@
 package com.bbeacon.uI.fragments_ViewModels;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bbeacon.R;
-import com.bbeacon.models.UnknownBeacon;
+import com.bbeacon.dagger2_injection.setup.ViewModelProviderFactory;
 import com.bbeacon.uI.RecyclerViewAdapter;
 
-import java.util.ArrayList;
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import dagger.android.support.DaggerFragment;
 
-public class BeaconFinderFragment extends Fragment {
+public class BeaconFinderFragment extends DaggerFragment {
+
+    @Inject
+    ViewModelProviderFactory providerFactory;
 
     private BeaconFinderViewModel viewModel;
     RecyclerViewAdapter recyclerViewAdapter;
@@ -35,7 +36,7 @@ public class BeaconFinderFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(BeaconFinderViewModel.class);
+        viewModel = ViewModelProviders.of(this, providerFactory).get(BeaconFinderViewModel.class);
 
         recyclerView = getView().findViewById(R.id.recyclerView);
         recyclerViewAdapter = new RecyclerViewAdapter(getContext(), viewModel, getViewLifecycleOwner());

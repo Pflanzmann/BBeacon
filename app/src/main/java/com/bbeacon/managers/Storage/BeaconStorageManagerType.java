@@ -1,15 +1,13 @@
 package com.bbeacon.managers.Storage;
 
-import android.content.Context;
-
-import com.bbeacon.models.Beacon;
+import com.bbeacon.models.CalibratedBeacon;
 
 import java.util.List;
 
 public interface BeaconStorageManagerType {
-    public void storeBeacon(Context context, Beacon beacon);
+    public void storeBeacon(CalibratedBeacon beacon);
 
-    public List<Beacon> loadAllBeacons(Context context);
+    public List<CalibratedBeacon> loadAllBeacons();
 
-    public void loadBeaconBy(Context context, String macAddress);
+    public void loadBeaconBy(String macAddress);
 }

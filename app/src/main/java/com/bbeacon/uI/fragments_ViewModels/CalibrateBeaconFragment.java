@@ -11,18 +11,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bbeacon.R;
+import com.bbeacon.dagger2_injection.setup.ViewModelProviderFactory;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import dagger.android.support.DaggerFragment;
 
-public class calibrateBeaconFragment extends Fragment {
+public class CalibrateBeaconFragment extends DaggerFragment {
 
     private CalibrateBeaconViewModel viewModel;
     private ProgressBar progressBar;
     private TextView stepText;
+
+    @Inject
+    ViewModelProviderFactory providerFactory;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -33,7 +39,9 @@ public class calibrateBeaconFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(CalibrateBeaconViewModel.class);
+//        viewModel = ViewModelProviders.of(this).get(CalibrateBeaconViewModel.class);
+
+        viewModel = ViewModelProviders.of(this, providerFactory).get(CalibrateBeaconViewModel.class);
 
         Button startButton = getView().findViewById(R.id.startButton);
         progressBar = getView().findViewById(R.id.progressBar);

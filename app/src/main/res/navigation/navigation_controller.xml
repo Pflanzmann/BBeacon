@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/calibrateBeaconFragment"
-        android:name="com.bbeacon.uI.fragments_ViewModels.calibrateBeaconFragment"
+        android:name="com.bbeacon.uI.fragments_ViewModels.CalibrateBeaconFragment"
         android:label="calibrate_beacon_fragment"
         tools:layout="@layout/calibrate_beacon_fragment" >
         <argument

@@ -1,16 +1,15 @@
 package com.bbeacon.uI.fragments_ViewModels;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 
-import com.bbeacon.managers.BluetoothManager;
-import com.bbeacon.managers.BluetoothManagerType;
+import com.bbeacon.managers.BleManagerType;
 import com.bbeacon.models.UnknownBeacon;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -18,30 +17,24 @@ import androidx.lifecycle.ViewModel;
 
 public class BeaconFinderViewModel extends ViewModel {
 
-    private MutableLiveData<ArrayList<UnknownBeacon>> foundBLEDevices;
+    private MutableLiveData<ArrayList<UnknownBeacon>> foundBLEDevices = new MutableLiveData<>(new ArrayList<UnknownBeacon>());
 
-    BluetoothManagerType ranger;
+    BleManagerType ranger;
 
-    public BeaconFinderViewModel() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothLeScanner leScanner = bluetoothAdapter.getBluetoothLeScanner();
-
-        ranger = new BluetoothManager(bluetoothAdapter);
+    @Inject
+    public BeaconFinderViewModel(BleManagerType bleManagerType) {
+        ranger = bleManagerType;
     }
 
     public LiveData<ArrayList<UnknownBeacon>> getFoundBLEDevices() {
-        if (foundBLEDevices == null) {
-            foundBLEDevices = new MutableLiveData<>();
-            foundBLEDevices.setValue(new ArrayList<UnknownBeacon>());
-        }
         return foundBLEDevices;
     }
 
     public void findBluetoothDevices() {
-        ranger.getScanningObservable(new ArrayList<ScanFilter>()).subscribe(scanResults -> addToList(scanResults)) ;
+        ranger.getScanningObservable(new ArrayList<ScanFilter>()).subscribe(scanResults -> addToList(scanResults));
     }
 
-    public void stopBluetoothScan(){
+    public void stopBluetoothScan() {
         ranger.stopScanning();
     }
 

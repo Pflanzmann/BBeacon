@@ -1,17 +1,18 @@
 package com.bbeacon.uI.fragments_ViewModels;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.util.Log;
 
 import com.bbeacon.backend.Evaluator;
-import com.bbeacon.managers.BluetoothManager;
+import com.bbeacon.managers.BleManagerType;
 import com.bbeacon.models.RawDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -22,6 +23,24 @@ public class CalibrateBeaconViewModel extends ViewModel {
 
     private final int MESSUREMENT_COUNT = 5;
     private final int MAX_STEPS = 10;
+
+    private MutableLiveData<CalibrationState> currentState = new MutableLiveData<>(CalibrationState.IDLE);
+    private MutableLiveData<Integer> currentProgress = new MutableLiveData<>(0);
+    private MutableLiveData<Integer> currentStep = new MutableLiveData<>(0);
+
+    private BleManagerType ranger;
+    private Evaluator evaluator;
+
+    private Disposable disposable;
+
+    @Inject
+    public CalibrateBeaconViewModel(BleManagerType ranger, Evaluator evaluator) {
+        this.ranger = ranger;
+        this.evaluator = evaluator;
+
+        Log.d("OwnLog", "calib-ranger: " + ranger.hashCode());
+        Log.d("OwnLog", "calib-evaluator: " + evaluator.hashCode());
+    }
 
     public LiveData<CalibrationState> getCurrentState() {
         return currentState;
@@ -35,21 +54,6 @@ public class CalibrateBeaconViewModel extends ViewModel {
         return currentStep;
     }
 
-    private MutableLiveData<CalibrationState> currentState = new MutableLiveData<>(CalibrationState.IDLE);
-    private MutableLiveData<Integer> currentProgress = new MutableLiveData<>(0);
-    private MutableLiveData<Integer> currentStep = new MutableLiveData<>(0);
-
-    private BluetoothManager ranger;
-    private Evaluator evaluator;
-
-    Disposable disposable;
-
-    public CalibrateBeaconViewModel() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        ranger = new BluetoothManager(bluetoothAdapter);
-        evaluator = new Evaluator();
-    }
 
     public void calibrate(final String macAddress) {
         if (currentState.getValue() != CalibrationState.IDLE)

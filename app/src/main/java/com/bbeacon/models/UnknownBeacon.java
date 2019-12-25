@@ -2,14 +2,7 @@ package com.bbeacon.models;
 
 import androidx.annotation.Nullable;
 
-public class UnknownBeacon {
-    public String getMacAddress() {
-        return macAddress;
-    }
-
-    public String getDeviceName() {
-        return deviceName;
-    }
+public class UnknownBeacon implements Beacon {
 
     private final String macAddress;
     private final String deviceName;
@@ -18,6 +11,17 @@ public class UnknownBeacon {
         this.macAddress = macAddress;
         this.deviceName = deviceName;
     }
+
+    @Override
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    @Override
+    public String getDeviceName() {
+        return deviceName;
+    }
+
 
     @Override
     public boolean equals(@Nullable Object obj) {

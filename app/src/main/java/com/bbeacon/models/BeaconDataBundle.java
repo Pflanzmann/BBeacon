@@ -1,11 +1,11 @@
 package com.bbeacon.models;
 
-public class BeaconCalibrationDataBundle {
+public class BeaconDataBundle {
 
     private RawDataSet<Integer>[] dataBundle;
 
 
-    public BeaconCalibrationDataBundle(RawDataSet<Integer>[] dataBundle) {
+    public BeaconDataBundle(RawDataSet<Integer>[] dataBundle) {
         this.dataBundle = dataBundle;
     }
 

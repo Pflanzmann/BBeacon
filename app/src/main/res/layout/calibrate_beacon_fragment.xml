@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".uI.fragments_ViewModels.calibrateBeaconFragment" >
+    tools:context=".uI.fragments_ViewModels.CalibrateBeaconFragment" >
 
     <TextView
         android:id="@+id/instructionText"

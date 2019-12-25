@@ -1,14 +1,24 @@
 package com.bbeacon;
 
-import android.app.Application;
-import android.util.Log;
+import com.bbeacon.dagger2_injection.setup.DaggerAppComponent;
 
-public class BBeaconApplication extends Application {
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
+
+
+public class BBeaconApplication extends DaggerApplication {
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        Log.d("OwnLog", "App start");
     }
+
+    //DaggerAppComponent.builder().application(this).build();
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder().application(this).build();
+//    return null;
+    }
+
+
 }

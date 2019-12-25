@@ -12,16 +12,19 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.rxjava3.core.Observable;
 
-public class BluetoothManager implements BluetoothManagerType {
+public class BleManager implements BleManagerType {
 
     BluetoothAdapter bluetoothAdapter;
     BluetoothLeScanner scanner;
 
     ScanCallback scanCallback;
 
-    public BluetoothManager(BluetoothAdapter bluetoothAdapter) {
+    @Inject
+    public BleManager(BluetoothAdapter bluetoothAdapter) {
         this.bluetoothAdapter = bluetoothAdapter;
 
         scanner = bluetoothAdapter.getBluetoothLeScanner();

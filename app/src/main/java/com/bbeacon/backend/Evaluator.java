@@ -6,16 +6,24 @@ import com.bbeacon.models.RawDataSet;
 
 import java.util.ArrayList;
 
-public class Evaluator {
+import javax.inject.Inject;
+
+public class Evaluator implements EvaluatorType {
 
     private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
 
+    @Inject
+    public Evaluator() {
+    }
+
+    @Override
     public void insertRawDataSet(RawDataSet<Integer> dataSet) {
         dataSets.add(dataSet);
 
         Log.d("OwnLog", String.valueOf(dataSets));
     }
 
+    @Override
     public void printAll() {
         for (RawDataSet<Integer> dataSet : dataSets)
             Log.d("OwnLog", "Sets: " + dataSet.getSet() + " Average: " + average(dataSet));
