@@ -1,4 +1,4 @@
-package com.bbeacon.dagger2_injection.modules;
+package com.bbeacon.dagger2_injection.bindings;
 
 import com.bbeacon.managers.BleManager;
 import com.bbeacon.managers.BleManagerType;

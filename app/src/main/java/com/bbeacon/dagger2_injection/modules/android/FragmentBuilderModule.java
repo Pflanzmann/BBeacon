@@ -1,7 +1,7 @@
-package com.bbeacon.dagger2_injection.modules;
+package com.bbeacon.dagger2_injection.modules.android;
 
-import com.bbeacon.uI.fragments_ViewModels.BeaconFinderFragment;
-import com.bbeacon.uI.fragments_ViewModels.CalibrateBeaconFragment;
+import com.bbeacon.uI.fragments.BeaconFinderFragment;
+import com.bbeacon.uI.fragments.CalibrateBeaconFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

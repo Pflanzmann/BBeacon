@@ -3,13 +3,13 @@ package com.bbeacon.dagger2_injection.setup;
 import android.app.Application;
 
 import com.bbeacon.BBeaconApplication;
-import com.bbeacon.dagger2_injection.modules.ActivityBuilderModule;
-import com.bbeacon.dagger2_injection.modules.BackendBindings;
-import com.bbeacon.dagger2_injection.modules.FragmentBuilderModule;
-import com.bbeacon.dagger2_injection.modules.ManagerBindings;
-import com.bbeacon.dagger2_injection.modules.StorageBindings;
+import com.bbeacon.dagger2_injection.modules.android.ActivityBuilderModule;
+import com.bbeacon.dagger2_injection.bindings.BackendBindings;
+import com.bbeacon.dagger2_injection.modules.android.FragmentBuilderModule;
+import com.bbeacon.dagger2_injection.bindings.ManagerBindings;
+import com.bbeacon.dagger2_injection.bindings.StorageBindings;
 import com.bbeacon.dagger2_injection.modules.UtilityModule;
-import com.bbeacon.dagger2_injection.modules.ViewModelFactoryModule;
+import com.bbeacon.dagger2_injection.modules.android.ViewModelFactoryModule;
 
 import javax.inject.Singleton;
 

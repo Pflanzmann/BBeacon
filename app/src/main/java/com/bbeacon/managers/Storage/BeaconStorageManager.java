@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class BeaconStorageManager implements BeaconStorageManagerType {
 
     private final String PREFS_KEY = "bbeacon";

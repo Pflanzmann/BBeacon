@@ -1,4 +1,4 @@
-package com.bbeacon.uI.fragments_ViewModels;
+package com.bbeacon.uI.viewmodels;
 
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;

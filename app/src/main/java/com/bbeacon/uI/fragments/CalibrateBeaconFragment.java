@@ -1,4 +1,4 @@
-package com.bbeacon.uI.fragments_ViewModels;
+package com.bbeacon.uI.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.bbeacon.R;
 import com.bbeacon.dagger2_injection.setup.ViewModelProviderFactory;
+import com.bbeacon.uI.viewmodels.CalibrateBeaconViewModel;
 
 import javax.inject.Inject;
 
@@ -65,7 +66,7 @@ public class CalibrateBeaconFragment extends DaggerFragment {
         viewModel.getCurrentProgress().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                Log.d("OwnLog", "this is the progress: " + integer);
+                Log.d("OwnLog", "TODO: show progress: " + integer);
             }
         });
 
@@ -88,7 +89,7 @@ public class CalibrateBeaconFragment extends DaggerFragment {
             case ERROR:
                 progressBar.setVisibility(View.INVISIBLE);
                 Toast.makeText(getContext(), "Calibration failed, try again", Toast.LENGTH_SHORT).show();
-                viewModel.quitErrorReset();
+                viewModel.quitErrorOrReset();
                 break;
 
             case CALIBRATION:
@@ -97,7 +98,7 @@ public class CalibrateBeaconFragment extends DaggerFragment {
 
             case DONE:
                 progressBar.setVisibility(View.INVISIBLE);
-                viewModel.quitErrorReset();
+                viewModel.quitErrorOrReset();
                 Toast.makeText(getContext(), "Calibration done", Toast.LENGTH_SHORT).show();
                 break;
         }

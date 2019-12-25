@@ -1,9 +1,9 @@
-package com.bbeacon.dagger2_injection.modules;
+package com.bbeacon.dagger2_injection.modules.android;
 
 
 import com.bbeacon.dagger2_injection.setup.ViewModelKey;
-import com.bbeacon.uI.fragments_ViewModels.BeaconFinderViewModel;
-import com.bbeacon.uI.fragments_ViewModels.CalibrateBeaconViewModel;
+import com.bbeacon.uI.viewmodels.BeaconFinderViewModel;
+import com.bbeacon.uI.viewmodels.CalibrateBeaconViewModel;
 
 import androidx.lifecycle.ViewModel;
 import dagger.Binds;

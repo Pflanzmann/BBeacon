@@ -1,4 +1,4 @@
-package com.bbeacon.dagger2_injection.modules;
+package com.bbeacon.dagger2_injection.modules.android;
 
 import com.bbeacon.dagger2_injection.setup.ViewModelProviderFactory;
 

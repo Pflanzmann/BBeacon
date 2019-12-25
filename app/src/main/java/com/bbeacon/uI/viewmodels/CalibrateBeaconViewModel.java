@@ -1,4 +1,4 @@
-package com.bbeacon.uI.fragments_ViewModels;
+package com.bbeacon.uI.viewmodels;
 
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
@@ -37,9 +37,6 @@ public class CalibrateBeaconViewModel extends ViewModel {
     public CalibrateBeaconViewModel(BleManagerType ranger, Evaluator evaluator) {
         this.ranger = ranger;
         this.evaluator = evaluator;
-
-        Log.d("OwnLog", "calib-ranger: " + ranger.hashCode());
-        Log.d("OwnLog", "calib-evaluator: " + evaluator.hashCode());
     }
 
     public LiveData<CalibrationState> getCurrentState() {
@@ -55,7 +52,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
     }
 
 
-    public void calibrate(final String macAddress) {
+    public void calibrate(String macAddress) {
         if (currentState.getValue() != CalibrationState.IDLE)
             return;
 
@@ -98,14 +95,13 @@ public class CalibrateBeaconViewModel extends ViewModel {
         Log.d("OwnLog", "calibration method done");
     }
 
-    public void quitErrorReset() {
+    public void quitErrorOrReset() {
         ranger.stopScanning();
         currentProgress.setValue(0);
         disposable.dispose();
 
         currentState.postValue(CalibrationState.IDLE);
     }
-
 
     public enum CalibrationState {
         IDLE,

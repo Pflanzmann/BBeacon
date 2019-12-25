@@ -1,6 +1,4 @@
 package com.bbeacon.backend;
 
-public interface Calculator {
-
-
+public class Calculator implements CalculatorType {
 }

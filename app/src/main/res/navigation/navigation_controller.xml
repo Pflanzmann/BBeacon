@@ -6,7 +6,7 @@
     app:startDestination="@id/beaconFinderFragment">
     <fragment
         android:id="@+id/beaconFinderFragment"
-        android:name="com.bbeacon.uI.fragments_ViewModels.BeaconFinderFragment"
+        android:name="com.bbeacon.uI.fragments.BeaconFinderFragment"
         android:label="beacon_finder_fragment"
         tools:layout="@layout/beacon_finder_fragment" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/calibrateBeaconFragment"
-        android:name="com.bbeacon.uI.fragments_ViewModels.CalibrateBeaconFragment"
+        android:name="com.bbeacon.uI.fragments.CalibrateBeaconFragment"
         android:label="calibrate_beacon_fragment"
         tools:layout="@layout/calibrate_beacon_fragment" >
         <argument

@@ -1,4 +1,4 @@
-package com.bbeacon.dagger2_injection.modules;
+package com.bbeacon.dagger2_injection.bindings;
 
 import com.bbeacon.managers.Storage.BeaconStorageManager;
 import com.bbeacon.managers.Storage.BeaconStorageManagerType;

@@ -2,7 +2,12 @@ package com.bbeacon.models;
 
 import java.util.ArrayList;
 
-public class CalibratedBeacon {
+public class CalibratedBeacon implements Beacon {
+
+    private String name;
+    private String macAddress;
+
+    private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
 
     public CalibratedBeacon(String name, String macAddress, ArrayList<RawDataSet<Integer>> dataSets) {
         this.name = name;
@@ -10,16 +15,17 @@ public class CalibratedBeacon {
         this.dataSets = dataSets;
     }
 
-    private String name;
-    private String macAddress;
+    @Override
+    public String getMacAddress() {
+        return macAddress;
+    }
 
-    private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
-
-    public String getName() {
+    @Override
+    public String getDeviceName() {
         return name;
     }
 
-    public String getMacAddress() {
-        return macAddress;
+    public ArrayList<RawDataSet<Integer>> getDataSets(){
+        return dataSets;
     }
 }

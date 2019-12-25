@@ -7,7 +7,9 @@ import com.bbeacon.models.RawDataSet;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class Evaluator implements EvaluatorType {
 
     private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();

@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.core.Observable;
 
+@Singleton
 public class BleManager implements BleManagerType {
 
     BluetoothAdapter bluetoothAdapter;
@@ -28,6 +30,7 @@ public class BleManager implements BleManagerType {
         this.bluetoothAdapter = bluetoothAdapter;
 
         scanner = bluetoothAdapter.getBluetoothLeScanner();
+        Log.d("OwnLog", "BleManager: created");
     }
 
     public Observable<List<ScanResult>> getScanningObservable(ArrayList<ScanFilter> filters) {
