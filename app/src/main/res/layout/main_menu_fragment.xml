@@ -4,53 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".uI.fragments.CalibrateBeaconFragment" >
+    tools:context=".uI.fragments.MainMenuFragment">
 
     <TextView
-        android:id="@+id/instructionText"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:gravity="center"
-        android:text="@string/calibration_instructions_text_start"
-        android:textSize="26sp"
-        app:layout_constraintBottom_toTopOf="@+id/parameterText"
+        android:text="@string/mainMenu_Title"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/startLocatingButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/parameterText"
+    <Button
+        android:id="@+id/startLocatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/calibration_instructions_text_parameter1"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+        android:text="@string/mainMenu_startLocatingButton"
+        app:layout_constraintBottom_toTopOf="@+id/configRoomButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/instructionText" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/startButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/parameterText"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Button
-        android:id="@+id/startButton"
+        android:id="@+id/configRoomButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mainMenu_ConfigRoomButton"
+        app:layout_constraintBottom_toTopOf="@+id/showKnownBeaconsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startLocatingButton" />
+
+    <Button
+        android:id="@+id/showKnownBeaconsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        android:text="@string/calibration_start_button"
+        android:text="@string/mainMenu_ShowBeaconsButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        app:layout_constraintTop_toBottomOf="@+id/configRoomButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

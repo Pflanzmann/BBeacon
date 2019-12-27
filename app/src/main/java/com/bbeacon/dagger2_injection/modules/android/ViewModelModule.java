@@ -2,8 +2,11 @@ package com.bbeacon.dagger2_injection.modules.android;
 
 
 import com.bbeacon.dagger2_injection.setup.ViewModelKey;
-import com.bbeacon.uI.viewmodels.BeaconFinderViewModel;
 import com.bbeacon.uI.viewmodels.CalibrateBeaconViewModel;
+import com.bbeacon.uI.viewmodels.ConfigRoomViewModel;
+import com.bbeacon.uI.viewmodels.FindBeaconViewModel;
+import com.bbeacon.uI.viewmodels.KnownBeaconListViewModel;
+import com.bbeacon.uI.viewmodels.LocationViewModel;
 
 import androidx.lifecycle.ViewModel;
 import dagger.Binds;
@@ -18,10 +21,23 @@ public abstract class ViewModelModule {
     @ViewModelKey(CalibrateBeaconViewModel.class)
     public abstract ViewModel bindCalibrationViewModel(CalibrateBeaconViewModel viewModel);
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(FindBeaconViewModel.class)
+    public abstract ViewModel bindBeaconFinderViewModel(FindBeaconViewModel viewModel);
 
     @Binds
     @IntoMap
-    @ViewModelKey(BeaconFinderViewModel.class)
-    public abstract ViewModel bindBeaconFinderViewModel(BeaconFinderViewModel viewModel);
+    @ViewModelKey(ConfigRoomViewModel.class)
+    public abstract ViewModel bindConfigRoomViewModel(ConfigRoomViewModel viewModel);
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(KnownBeaconListViewModel.class)
+    public abstract ViewModel bindKnownBeaconListViewModel(KnownBeaconListViewModel viewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LocationViewModel.class)
+    public abstract ViewModel bindLocationViewModel(LocationViewModel viewModel);
 }

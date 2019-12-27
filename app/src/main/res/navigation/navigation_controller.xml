@@ -3,19 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_controller"
-    app:startDestination="@id/beaconFinderFragment">
-    <fragment
-        android:id="@+id/beaconFinderFragment"
-        android:name="com.bbeacon.uI.fragments.BeaconFinderFragment"
-        android:label="beacon_finder_fragment"
-        tools:layout="@layout/beacon_finder_fragment" >
-        <action
-            android:id="@+id/action_beaconFinderFragment_to_calibrateBeaconFragment"
-            app:destination="@id/calibrateBeaconFragment" >
-            <argument android:defaultValue="0"
-                android:name="calibrationStep" />
-        </action>
-    </fragment>
+    app:startDestination="@id/mainMenuFragment">
     <fragment
         android:id="@+id/calibrateBeaconFragment"
         android:name="com.bbeacon.uI.fragments.CalibrateBeaconFragment"
@@ -24,5 +12,91 @@
         <argument
             android:name="calibratingBeacon"
             app:argType="string" />
+        <action
+            android:id="@+id/action_calibrateBeacon_to_knownBeaconList"
+            app:destination="@id/knownBeaconListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/mainMenuFragment" >
+            <argument android:defaultValue="Select"
+                android:name="origin" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/configRoomFragment"
+        android:name="com.bbeacon.uI.fragments.ConfigRoomFragment"
+        android:label="config_room_fragment"
+        tools:layout="@layout/config_room_fragment" >
+        <action
+            android:id="@+id/action_configRoom_to_knownBeaconList"
+            app:destination="@id/knownBeaconListFragment"
+            app:popUpTo="@+id/configRoomFragment">
+            <argument
+                android:name="origin"
+                android:defaultValue="Select" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/knownBeaconListFragment"
+        android:name="com.bbeacon.uI.fragments.KnownBeaconListFragment"
+        android:label="known_beacon_list_fragment"
+        tools:layout="@layout/known_beacon_list_fragment" >
+        <action
+            android:id="@+id/action_knownBeaconList_to_configRoom"
+            app:destination="@id/configRoomFragment"
+            app:popUpTo="@+id/mainMenuFragment" />
+        <argument
+            android:name="origin"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_knownBeaconList_to_findBeacon"
+            app:destination="@id/findBeaconFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/knownBeaconListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainMenuFragment"
+        android:name="com.bbeacon.uI.fragments.MainMenuFragment"
+        android:label="main_menu_fragment"
+        tools:layout="@layout/main_menu_fragment" >
+        <action
+            android:id="@+id/action_mainMenu_to_knownBeaconList"
+            app:destination="@id/knownBeaconListFragment"
+            app:popUpTo="@+id/mainMenuFragment" >
+            <argument android:defaultValue="MainMenuFragment"
+                android:name="origin" />
+        </action>
+        <action
+            android:id="@+id/action_mainMenu_to_configRoom"
+            app:destination="@id/configRoomFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/mainMenuFragment" />
+        <action
+            android:id="@+id/action_mainMenu_to_location"
+            app:destination="@id/locationFragment"
+            app:popUpTo="@+id/mainMenuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/locationFragment"
+        android:name="com.bbeacon.uI.fragments.LocationFragment"
+        android:label="location_fragment"
+        tools:layout="@layout/location_fragment" />
+    <fragment
+        android:id="@+id/findBeaconFragment"
+        android:name="com.bbeacon.uI.fragments.FindBeaconFragment"
+        android:label="find_beacon_list_fragment"
+        tools:layout="@layout/find_beacon_list_fragment" >
+        <action
+            android:id="@+id/action_findBeacon_to_calibrateBeacon"
+            app:destination="@id/calibrateBeaconFragment"
+            app:popUpTo="@+id/knownBeaconListFragment" />
     </fragment>
 </navigation>

@@ -7,6 +7,7 @@ import com.bbeacon.models.CalibratedBeacon;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +35,14 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
 
         Gson gson = new Gson();
 
-        Map<String, CalibratedBeacon> beacons = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class).beacons;
+        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class);
 
-        beacons.put(beacon.getMacAddress(), beacon);
+        if (container != null && container.beacons != null) {
+            container.beacons.put(beacon.getMacAddress(), beacon);
+        } else
+            container = new BeaconsContainer(new HashMap<>());
 
-        prefs.edit().putString(BEACONS_KEY, gson.toJson(new BeaconsContainer(beacons), BeaconsContainer.class)).apply();
+        prefs.edit().putString(BEACONS_KEY, gson.toJson(container, BeaconsContainer.class)).apply();
     }
 
     @Override
@@ -47,9 +51,16 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
 
         Gson gson = new Gson();
 
-        Map<String, CalibratedBeacon> beacons = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class).beacons;
 
-        return new ArrayList<CalibratedBeacon>(beacons.values());
+        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class);
+
+        if (container != null && container.beacons != null) {
+            Map<String, CalibratedBeacon> beacons = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class).beacons;
+            return new ArrayList<>(beacons.values());
+        }
+
+        return new ArrayList<>();
+
     }
 
     @Override

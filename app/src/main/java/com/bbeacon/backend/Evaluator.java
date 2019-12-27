@@ -2,33 +2,35 @@ package com.bbeacon.backend;
 
 import android.util.Log;
 
+import com.bbeacon.managers.Storage.BeaconStorageManagerType;
+import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.RawDataSet;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class Evaluator implements EvaluatorType {
 
     private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
 
+    BeaconStorageManagerType storageManager;
+
     @Inject
-    public Evaluator() {
+    public Evaluator(BeaconStorageManagerType storageManager) {
+        this.storageManager = storageManager;
     }
 
     @Override
     public void insertRawDataSet(RawDataSet<Integer> dataSet) {
         dataSets.add(dataSet);
-
-        Log.d("OwnLog", String.valueOf(dataSets));
     }
 
     @Override
-    public void printAll() {
-        for (RawDataSet<Integer> dataSet : dataSets)
-            Log.d("OwnLog", "Sets: " + dataSet.getSet() + " Average: " + average(dataSet));
+    public void evaluateAndFinish(String name, String macAddress) {
+        Log.d("OwnLog", "evaluateAndFinish: That many datasets: " + dataSets.size());
+        storageManager.storeBeacon(new CalibratedBeacon(name, macAddress, new Date() , dataSets));
     }
 
     private int average(RawDataSet<Integer> dataSet) {

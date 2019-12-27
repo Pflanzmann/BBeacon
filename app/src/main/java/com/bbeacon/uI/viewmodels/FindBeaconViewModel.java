@@ -15,15 +15,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class BeaconFinderViewModel extends ViewModel {
+public class FindBeaconViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<UnknownBeacon>> foundBLEDevices = new MutableLiveData<>(new ArrayList<UnknownBeacon>());
 
-    BleManagerType ranger;
+    BleManagerType scanner;
 
     @Inject
-    public BeaconFinderViewModel(BleManagerType bleManagerType) {
-        ranger = bleManagerType;
+    public FindBeaconViewModel(BleManagerType bleManagerType) {
+        scanner = bleManagerType;
     }
 
     public LiveData<ArrayList<UnknownBeacon>> getFoundBLEDevices() {
@@ -31,11 +31,11 @@ public class BeaconFinderViewModel extends ViewModel {
     }
 
     public void findBluetoothDevices() {
-        ranger.getScanningObservable(new ArrayList<ScanFilter>()).subscribe(scanResults -> addToList(scanResults));
+        scanner.getScanningObservable(new ArrayList<ScanFilter>()).subscribe(scanResults -> addToList(scanResults));
     }
 
     public void stopBluetoothScan() {
-        ranger.stopScanning();
+        scanner.stopScanning();
     }
 
     private void addToList(List<ScanResult> results) {
@@ -68,6 +68,6 @@ public class BeaconFinderViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
 
-        ranger.stopScanning();
+        scanner.stopScanning();
     }
 }

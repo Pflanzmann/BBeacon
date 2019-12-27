@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import dagger.android.support.DaggerFragment;
 
 public class CalibrateBeaconFragment extends DaggerFragment {
@@ -40,7 +41,6 @@ public class CalibrateBeaconFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        viewModel = ViewModelProviders.of(this).get(CalibrateBeaconViewModel.class);
 
         viewModel = ViewModelProviders.of(this, providerFactory).get(CalibrateBeaconViewModel.class);
 
@@ -49,7 +49,6 @@ public class CalibrateBeaconFragment extends DaggerFragment {
         stepText = getView().findViewById(R.id.parameterText);
 
         startButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 calibrationButtonPressed();
@@ -76,8 +75,7 @@ public class CalibrateBeaconFragment extends DaggerFragment {
     }
 
     public void calibrationButtonPressed() {
-        viewModel.calibrate(
-                getArguments().getString("calibratingBeacon"));
+        viewModel.calibrate(getArguments().getString("calibratingBeacon"));
     }
 
     private void handleCalibrationState(CalibrateBeaconViewModel.CalibrationState state) {
@@ -88,18 +86,23 @@ public class CalibrateBeaconFragment extends DaggerFragment {
 
             case ERROR:
                 progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getContext(), "Calibration failed, try again", Toast.LENGTH_SHORT).show();
-                viewModel.quitErrorOrReset();
+                Toast.makeText(getContext(), "Calibration step failed, try again", Toast.LENGTH_SHORT).show();
+                viewModel.quitError();
                 break;
 
             case CALIBRATION:
                 progressBar.setVisibility(View.VISIBLE);
                 break;
 
+            case READY:
+                progressBar.setVisibility(View.INVISIBLE);
+                break;
+
             case DONE:
                 progressBar.setVisibility(View.INVISIBLE);
-                viewModel.quitErrorOrReset();
-                Toast.makeText(getContext(), "Calibration done", Toast.LENGTH_SHORT).show();
+                viewModel.quitError();
+
+                Navigation.findNavController(getView()).navigate(R.id.action_calibrateBeacon_to_knownBeaconList);
                 break;
         }
 

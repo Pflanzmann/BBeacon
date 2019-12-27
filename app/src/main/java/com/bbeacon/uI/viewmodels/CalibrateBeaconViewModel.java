@@ -22,20 +22,20 @@ import io.reactivex.rxjava3.disposables.Disposable;
 public class CalibrateBeaconViewModel extends ViewModel {
 
     private final int MESSUREMENT_COUNT = 5;
-    private final int MAX_STEPS = 10;
+    private final int MAX_STEPS = 1;
 
     private MutableLiveData<CalibrationState> currentState = new MutableLiveData<>(CalibrationState.IDLE);
     private MutableLiveData<Integer> currentProgress = new MutableLiveData<>(0);
     private MutableLiveData<Integer> currentStep = new MutableLiveData<>(0);
 
-    private BleManagerType ranger;
+    private BleManagerType scanner;
     private Evaluator evaluator;
 
     private Disposable disposable;
 
     @Inject
-    public CalibrateBeaconViewModel(BleManagerType ranger, Evaluator evaluator) {
-        this.ranger = ranger;
+    public CalibrateBeaconViewModel(BleManagerType scanner, Evaluator evaluator) {
+        this.scanner = scanner;
         this.evaluator = evaluator;
     }
 
@@ -53,16 +53,18 @@ public class CalibrateBeaconViewModel extends ViewModel {
 
 
     public void calibrate(String macAddress) {
-        if (currentState.getValue() != CalibrationState.IDLE)
+        if (currentState.getValue() != CalibrationState.IDLE && currentState.getValue() != CalibrationState.READY)
             return;
 
         Log.d("OwnLog", "calibration started");
+        currentProgress.setValue(0);
         currentState.postValue(CalibrationState.CALIBRATION);
 
+        //Filter setup for the scanner
         final ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
         filters.add(new ScanFilter.Builder().setDeviceAddress(macAddress).build());
 
-        disposable = ranger.getScanningObservable(filters)
+        disposable = scanner.getScanningObservable(filters)
                 .doOnNext(lists -> currentProgress.postValue(currentProgress.getValue() + 1))
                 .timeout(10, TimeUnit.SECONDS, observer -> {
                     Log.d("OwnLog", "calibration disposed");
@@ -71,7 +73,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
                 })
                 .buffer(MESSUREMENT_COUNT)
                 .subscribe(lists -> {
-                    ranger.stopScanning();
+                    scanner.stopScanning();
 
                     ArrayList<Integer> tempMeasurements = new ArrayList<>();
 
@@ -81,23 +83,31 @@ public class CalibrateBeaconViewModel extends ViewModel {
                             Log.d("OwnLog", "those are the result RSSI : " + result.getRssi());
                         }
 
-                    evaluator.insertRawDataSet(new RawDataSet<>(currentStep.getValue(), tempMeasurements.toArray(new Integer[MESSUREMENT_COUNT])));
-
-                    if (currentStep.getValue() == MAX_STEPS) {
-                        evaluator.printAll();
+                    if (tempMeasurements.size() != MESSUREMENT_COUNT) {
+                        Log.d("OwnLog", "calibration disposed");
+                        currentState.postValue(CalibrationState.ERROR);
+                        disposable.dispose();
                         return;
                     }
 
-                    currentStep.postValue(currentStep.getValue() + 1);
-                    currentState.postValue(CalibrationState.DONE);
-                    disposable.dispose();
+                    evaluator.insertRawDataSet(new RawDataSet<>(currentStep.getValue(), tempMeasurements.toArray(new Integer[MESSUREMENT_COUNT])));
+
+                    if (currentStep.getValue() == MAX_STEPS) {
+
+                        String name = lists.get(0).get(0).getDevice().getName();
+
+                        evaluator.evaluateAndFinish(name, macAddress);
+                        currentState.postValue(CalibrationState.DONE);
+                    } else {
+                        currentStep.postValue(currentStep.getValue() + 1);
+                        currentState.postValue(CalibrationState.READY);
+                        disposable.dispose();
+                    }
                 });
-        Log.d("OwnLog", "calibration method done");
     }
 
-    public void quitErrorOrReset() {
-        ranger.stopScanning();
-        currentProgress.setValue(0);
+    public void quitError() {
+        scanner.stopScanning();
         disposable.dispose();
 
         currentState.postValue(CalibrationState.IDLE);
@@ -107,6 +117,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
         IDLE,
         ERROR,
         CALIBRATION,
+        READY,
         DONE
     }
 }
