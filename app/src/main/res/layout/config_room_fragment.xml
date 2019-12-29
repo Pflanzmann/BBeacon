@@ -7,12 +7,97 @@
     tools:context=".uI.fragments.ConfigRoomFragment" >
 
     <Button
-        android:id="@+id/selectBeaconButton"
+        android:id="@+id/selectBeacon0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Beacon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="150dp"
+        android:text="@string/configRoom_SelectBeacon1Button"
+        app:layout_constraintBottom_toTopOf="@+id/selectBeacon1"
+        app:layout_constraintEnd_toStartOf="@+id/selectedBeacon0TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/selectBeacon1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/configRoom_SelectBeacon2Button"
+        app:layout_constraintBottom_toTopOf="@+id/selectBeacon2"
+        app:layout_constraintEnd_toStartOf="@+id/selectedBeacon1TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectBeacon0" />
+
+    <Button
+        android:id="@+id/selectBeacon2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/configRoom_SelectBeacon3Button"
+        app:layout_constraintBottom_toTopOf="@+id/selectBeacon3"
+        app:layout_constraintEnd_toStartOf="@+id/selectedBeacon2TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectBeacon1" />
+
+    <Button
+        android:id="@+id/selectBeacon3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="150dp"
+        android:text="@string/configRoom_SelectBeacon4Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/selectedBeacon3TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectBeacon2" />
+
+    <TextView
+        android:id="@+id/selectedBeacon0TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/selectedBeacon1TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/selectBeacon0"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ExampleBeacon" />
+
+    <TextView
+        android:id="@+id/selectedBeacon1TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/selectedBeacon2TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/selectBeacon1"
+        app:layout_constraintTop_toBottomOf="@+id/selectedBeacon0TextView"
+        tools:text="ExampleBeacon" />
+
+    <TextView
+        android:id="@+id/selectedBeacon2TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/selectedBeacon3TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/selectBeacon2"
+        app:layout_constraintTop_toBottomOf="@+id/selectedBeacon1TextView"
+        tools:text="ExampleBeacon" />
+
+    <TextView
+        android:id="@+id/selectedBeacon3TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="150dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/selectBeacon3"
+        app:layout_constraintTop_toBottomOf="@+id/selectedBeacon2TextView"
+        tools:text="ExampleBeacon" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

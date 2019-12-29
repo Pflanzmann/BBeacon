@@ -25,16 +25,23 @@ import dagger.android.support.DaggerFragment;
 
 public class CalibrateBeaconFragment extends DaggerFragment {
 
+    @Inject
+    ViewModelProviderFactory providerFactory;
+
     private CalibrateBeaconViewModel viewModel;
     private ProgressBar progressBar;
     private TextView stepText;
 
-    @Inject
-    ViewModelProviderFactory providerFactory;
+    private CalibrateBeaconFragmentArgs args;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        if (getArguments() != null) {
+            args = CalibrateBeaconFragmentArgs.fromBundle(getArguments());
+        }
+
         return inflater.inflate(R.layout.calibrate_beacon_fragment, container, false);
     }
 
@@ -75,7 +82,7 @@ public class CalibrateBeaconFragment extends DaggerFragment {
     }
 
     public void calibrationButtonPressed() {
-        viewModel.calibrate(getArguments().getString("calibratingBeacon"));
+        viewModel.calibrate(args.getUncalibratedbeacon());
     }
 
     private void handleCalibrationState(CalibrateBeaconViewModel.CalibrationState state) {

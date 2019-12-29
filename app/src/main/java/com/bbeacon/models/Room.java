@@ -1,16 +1,18 @@
 package com.bbeacon.models;
 
-import java.util.List;
-
 public class Room {
 
-    private List<Position> beaconPositions;
+    private BeaconPosition[] beaconPositions;
 
-    public Room(List<Position> beaconPositions) {
+    public Room(BeaconPosition[] beaconPositions) {
         this.beaconPositions = beaconPositions;
     }
 
-    public List<Position> getBeaconPositions() {
+    public Room(int size) {
+        this.beaconPositions = new BeaconPosition[size];
+    }
+
+    public BeaconPosition[] getBeaconPositions() {
         return beaconPositions;
     }
 }

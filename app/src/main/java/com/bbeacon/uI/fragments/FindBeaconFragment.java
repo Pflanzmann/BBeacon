@@ -89,12 +89,14 @@ public class FindBeaconFragment extends DaggerFragment {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("calibratingBeacon", holder.macAddress.getText().toString());
-
                     viewModel.stopBluetoothScan();
 
-                    Navigation.findNavController(view).navigate(R.id.action_findBeacon_to_calibrateBeacon, bundle);
+                    Navigation.findNavController(getView())
+                            .navigate(FindBeaconFragmentDirections.actionFindBeaconToDefineBeacon(
+                                    new UnknownBeacon(
+                                            holder.macAddress.getText().toString(),
+                                            holder.nameText.getText().toString())
+                            ));
                 }
             });
         }
@@ -111,8 +113,8 @@ public class FindBeaconFragment extends DaggerFragment {
             private ViewHolder(@NonNull View itemView) {
                 super(itemView);
 
-                nameText = itemView.findViewById(R.id.nameTextView);
-                macAddress = itemView.findViewById(R.id.macAddressTextView);
+                nameText = itemView.findViewById(R.id.beaconNmaeTextView);
+                macAddress = itemView.findViewById(R.id.macAddressTagTextView);
             }
         }
     }

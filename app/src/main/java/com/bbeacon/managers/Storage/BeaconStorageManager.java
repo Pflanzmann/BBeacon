@@ -2,6 +2,7 @@ package com.bbeacon.managers.Storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.bbeacon.models.CalibratedBeacon;
 import com.google.gson.Gson;
@@ -18,7 +19,7 @@ import javax.inject.Singleton;
 public class BeaconStorageManager implements BeaconStorageManagerType {
 
     private final String PREFS_KEY = "bbeacon";
-    private final String DEFAULT_KEY = "";
+    private final String DEFAULT_VALUE = "";
 
     private final String BEACONS_KEY = "beacons";
 
@@ -35,12 +36,20 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
 
         Gson gson = new Gson();
 
-        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class);
+        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
 
         if (container != null && container.beacons != null) {
-            container.beacons.put(beacon.getMacAddress(), beacon);
-        } else
+            if (!container.beacons.containsKey(beacon.getDeviceId())) {
+                container.beacons.put(beacon.getDeviceId(), beacon);
+                Log.d("OwnLog", "storeBeacon: put");
+            } else {
+                container.beacons.replace(beacon.getDeviceId(), beacon);
+                Log.d("OwnLog", "storeBeacon: replace");
+            }
+        } else {
             container = new BeaconsContainer(new HashMap<>());
+            Log.d("OwnLog", "storeBeacon: new ocntainer");
+        }
 
         prefs.edit().putString(BEACONS_KEY, gson.toJson(container, BeaconsContainer.class)).apply();
     }
@@ -51,11 +60,10 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
 
         Gson gson = new Gson();
 
-
-        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class);
+        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
 
         if (container != null && container.beacons != null) {
-            Map<String, CalibratedBeacon> beacons = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_KEY), BeaconsContainer.class).beacons;
+            Map<String, CalibratedBeacon> beacons = container.beacons;
             return new ArrayList<>(beacons.values());
         }
 
@@ -64,7 +72,20 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
     }
 
     @Override
-    public void loadBeaconBy(String macAddress) {
+    public CalibratedBeacon loadBeaconById(String deviceId) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+
+        Gson gson = new Gson();
+
+        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
+
+        if (container != null && container.beacons != null) {
+            Map<String, CalibratedBeacon> beacons = container.beacons;
+
+            return beacons.get(deviceId);
+        }
+
+        return null;
 
     }
 

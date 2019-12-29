@@ -30,7 +30,6 @@ public class BleManager implements BleManagerType {
         this.bluetoothAdapter = bluetoothAdapter;
 
         scanner = bluetoothAdapter.getBluetoothLeScanner();
-        Log.d("OwnLog", "BleManager: created");
     }
 
     public Observable<List<ScanResult>> getScanningObservable(ArrayList<ScanFilter> filters) {
@@ -42,11 +41,6 @@ public class BleManager implements BleManagerType {
                     if (results.size() != 0) {
                         emitter.onNext(results);
                     }
-                }
-
-                @Override
-                public void onScanFailed(int errorCode) {
-                    Log.d("OwnLog", "BLE scanner failed");
                 }
             };
 
@@ -62,7 +56,7 @@ public class BleManager implements BleManagerType {
                                 .setReportDelay(1l)
                                 .build();
 
-                        Log.d("OwnLog", "The reportDelay is: " + settings.getReportDelayMillis());
+                        Log.d("OwnLog", "BleScan Start " );
                         scanner.flushPendingScanResults(scanCallback);
                         scanner.startScan(filters, settings, scanCallback);
 
@@ -73,7 +67,6 @@ public class BleManager implements BleManagerType {
                     Log.d("OwnLog", "leScan failure: \n" + e);
                 }
             }
-            Log.d("OwnLog", "BLE scanner done");
         });
     }
 
@@ -81,6 +74,7 @@ public class BleManager implements BleManagerType {
     public void stopScanning() {
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
             scanner.stopScan(scanCallback);
+            Log.d("OwnLog", "bleScan stop");
         }
     }
 }

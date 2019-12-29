@@ -5,6 +5,7 @@ import android.util.Log;
 import com.bbeacon.managers.Storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.RawDataSet;
+import com.bbeacon.models.UncalibratedBeacon;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class Evaluator implements EvaluatorType {
 
     private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
 
-    BeaconStorageManagerType storageManager;
+    private BeaconStorageManagerType storageManager;
 
     @Inject
     public Evaluator(BeaconStorageManagerType storageManager) {
@@ -28,9 +29,18 @@ public class Evaluator implements EvaluatorType {
     }
 
     @Override
-    public void evaluateAndFinish(String name, String macAddress) {
+    public void evaluateAndFinish(UncalibratedBeacon uncalibratedBeacon) {
         Log.d("OwnLog", "evaluateAndFinish: That many datasets: " + dataSets.size());
-        storageManager.storeBeacon(new CalibratedBeacon(name, macAddress, new Date() , dataSets));
+        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getDeviceId());
+        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getDeviceName());
+        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getMacAddress());
+        storageManager.storeBeacon(
+                new CalibratedBeacon(
+                        uncalibratedBeacon.getDeviceName(),
+                        uncalibratedBeacon.getDeviceId(),
+                        uncalibratedBeacon.getMacAddress(),
+                        new Date(),
+                        dataSets));
     }
 
     private int average(RawDataSet<Integer> dataSet) {

@@ -5,14 +5,16 @@ import java.util.Date;
 
 public class CalibratedBeacon implements Beacon {
 
-    private String name;
+    private String deviceName;
+    private String deviceId;
     private String macAddress;
     private Date calibrationDate;
 
-    private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
+    private ArrayList<RawDataSet<Integer>> dataSets;
 
-    public CalibratedBeacon(String name, String macAddress, Date calibrationDate, ArrayList<RawDataSet<Integer>> dataSets) {
-        this.name = name;
+    public CalibratedBeacon(String deviceName, String deviceId, String macAddress, Date calibrationDate, ArrayList<RawDataSet<Integer>> dataSets) {
+        this.deviceName = deviceName;
+        this.deviceId = deviceId;
         this.macAddress = macAddress;
         this.calibrationDate = calibrationDate;
         this.dataSets = dataSets;
@@ -25,7 +27,7 @@ public class CalibratedBeacon implements Beacon {
 
     @Override
     public String getDeviceName() {
-        return name;
+        return deviceName;
     }
 
     public Date getCalibrationDate() {
@@ -34,5 +36,9 @@ public class CalibratedBeacon implements Beacon {
 
     public ArrayList<RawDataSet<Integer>> getDataSets() {
         return dataSets;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
     }
 }

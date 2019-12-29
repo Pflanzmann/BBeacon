@@ -1,6 +1,7 @@
 package com.bbeacon.dagger2_injection.modules.android;
 
 import com.bbeacon.uI.fragments.ConfigRoomFragment;
+import com.bbeacon.uI.fragments.DefineBeaconFragment;
 import com.bbeacon.uI.fragments.FindBeaconFragment;
 import com.bbeacon.uI.fragments.CalibrateBeaconFragment;
 import com.bbeacon.uI.fragments.KnownBeaconListFragment;
@@ -42,4 +43,10 @@ public abstract class FragmentBuilderModule {
             modules = ViewModelModule.class
     )
     abstract LocationFragment contributeLocationFragment();
+
+
+    @ContributesAndroidInjector(
+            modules = ViewModelModule.class
+    )
+    abstract DefineBeaconFragment contributeDefineBeaconFragment();
 }

@@ -1,15 +1,30 @@
 <resources>
     <string name="mainMenu_Title">BBeacon</string>
-    <string name="mainMenu_startLocatingButton">Start Lokalisierung</string>
+    <string name="mainMenu_StartLocatingButton">Start Lokalisierung</string>
     <string name="mainMenu_ConfigRoomButton">Raum Optionen</string>
-    <string name="mainMenu_ShowBeaconsButton">Zeige Beacons</string>
+    <string name="mainMenu_ShowBeaconsButton">Zeige Sender</string>
+
+    <string name="configRoom_SelectBeacon1Button">Wähle Sender 1</string>
+    <string name="configRoom_SelectBeacon2Button">Wähle Sender 2</string>
+    <string name="configRoom_SelectBeacon3Button">Wähle Sender 3</string>
+    <string name="configRoom_SelectBeacon4Button">Wähle Sender 4</string>
+
+    <string name="knownBeaconListItem_Select">Auswählen</string>
+    <string name="knownBeaconListItem_MacAddressTag">MAC-Adresse: </string>
+    <string name="knownBeaconListItem_DateTag">Datum: </string>
+
+    <string name="knownBeaconList_CreateNewButton">Neuen Sender registrieren</string>
+
+    <string name="defineBeacon_TitleText">Definiere den Sender</string>
+    <string name="defineBeacon_BeaconNameText">Name des Beacons</string>
+    <string name="defineBeacon_BeaconNameEditTextExample">Jörg</string>
+    <string name="defineBeacon_MeasurementCountText">Messungen/ Schritt</string>
+    <string name="defineBeacon_StepCountText">Anzahl der Schritte</string>
+    <string name="defineBeacon_StartButton">Start</string>
 
 
-    <string name="knownBeaconListItem_select">Auswählen</string>
-    <string name="knownBeaconList_createNewButton">Neuen Sender registrieren</string>
-
-    <string name="calibration_instructions_text_start">Legen sie den Sender auf die jeweilige Entfernung und starten sie die Kalibrierung.</string>
-    <string name="calibration_instructions_text_parameter1">1 Meter</string>
-    <string name="calibration_start_button">Start</string>
+    <string name="calibration_InstructionsText">Legen sie den Sender auf die jeweilige Entfernung und starten sie die Kalibrierung.</string>
+    <string name="calibration_InstructionsTextParameter1">1 Meter</string>
+    <string name="calibration_StartButton">Start</string>
 
 </resources>

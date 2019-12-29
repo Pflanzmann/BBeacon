@@ -20,36 +20,63 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/nameTextView"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:textSize="18dp"
-            tools:text="nameTextView" />
-
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="left"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/macAddressTextView"
-                android:layout_width="180dp"
+                android:id="@+id/beaconNmaeTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="10sp"
-                tools:text="macAddressTextView" />
+                android:textSize="18dp"
+                tools:text="BeaconName" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/creationDateTextView"
-                android:layout_width="110dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".8"
+                android:id="@+id/macAddressTagTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="@string/knownBeaconListItem_MacAddressTag"
                 android:textSize="10sp"
-                tools:text="creationDateTextView" />
+                tools:text="MAC-Address: " />
+
+            <TextView
+                android:id="@+id/macAddressTextViewOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:textSize="10sp"
+                tools:text="ff-ff-ff-ff-ff-ff" />
+
+            <TextView
+                android:id="@+id/creationDateTagTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/knownBeaconListItem_DateTag"
+                android:textSize="10sp"
+                tools:text="Date: " />
+
+            <TextView
+                android:id="@+id/creationDateTextViewOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                tools:text="31.12.9999 24:59" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -58,9 +85,8 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:gravity="center|center_horizontal"
-        android:text="@string/knownBeaconListItem_select"
+        android:text="@string/knownBeaconListItem_Select"
         android:textColor="#2AD61B" />
 
     <Space

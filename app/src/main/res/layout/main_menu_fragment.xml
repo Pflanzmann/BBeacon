@@ -22,7 +22,7 @@
         android:id="@+id/startLocatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/mainMenu_startLocatingButton"
+        android:text="@string/mainMenu_StartLocatingButton"
         app:layout_constraintBottom_toTopOf="@+id/configRoomButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

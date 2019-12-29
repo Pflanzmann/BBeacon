@@ -1,13 +1,16 @@
 package com.bbeacon.models;
 
-public class Position {
+public class BeaconPosition {
 
     private float x;
     private float y;
 
-    public Position(float x, float y) {
+    private String beaconId;
+
+    public BeaconPosition(float x, float y, String beaconId) {
         this.x = x;
         this.y = y;
+        this.beaconId = beaconId;
     }
 
     public float getY() {
@@ -16,5 +19,9 @@ public class Position {
 
     public float getX() {
         return x;
+    }
+
+    public String getBeaconId() {
+        return beaconId;
     }
 }

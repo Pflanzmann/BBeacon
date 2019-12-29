@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bbeacon.R;
 import com.bbeacon.dagger2_injection.setup.ViewModelProviderFactory;
@@ -13,16 +14,19 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.support.DaggerFragment;
 
 public class LocationFragment extends DaggerFragment {
 
-    private LocationViewModel mViewModel;
+    private LocationViewModel viewModel;
 
     public static LocationFragment newInstance() {
         return new LocationFragment();
     }
+
+    TextView text;
 
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -36,8 +40,21 @@ public class LocationFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this, providerFactory).get(LocationViewModel.class);
-        // TODO: Use the ViewModel
+        viewModel = ViewModelProviders.of(this, providerFactory).get(LocationViewModel.class);
+
+        text = getView().findViewById(R.id.distanceTextView);
+
+        viewModel.getCurrentDistance().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String text) {
+                onTextChanged(text);
+            }
+        });
+
+        viewModel.getRanges();
     }
 
+    private void onTextChanged(String textRange) {
+        text.setText(textRange);
+    }
 }

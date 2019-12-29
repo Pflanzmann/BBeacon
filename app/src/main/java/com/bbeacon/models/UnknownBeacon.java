@@ -1,8 +1,10 @@
 package com.bbeacon.models;
 
+import java.io.Serializable;
+
 import androidx.annotation.Nullable;
 
-public class UnknownBeacon implements Beacon {
+public class UnknownBeacon implements Beacon, Serializable {
 
     private final String macAddress;
     private final String deviceName;

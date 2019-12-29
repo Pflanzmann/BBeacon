@@ -9,5 +9,5 @@ public interface BeaconStorageManagerType {
 
     public List<CalibratedBeacon> loadAllBeacons();
 
-    public void loadBeaconBy(String macAddress);
+    public CalibratedBeacon loadBeaconById(String deviceId);
 }
