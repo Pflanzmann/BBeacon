@@ -44,14 +44,21 @@ public class LocationFragment extends DaggerFragment {
 
         text = getView().findViewById(R.id.distanceTextView);
 
-        viewModel.getCurrentDistance().observe(getViewLifecycleOwner(), new Observer<String>() {
+        viewModel.getCurrentXCoordinates().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
-            public void onChanged(String text) {
-                onTextChanged(text);
+            public void onChanged(Float value) {
+                onTextChanged(String.valueOf(value));
             }
         });
 
-        viewModel.getRanges();
+        viewModel.getCurrentYCoordinates().observe(getViewLifecycleOwner(), new Observer<Float>() {
+            @Override
+            public void onChanged(Float value) {
+                onTextChanged(String.valueOf(value));
+            }
+        });
+
+        viewModel.startLocating();
     }
 
     private void onTextChanged(String textRange) {

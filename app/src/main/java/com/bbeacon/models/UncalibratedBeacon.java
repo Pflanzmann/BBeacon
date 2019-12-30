@@ -36,8 +36,10 @@ public class UncalibratedBeacon implements Beacon, Serializable {
         return macAddress;
     }
 
-    @Override
+
     public String getDeviceName() {
         return deviceName;
     }
+
+
 }

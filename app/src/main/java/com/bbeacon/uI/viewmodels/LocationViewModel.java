@@ -21,14 +21,15 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class LocationViewModel extends ViewModel {
 
-    MutableLiveData<String> currentDistance = new MutableLiveData<String>("0");
+    private MutableLiveData<Float> currentXCoordinates = new MutableLiveData<Float>(1f);
+    private MutableLiveData<Float> currentYCoordinates = new MutableLiveData<Float>(1f);
 
     private BleManagerType bleManager;
     private RoomManagerType roomManager;
+    private RangerType ranger;
 
     private Disposable disposable;
 
-    private RangerType ranger;
 
     @Inject
     public LocationViewModel(BleManagerType bleManager, RoomManagerType roomManager) {
@@ -36,11 +37,15 @@ public class LocationViewModel extends ViewModel {
         this.roomManager = roomManager;
     }
 
-    public LiveData<String> getCurrentDistance() {
-        return currentDistance;
+    public LiveData<Float> getCurrentXCoordinates() {
+        return currentXCoordinates;
     }
 
-    public void getRanges() {
+    public LiveData<Float> getCurrentYCoordinates() {
+        return currentYCoordinates;
+    }
+
+    public void startLocating() {
         CalibratedBeacon beacon = roomManager.getBeaconByPositionIndexOrNull(0);
 
         ranger = new AverageRanger(beacon);
@@ -48,14 +53,19 @@ public class LocationViewModel extends ViewModel {
         final ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
         filters.add(new ScanFilter.Builder().setDeviceAddress(beacon.getMacAddress()).build());
 
-
         disposable = bleManager.getScanningObservable(filters)
                 .subscribe(lists -> onNewResult(lists));
+
     }
 
     private void onNewResult(List<ScanResult> results) {
         int rssi = results.get(0).getRssi();
 
-        currentDistance.postValue(String.valueOf("Distance: " + ranger.computeDistance(rssi) + " RSSI: " + rssi));
+//        currentDistance.postValue(String.valueOf("Distance: " + ranger.computeDistance(rssi) + " RSSI: " + rssi));
+    }
+
+    public void stopLocating() {
+
+        bleManager.stopScanning();
     }
 }

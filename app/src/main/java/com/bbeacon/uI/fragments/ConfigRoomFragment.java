@@ -84,7 +84,7 @@ public class ConfigRoomFragment extends DaggerFragment {
 
             if (positions[i] != null) {
 
-                String beaconId = positions[i].getBeaconId();
+                String beaconId = positions[i].getDeviceId();
                 switch (i) {
                     case 0:
                         beacon0TextView.setText(beaconId);

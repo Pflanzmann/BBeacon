@@ -32,11 +32,11 @@ public class Evaluator implements EvaluatorType {
     public void evaluateAndFinish(UncalibratedBeacon uncalibratedBeacon) {
         Log.d("OwnLog", "evaluateAndFinish: That many datasets: " + dataSets.size());
         Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getDeviceId());
-        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getDeviceName());
+        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getDeviceId());
         Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getMacAddress());
         storageManager.storeBeacon(
                 new CalibratedBeacon(
-                        uncalibratedBeacon.getDeviceName(),
+                        uncalibratedBeacon.getDeviceId(),
                         uncalibratedBeacon.getDeviceId(),
                         uncalibratedBeacon.getMacAddress(),
                         new Date(),

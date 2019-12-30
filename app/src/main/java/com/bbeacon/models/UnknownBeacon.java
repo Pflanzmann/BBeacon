@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import androidx.annotation.Nullable;
 
-public class UnknownBeacon implements Beacon, Serializable {
+public class UnknownBeacon implements Serializable {
 
     private final String macAddress;
     private final String deviceName;
@@ -14,12 +14,10 @@ public class UnknownBeacon implements Beacon, Serializable {
         this.deviceName = deviceName;
     }
 
-    @Override
     public String getMacAddress() {
         return macAddress;
     }
 
-    @Override
     public String getDeviceName() {
         return deviceName;
     }

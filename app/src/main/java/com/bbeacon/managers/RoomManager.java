@@ -48,7 +48,7 @@ public class RoomManager implements RoomManagerType {
 
         BeaconPosition[] positions = room.getBeaconPositions();
 
-        return beaconStorageManager.loadBeaconById(positions[index].getBeaconId());
+        return beaconStorageManager.loadBeaconById(positions[index].getDeviceId());
     }
 
     private void storeRoom() {

@@ -1,16 +1,16 @@
 package com.bbeacon.models;
 
-public class BeaconPosition {
+public class BeaconPosition implements Beacon {
 
     private float x;
     private float y;
 
-    private String beaconId;
+    private String deviceId;
 
     public BeaconPosition(float x, float y, String beaconId) {
         this.x = x;
         this.y = y;
-        this.beaconId = beaconId;
+        this.deviceId = beaconId;
     }
 
     public float getY() {
@@ -21,7 +21,15 @@ public class BeaconPosition {
         return x;
     }
 
-    public String getBeaconId() {
-        return beaconId;
+    @Override
+    public String getDeviceId() {
+        return deviceId;
     }
+
+    @Override
+    public String getMacAddress() {
+        return null;
+    }
+
+
 }

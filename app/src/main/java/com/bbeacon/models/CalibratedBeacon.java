@@ -26,8 +26,8 @@ public class CalibratedBeacon implements Beacon {
     }
 
     @Override
-    public String getDeviceName() {
-        return deviceName;
+    public String getDeviceId() {
+        return deviceId;
     }
 
     public Date getCalibrationDate() {
@@ -38,7 +38,7 @@ public class CalibratedBeacon implements Beacon {
         return dataSets;
     }
 
-    public String getDeviceId() {
-        return deviceId;
+    public String getDeviceName() {
+        return deviceName;
     }
 }
