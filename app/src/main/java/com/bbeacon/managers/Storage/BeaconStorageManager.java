@@ -90,14 +90,6 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
         throw new CouldNotFindBeaconByIdException();
     }
 
-    private class BeaconsContainer {
-        private Map<String, CalibratedBeacon> beacons;
-
-        private BeaconsContainer(Map<String, CalibratedBeacon> beacons) {
-            this.beacons = beacons;
-        }
-    }
-
     @Override
     public void deletebeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
@@ -114,6 +106,13 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
         }
 
         throw new CouldNotFindBeaconByIdException();
+    }
 
+    private class BeaconsContainer {
+        private Map<String, CalibratedBeacon> beacons;
+
+        private BeaconsContainer(Map<String, CalibratedBeacon> beacons) {
+            this.beacons = beacons;
+        }
     }
 }

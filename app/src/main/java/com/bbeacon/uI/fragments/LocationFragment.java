@@ -51,7 +51,7 @@ public class LocationFragment extends DaggerFragment {
             onTextChanged(String.valueOf(text));
         });
 
-        viewModel.startLocating();
+        viewModel.startTestRanging();
     }
 
     private void onTextChanged(String textRange) {

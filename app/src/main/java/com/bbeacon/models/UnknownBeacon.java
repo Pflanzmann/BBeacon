@@ -6,14 +6,21 @@ import androidx.annotation.Nullable;
 
 public class UnknownBeacon implements Serializable {
 
-    private final String macAddress;
-    private final String deviceName;
+    private String macAddress;
+    private String deviceName;
+
+    private String rssi;
+
+    public UnknownBeacon(String macAddress, String deviceName, String rssi) {
+        this.macAddress = macAddress;
+        this.deviceName = deviceName;
+        this.rssi = rssi;
+    }
 
     public UnknownBeacon(String macAddress, String deviceName) {
         this.macAddress = macAddress;
         this.deviceName = deviceName;
     }
-
     public String getMacAddress() {
         return macAddress;
     }
@@ -22,6 +29,13 @@ public class UnknownBeacon implements Serializable {
         return deviceName;
     }
 
+    public String getRssi() {
+        return rssi;
+    }
+
+    public void setRssi(String rssi) {
+        this.rssi = rssi;
+    }
 
     @Override
     public boolean equals(@Nullable Object obj) {

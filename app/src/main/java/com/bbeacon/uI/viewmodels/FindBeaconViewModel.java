@@ -47,18 +47,22 @@ public class FindBeaconViewModel extends ViewModel {
         for (ScanResult result : results) {
             String address = result.getDevice().getAddress();
             String name = result.getDevice().getName();
+            String rssi = String.valueOf(result.getRssi());
 
             if (address == null)
                 address = "";
             if (name == null)
                 name = "";
+            if (rssi == null)
+                rssi = "-";
 
-            unknownBeacon = new UnknownBeacon(address, name);
+            unknownBeacon = new UnknownBeacon(address, name, rssi);
 
             if (beacons.contains(unknownBeacon)) {
-                return;
-            }
-            beacons.add(unknownBeacon);
+                int index = beacons.indexOf(unknownBeacon);
+                beacons.get(index).setRssi(rssi);
+            } else
+                beacons.add(unknownBeacon);
             foundBLEDevices.postValue(beacons);
         }
     }

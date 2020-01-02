@@ -9,8 +9,11 @@
     <string name="configRoom_SelectBeacon3Button">Wähle Sender 3</string>
     <string name="configRoom_SelectBeacon4Button">Wähle Sender 4</string>
 
+    <string name="unknownBeaconListItem_RssiTag">RSSI</string>
+    <string name="unknownBeaconListItem_MacAddressTag">MAC-Adresse:</string>
+
     <string name="knownBeaconListItem_Delete">Löschen</string>
-    <string name="knownBeaconListItem_MacAddressTag">MAC-Adresse: </string>
+    <string name="knownBeaconListItem_MacAddressTag">MAC-Adresse:</string>
     <string name="knownBeaconListItem_DateTag">Datum: </string>
 
     <string name="knownBeaconList_CreateNewButton">Neuen Sender registrieren</string>

@@ -4,51 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_layout"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="wrap_content"
     android:background="#00504E4E"
     android:backgroundTintMode="src_atop"
     android:orientation="horizontal">
 
     <Space
         android:layout_width="10dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@+id/informationLayout"
-        android:layout_width="280dp"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/beaconNmaeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="18dp"
+                android:id="@+id/beaconNameTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18sp"
                 tools:text="BeaconName" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/macAddressTagTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
                 android:text="@string/knownBeaconListItem_MacAddressTag"
                 android:textSize="10sp"
                 tools:text="MAC-Address: " />
@@ -57,7 +52,7 @@
                 android:id="@+id/macAddressTextViewOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
+                android:layout_weight="1"
                 android:textSize="10sp"
                 tools:text="ff-ff-ff-ff-ff-ff" />
 
@@ -65,16 +60,14 @@
                 android:id="@+id/creationDateTagTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="5dp"
                 android:text="@string/knownBeaconListItem_DateTag"
-                android:textSize="10sp"
-                tools:text="Date: " />
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/creationDateTextViewOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textSize="10sp"
                 tools:text="31.12.9999 24:59" />
 
@@ -86,14 +79,12 @@
         android:id="@+id/deleteTextView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="#00686868"
         android:gravity="center|center_horizontal"
         android:text="@string/knownBeaconListItem_Delete"
         android:textColor="#FF0000" />
 
     <Space
-        android:layout_width="10dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_width="20dp"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -2,12 +2,10 @@ package com.bbeacon.uI.viewmodels;
 
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
-import android.util.Log;
 
 import com.bbeacon.backend.AverageRanger;
 import com.bbeacon.backend.CalculatorType;
 import com.bbeacon.backend.RangerType;
-import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.managers.BleManagerType;
 import com.bbeacon.managers.RoomManagerType;
 import com.bbeacon.models.CalibratedBeacon;
@@ -57,8 +55,6 @@ public class LocationViewModel extends ViewModel {
 
         PositionedBeacon[] positionedBeacon = roomManager.getRoom().getBeaconPositions();
 
-        Log.d("OwnLog", "startLocating: test : " + positionedBeacon[0].getX());
-
         for (int i = 0; i < positionedBeacon.length; i++) {
 
             if (positionedBeacon[i] == null)
@@ -87,14 +83,16 @@ public class LocationViewModel extends ViewModel {
             try {
                 PositionedBeacon position = roomManager.getBeaconByIndex(i);
                 rangedBeaconPositions.add(new RangedBeaconPosition(position, ranger.computeDistance(results.get(i).getRssi())));
-
-            } catch (CouldNotFindBeaconByIdException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
             if (rangedBeaconPositions.size() == 3)
                 break;
         }
+
+        if (rangedBeaconPositions.size() != 3)
+            return;
 
         UserPosition userPosition = calculator.getCoordinate(rangedBeaconPositions);
 
@@ -116,7 +114,7 @@ public class LocationViewModel extends ViewModel {
 
             filters.add(new ScanFilter.Builder().setDeviceAddress(beacon.getMacAddress()).build());
 
-        } catch (CouldNotFindBeaconByIdException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         bleManager.getScanningObservable(filters)

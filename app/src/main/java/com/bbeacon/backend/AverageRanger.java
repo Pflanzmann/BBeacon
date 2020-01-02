@@ -54,8 +54,7 @@ public class AverageRanger implements RangerType {
 
             int a = 0;
             for (int j = 0; j < tempDataSet.length; j++) {
-                Log.d("OwnLog", "tempDataSet " + currentDataSet + ": " + tempDataSet[j]);
-
+                Log.d("OwnLog", "tempDataSet " + currentDataSet + ": " + tempDataSet[j] + " index: " + j);
                 a += tempDataSet[j];
             }
 

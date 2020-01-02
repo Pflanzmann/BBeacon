@@ -135,7 +135,7 @@ public class KnownBeaconListFragment extends DaggerFragment {
             private ViewHolder(@NonNull View itemView) {
                 super(itemView);
 
-                nameText = itemView.findViewById(R.id.beaconNmaeTextView);
+                nameText = itemView.findViewById(R.id.beaconNameTextView);
                 macAddress = itemView.findViewById(R.id.macAddressTextViewOutput);
                 calibrationDate = itemView.findViewById(R.id.creationDateTextViewOutput);
 
