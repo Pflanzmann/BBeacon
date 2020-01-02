@@ -1,7 +1,22 @@
 package com.bbeacon.models;
 
-public interface Beacon {
+import java.io.Serializable;
 
-    public String getMacAddress();
-    public String getDeviceId();
+public class Beacon implements Serializable {
+
+    public Beacon(String deviceId, String macAddress) {
+        this.deviceId = deviceId;
+        this.macAddress = macAddress;
+    }
+
+    private String deviceId;
+    private String macAddress;
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
 }

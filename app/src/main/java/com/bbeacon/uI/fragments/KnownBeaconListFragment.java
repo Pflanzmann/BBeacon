@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -73,27 +72,30 @@ public class KnownBeaconListFragment extends DaggerFragment {
         viewModel.loadCalibratedBeacons();
     }
 
-    private void onSelectedBeacon(String beaconId) {
+    private void onSelectedBeacon(CalibratedBeacon beacon) {
         Navigation.findNavController(getView())
-                .navigate(KnownBeaconListFragmentDirections.actionKnownBeaconListToConfigRoom(beaconId)
+                .navigate(KnownBeaconListFragmentDirections.actionKnownBeaconListToConfigRoom()
+                        .setBeaconObject(beacon)
                         .setBeaconToSelect(args.getBeaconToSelect()));
     }
 
     private void onCalibrateNewBeacon() {
         Navigation.findNavController(getView())
-                .navigate(KnownBeaconListFragmentDirections.actionKnownBeaconListToFindBeacon());
+                .navigate(R.id.action_knownBeaconList_to_findBeacon);
+    }
+
+    private void onDeleteBeacon(String deviceId) {
+        viewModel.deleteCalibratedBeacon(deviceId);
+        viewModel.loadCalibratedBeacons();
     }
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<KnownBeaconListFragment.RecyclerViewAdapter.ViewHolder> {
         ArrayList<CalibratedBeacon> beacons = new ArrayList<>();
 
         RecyclerViewAdapter() {
-            viewModel.getKnownBeacons().observe(getViewLifecycleOwner(), new Observer<ArrayList<CalibratedBeacon>>() {
-                @Override
-                public void onChanged(ArrayList<CalibratedBeacon> calibratedBeacons) {
-                    beacons = calibratedBeacons;
-                    notifyDataSetChanged();
-                }
+            viewModel.getKnownBeacons().observe(getViewLifecycleOwner(), calibratedBeacons -> {
+                beacons = calibratedBeacons;
+                notifyDataSetChanged();
             });
         }
 
@@ -107,13 +109,15 @@ public class KnownBeaconListFragment extends DaggerFragment {
         @Override
         public void onBindViewHolder(@NonNull KnownBeaconListFragment.RecyclerViewAdapter.ViewHolder holder, int position) {
 
+            holder.calibratedBeacon = beacons.get(position);
+
             holder.nameText.setText(beacons.get(position).getDeviceId());
 
             holder.macAddress.setText(beacons.get(position).getMacAddress());
             holder.calibrationDate.setText(df.format(beacons.get(position).getCalibrationDate()));
 
             if (args.getAccessModifier() == accessModifyer.SELECT)
-                holder.itemView.setOnClickListener(view -> onSelectedBeacon(holder.nameText.getText().toString()));
+                holder.itemView.findViewById(R.id.informationLayout).setOnClickListener(view -> onSelectedBeacon(holder.calibratedBeacon));
         }
 
         @Override
@@ -122,6 +126,8 @@ public class KnownBeaconListFragment extends DaggerFragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
+            CalibratedBeacon calibratedBeacon;
+
             TextView nameText;
             TextView macAddress;
             TextView calibrationDate;
@@ -132,6 +138,10 @@ public class KnownBeaconListFragment extends DaggerFragment {
                 nameText = itemView.findViewById(R.id.beaconNmaeTextView);
                 macAddress = itemView.findViewById(R.id.macAddressTextViewOutput);
                 calibrationDate = itemView.findViewById(R.id.creationDateTextViewOutput);
+
+                itemView.findViewById(R.id.deleteTextView).setOnClickListener(view -> {
+                    onDeleteBeacon(calibratedBeacon.getDeviceId());
+                });
             }
         }
     }

@@ -1,5 +1,9 @@
 package com.bbeacon.uI.viewmodels;
 
+import android.util.Log;
+
+import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.managers.RoomManagerType;
 import com.bbeacon.managers.Storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
 
@@ -16,10 +20,12 @@ public class KnownBeaconListViewModel extends ViewModel {
     private MutableLiveData<ArrayList<CalibratedBeacon>> knownBeacons = new MutableLiveData<>(new ArrayList<CalibratedBeacon>());
 
     BeaconStorageManagerType storageManager;
+    private RoomManagerType roomManager;
 
     @Inject
-    public KnownBeaconListViewModel(BeaconStorageManagerType storageManager) {
+    public KnownBeaconListViewModel(BeaconStorageManagerType storageManager, RoomManagerType roomManager) {
         this.storageManager = storageManager;
+        this.roomManager = roomManager;
     }
 
     public LiveData<ArrayList<CalibratedBeacon>> getKnownBeacons() {
@@ -28,5 +34,14 @@ public class KnownBeaconListViewModel extends ViewModel {
 
     public void loadCalibratedBeacons(){
         knownBeacons.postValue(new ArrayList<>(storageManager.loadAllBeacons()));
+    }
+
+    public void deleteCalibratedBeacon(String deviceId){
+        try {
+            storageManager.deletebeaconById(deviceId);
+            roomManager.deleteBeaconFromRoom(deviceId);
+        } catch (CouldNotFindBeaconByIdException e) {
+            Log.e("OwnTag", "deleteCalibratedBeacon: ", e);
+        }
     }
 }

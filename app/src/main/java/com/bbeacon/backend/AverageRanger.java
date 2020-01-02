@@ -25,17 +25,21 @@ public class AverageRanger implements RangerType {
 
     @Override
     public float computeDistance(int rssi) {
-
         Log.d("OwnLog", "computeDistance RSSi: " + rssi);
+        int i = 0;
 
-        for (int i = 0; i < averagedDataSets.length; i++) {
+        for (; i < averagedDataSets.length; i++) {
             if (averagedDataSets[i] < rssi) {
                 Log.d("OwnLog", "computeDistance return: " + i);
+                if (averagedDataSets.length > i + 1)
+                    if (rssi - averagedDataSets[i] > rssi - averagedDataSets[i + 1])
+                        return i + 1;
                 return i;
             }
         }
-        return averagedDataSets.length;
+        return i;
     }
+
 
     private int[] setAverageDatas() {
         ArrayList<RawDataSet<Integer>> dataSets = beacon.getDataSets();

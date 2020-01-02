@@ -41,16 +41,16 @@ public class MainMenuFragment extends DaggerFragment {
 
     public void onStartLocatingButton() {
         Navigation.findNavController(getView())
-                .navigate(MainMenuFragmentDirections.actionMainMenuToLocation());
+                .navigate(R.id.action_mainMenu_to_location);
     }
 
     public void onShowBeaconsButton() {
         Navigation.findNavController(getView())
-                .navigate(MainMenuFragmentDirections.actionMainMenuToKnownBeaconList());
+                .navigate(R.id.action_mainMenu_to_knownBeaconList);
     }
 
     public void onConfigRoomButton() {
         Navigation.findNavController(getView())
-                .navigate(MainMenuFragmentDirections.actionMainMenuToConfigRoom());
+                .navigate(R.id.action_mainMenu_to_configRoom);
     }
 }

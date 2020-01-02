@@ -1,33 +1,30 @@
 package com.bbeacon.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CalibratedBeacon implements Beacon {
+public class CalibratedBeacon extends UncalibratedBeacon implements Serializable {
 
-    private String deviceName;
-    private String deviceId;
-    private String macAddress;
     private Date calibrationDate;
 
     private ArrayList<RawDataSet<Integer>> dataSets;
 
-    public CalibratedBeacon(String deviceName, String deviceId, String macAddress, Date calibrationDate, ArrayList<RawDataSet<Integer>> dataSets) {
-        this.deviceName = deviceName;
-        this.deviceId = deviceId;
-        this.macAddress = macAddress;
+    public CalibratedBeacon(String deviceId, String macAddress, String deviceName, int measurementCount, int calibrationSteps, Date calibrationDate, ArrayList<RawDataSet<Integer>> dataSets) {
+        super(deviceId, macAddress, deviceName, measurementCount, calibrationSteps);
         this.calibrationDate = calibrationDate;
         this.dataSets = dataSets;
     }
 
-    @Override
-    public String getMacAddress() {
-        return macAddress;
-    }
+    public CalibratedBeacon(UncalibratedBeacon uncalibratedBeacon, Date calibrationDate, ArrayList<RawDataSet<Integer>> dataSets) {
+        super(uncalibratedBeacon.getDeviceId(),
+                uncalibratedBeacon.getMacAddress(),
+                uncalibratedBeacon.getDeviceName(),
+                uncalibratedBeacon.getMeasurementCount(),
+                uncalibratedBeacon.getCalibrationSteps());
 
-    @Override
-    public String getDeviceId() {
-        return deviceId;
+        this.calibrationDate = calibrationDate;
+        this.dataSets = dataSets;
     }
 
     public Date getCalibrationDate() {
@@ -36,9 +33,5 @@ public class CalibratedBeacon implements Beacon {
 
     public ArrayList<RawDataSet<Integer>> getDataSets() {
         return dataSets;
-    }
-
-    public String getDeviceName() {
-        return deviceName;
     }
 }

@@ -1,7 +1,6 @@
 package com.bbeacon.backend;
 
-import android.util.Log;
-
+import com.bbeacon.exceptions.DataSetDoesNotFitException;
 import com.bbeacon.managers.Storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.RawDataSet;
@@ -15,6 +14,7 @@ import javax.inject.Inject;
 public class Evaluator implements EvaluatorType {
 
     private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
+    private int lastSimpleAverage = 0;
 
     private BeaconStorageManagerType storageManager;
 
@@ -24,23 +24,19 @@ public class Evaluator implements EvaluatorType {
     }
 
     @Override
-    public void insertRawDataSet(RawDataSet<Integer> dataSet) {
+    public void insertRawDataSet(RawDataSet<Integer> dataSet) throws DataSetDoesNotFitException {
+        int currentSimpleAverage = average(dataSet);
+
+        if (currentSimpleAverage > lastSimpleAverage)
+            throw new DataSetDoesNotFitException();
+
         dataSets.add(dataSet);
+        lastSimpleAverage = currentSimpleAverage;
     }
 
     @Override
     public void evaluateAndFinish(UncalibratedBeacon uncalibratedBeacon) {
-        Log.d("OwnLog", "evaluateAndFinish: That many datasets: " + dataSets.size());
-        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getDeviceId());
-        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getDeviceId());
-        Log.d("OwnLog", "evaluateAndFinish: name: " + uncalibratedBeacon.getMacAddress());
-        storageManager.storeBeacon(
-                new CalibratedBeacon(
-                        uncalibratedBeacon.getDeviceId(),
-                        uncalibratedBeacon.getDeviceId(),
-                        uncalibratedBeacon.getMacAddress(),
-                        new Date(),
-                        dataSets));
+        storageManager.storeBeacon(new CalibratedBeacon(uncalibratedBeacon, new Date(), dataSets));
     }
 
     private int average(RawDataSet<Integer> dataSet) {

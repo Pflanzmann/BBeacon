@@ -2,6 +2,7 @@ package com.bbeacon.uI.viewmodels;
 
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.util.Log;
 
 import com.bbeacon.managers.BleManagerType;
 import com.bbeacon.models.UnknownBeacon;
@@ -54,8 +55,6 @@ public class FindBeaconViewModel extends ViewModel {
 
             unknownBeacon = new UnknownBeacon(address, name);
 
-            if (beacons == null)
-                return;
             if (beacons.contains(unknownBeacon)) {
                 return;
             }
@@ -68,6 +67,7 @@ public class FindBeaconViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
 
+        Log.d("OwnLog", "onCleared: stopScanning");
         scanner.stopScanning();
     }
 }

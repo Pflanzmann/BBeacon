@@ -1,13 +1,16 @@
 package com.bbeacon.managers.Storage;
 
+import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.models.CalibratedBeacon;
 
 import java.util.List;
 
 public interface BeaconStorageManagerType {
-    public void storeBeacon(CalibratedBeacon beacon);
+    void storeBeacon(CalibratedBeacon beacon);
 
-    public List<CalibratedBeacon> loadAllBeacons();
+    List<CalibratedBeacon> loadAllBeacons();
 
-    public CalibratedBeacon loadBeaconById(String deviceId);
+    CalibratedBeacon loadBeaconById(String deviceId) throws CouldNotFindBeaconByIdException;
+
+    void deletebeaconById(String deviceId) throws CouldNotFindBeaconByIdException;
 }

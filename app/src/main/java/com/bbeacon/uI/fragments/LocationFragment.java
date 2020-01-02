@@ -14,7 +14,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.support.DaggerFragment;
 
@@ -26,7 +25,7 @@ public class LocationFragment extends DaggerFragment {
         return new LocationFragment();
     }
 
-    TextView text;
+    TextView testText;
 
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -42,26 +41,28 @@ public class LocationFragment extends DaggerFragment {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, providerFactory).get(LocationViewModel.class);
 
-        text = getView().findViewById(R.id.distanceTextView);
+        testText = getView().findViewById(R.id.testTextView);
 
-        viewModel.getCurrentXCoordinates().observe(getViewLifecycleOwner(), new Observer<Float>() {
-            @Override
-            public void onChanged(Float value) {
-                onTextChanged(String.valueOf(value));
-            }
+        viewModel.getCurrentUserPosition().observe(getViewLifecycleOwner(), userPosition -> {
+
         });
 
-        viewModel.getCurrentYCoordinates().observe(getViewLifecycleOwner(), new Observer<Float>() {
-            @Override
-            public void onChanged(Float value) {
-                onTextChanged(String.valueOf(value));
-            }
+        viewModel.getCurrentTest().observe(getViewLifecycleOwner(), text -> {
+            onTextChanged(String.valueOf(text));
         });
 
         viewModel.startLocating();
     }
 
     private void onTextChanged(String textRange) {
-        text.setText(textRange);
+        testText.setText(textRange);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        if (viewModel != null)
+            viewModel.stopLocating();
     }
 }

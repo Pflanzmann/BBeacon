@@ -2,44 +2,34 @@ package com.bbeacon.models;
 
 import java.io.Serializable;
 
-public class UncalibratedBeacon implements Beacon, Serializable {
+public class UncalibratedBeacon extends Beacon implements Serializable {
 
-    private String macAddress;
     private String deviceName;
-    private String deviceId;
-    private int meassurementCount;
+    private int measurementCount;
     private int calibrationSteps;
 
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public int getCalibrationSteps() {
-        return calibrationSteps;
-    }
-
-    public int getMeassurementCount() {
-        return meassurementCount;
-    }
-
-    public UncalibratedBeacon(String macAddress, String deviceName, String deviceId, int calibrationSteps, int meassurementCount) {
-        this.macAddress = macAddress;
+    public UncalibratedBeacon(String deviceId, String macAddress, String deviceName, int measurementCount, int calibrationSteps) {
+        super(deviceId, macAddress);
         this.deviceName = deviceName;
-        this.deviceId = deviceId;
+        this.measurementCount = measurementCount;
         this.calibrationSteps = calibrationSteps;
-        this.meassurementCount = meassurementCount;
     }
 
-
-    @Override
-    public String getMacAddress() {
-        return macAddress;
+    public UncalibratedBeacon(Beacon beacon, String deviceName, int measurementCount, int calibrationSteps) {
+        super(beacon.getDeviceId(), beacon.getMacAddress());
+        this.deviceName = deviceName;
+        this.measurementCount = measurementCount;
+        this.calibrationSteps = calibrationSteps;
     }
-
 
     public String getDeviceName() {
         return deviceName;
     }
 
+    public int getCalibrationSteps() { return calibrationSteps; }
+
+    public int getMeasurementCount() {
+        return measurementCount;
+    }
 
 }

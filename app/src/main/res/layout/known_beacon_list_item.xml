@@ -15,6 +15,7 @@
         android:layout_weight="1" />
 
     <LinearLayout
+        android:id="@+id/informationLayout"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -82,12 +83,13 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/deleteTextView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="#00686868"
         android:gravity="center|center_horizontal"
-        android:text="@string/knownBeaconListItem_Select"
-        android:textColor="#2AD61B" />
+        android:text="@string/knownBeaconListItem_Delete"
+        android:textColor="#FF0000" />
 
     <Space
         android:layout_width="10dp"

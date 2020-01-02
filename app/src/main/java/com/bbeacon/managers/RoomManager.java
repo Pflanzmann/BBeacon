@@ -1,9 +1,12 @@
 package com.bbeacon.managers;
 
+import android.util.Log;
+
+import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.PositionIndexOutOfBound;
 import com.bbeacon.managers.Storage.BeaconStorageManagerType;
 import com.bbeacon.managers.Storage.RoomStorageManagerType;
-import com.bbeacon.models.BeaconPosition;
-import com.bbeacon.models.CalibratedBeacon;
+import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
 
 import javax.inject.Inject;
@@ -30,11 +33,19 @@ public class RoomManager implements RoomManagerType {
     }
 
     @Override
-    public void setPositionOn(int index, BeaconPosition position) {
-        if (room.getBeaconPositions().length <= index || index < 0)
-            return;
+    public void setPositionOn(int index, PositionedBeacon position) throws PositionIndexOutOfBound {
+        if (index >= room.getBeaconPositions().length || index < 0)
+            throw new PositionIndexOutOfBound();
 
-        BeaconPosition[] positions = room.getBeaconPositions();
+        Log.d("OwnLog", "setPositionOn: start");
+
+        PositionedBeacon[] positions = room.getBeaconPositions();
+
+        for (int i = 0; i < positions.length; i++) {
+            if (positions[i] != null && positions[i].getMacAddress().equals(position.getMacAddress()))
+                positions[i] = null;
+        }
+
         positions[index] = position;
         room = new Room(positions);
 
@@ -42,13 +53,29 @@ public class RoomManager implements RoomManagerType {
     }
 
     @Override
-    public CalibratedBeacon getBeaconByPositionIndexOrNull(int index) {
+    public PositionedBeacon getBeaconByIndex(int index) throws CouldNotFindBeaconByIdException {
         if (room.getBeaconPositions().length <= index || index < 0)
-            return null;
+            throw new IndexOutOfBoundsException();
 
-        BeaconPosition[] positions = room.getBeaconPositions();
+        PositionedBeacon[] positions = room.getBeaconPositions();
 
-        return beaconStorageManager.loadBeaconById(positions[index].getDeviceId());
+        if (positions[index] == null)
+            throw new CouldNotFindBeaconByIdException();
+
+        return positions[index];
+    }
+
+    @Override
+    public void deleteBeaconFromRoom(String deviceId) throws CouldNotFindBeaconByIdException {
+        PositionedBeacon[] positions = room.getBeaconPositions();
+
+        for (int i = 0; i < positions.length; i++) {
+            if (positions[i] != null && positions[i].getDeviceId().equals(deviceId))
+                positions[i] = null;
+        }
+
+        room = new Room(positions);
+        storeRoom();
     }
 
     private void storeRoom() {

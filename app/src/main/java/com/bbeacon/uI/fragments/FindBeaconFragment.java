@@ -84,20 +84,17 @@ public class FindBeaconFragment extends DaggerFragment {
             else
                 holder.nameText.setText(beacons.get(position).getDeviceName());
 
-            holder.macAddress.setText(beacons.get(position).getMacAddress());
+            holder.macAddressText.setText(beacons.get(position).getMacAddress());
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewModel.stopBluetoothScan();
+            holder.itemView.setOnClickListener(view -> {
+                viewModel.stopBluetoothScan();
 
-                    Navigation.findNavController(getView())
-                            .navigate(FindBeaconFragmentDirections.actionFindBeaconToDefineBeacon(
-                                    new UnknownBeacon(
-                                            holder.macAddress.getText().toString(),
-                                            holder.nameText.getText().toString())
-                            ));
-                }
+                Navigation.findNavController(getView())
+                        .navigate(FindBeaconFragmentDirections.actionFindBeaconToDefineBeacon(
+                                new UnknownBeacon(
+                                        holder.macAddressText.getText().toString(),
+                                        holder.nameText.getText().toString())
+                        ));
             });
         }
 
@@ -108,14 +105,22 @@ public class FindBeaconFragment extends DaggerFragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView nameText;
-            TextView macAddress;
+            TextView macAddressText;
 
             private ViewHolder(@NonNull View itemView) {
                 super(itemView);
 
                 nameText = itemView.findViewById(R.id.beaconNmaeTextView);
-                macAddress = itemView.findViewById(R.id.macAddressTagTextView);
+                macAddressText = itemView.findViewById(R.id.macAddressTagTextView);
             }
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        if (viewModel != null)
+            viewModel.stopBluetoothScan();
     }
 }

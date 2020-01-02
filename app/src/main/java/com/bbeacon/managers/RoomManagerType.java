@@ -1,14 +1,17 @@
 package com.bbeacon.managers;
 
-import com.bbeacon.models.BeaconPosition;
-import com.bbeacon.models.CalibratedBeacon;
+import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.PositionIndexOutOfBound;
+import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
 
 public interface RoomManagerType {
 
     Room getRoom();
 
-    void setPositionOn(int index, BeaconPosition position);
+    void setPositionOn(int index, PositionedBeacon position) throws PositionIndexOutOfBound;
 
-    CalibratedBeacon getBeaconByPositionIndexOrNull(int index);
+    PositionedBeacon getBeaconByIndex(int index) throws CouldNotFindBeaconByIdException;
+
+    void deleteBeaconFromRoom(String deviceId) throws CouldNotFindBeaconByIdException;
 }

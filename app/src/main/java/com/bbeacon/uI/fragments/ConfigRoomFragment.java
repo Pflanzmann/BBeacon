@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.bbeacon.R;
 import com.bbeacon.dagger2_injection.setup.ViewModelProviderFactory;
-import com.bbeacon.models.BeaconPosition;
+import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
 import com.bbeacon.uI.viewmodels.ConfigRoomViewModel;
 
@@ -16,7 +16,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import dagger.android.support.DaggerFragment;
@@ -38,10 +37,6 @@ public class ConfigRoomFragment extends DaggerFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        if (getArguments() != null) {
-            args = ConfigRoomFragmentArgs.fromBundle(getArguments());
-        }
-
         return inflater.inflate(R.layout.config_room_fragment, container, false);
     }
 
@@ -50,13 +45,14 @@ public class ConfigRoomFragment extends DaggerFragment {
         super.onActivityCreated(savedInstanceState);
         viewModel = ViewModelProviders.of(this, providerFactory).get(ConfigRoomViewModel.class);
 
-        viewModel.setBeaconOn(args.getBeaconToSelect(), args.getSelectedBeaconId());
+        if (getArguments() != null) {
+            args = ConfigRoomFragmentArgs.fromBundle(getArguments());
 
-        viewModel.getCurrentRoom().observe(getViewLifecycleOwner(), new Observer<Room>() {
-            @Override
-            public void onChanged(Room room) {
-                assignRoomToUI(room);
-            }
+            viewModel.setBeaconOn(args.getBeaconToSelect(), args.getBeaconObject());
+        }
+
+        viewModel.getCurrentRoom().observe(getViewLifecycleOwner(), room -> {
+            assignRoomToUI(room);
         });
 
         beacon0TextView = getView().findViewById(R.id.selectedBeacon0TextView);
@@ -78,7 +74,7 @@ public class ConfigRoomFragment extends DaggerFragment {
     }
 
     public void assignRoomToUI(Room room) {
-        BeaconPosition[] positions = room.getBeaconPositions();
+        PositionedBeacon[] positions = room.getBeaconPositions();
 
         for (int i = 0; i < positions.length; i++) {
 

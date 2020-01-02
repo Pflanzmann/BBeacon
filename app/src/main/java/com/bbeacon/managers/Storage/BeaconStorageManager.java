@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.models.CalibratedBeacon;
 import com.google.gson.Gson;
 
@@ -48,7 +49,8 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
             }
         } else {
             container = new BeaconsContainer(new HashMap<>());
-            Log.d("OwnLog", "storeBeacon: new ocntainer");
+            container.beacons.put(beacon.getDeviceId(), beacon);
+            Log.d("OwnLog", "storeBeacon: new ocntainer and put");
         }
 
         prefs.edit().putString(BEACONS_KEY, gson.toJson(container, BeaconsContainer.class)).apply();
@@ -72,7 +74,7 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
     }
 
     @Override
-    public CalibratedBeacon loadBeaconById(String deviceId) {
+    public CalibratedBeacon loadBeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
 
         Gson gson = new Gson();
@@ -85,8 +87,7 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
             return beacons.get(deviceId);
         }
 
-        return null;
-
+        throw new CouldNotFindBeaconByIdException();
     }
 
     private class BeaconsContainer {
@@ -95,5 +96,24 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
         private BeaconsContainer(Map<String, CalibratedBeacon> beacons) {
             this.beacons = beacons;
         }
+    }
+
+    @Override
+    public void deletebeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+
+        Gson gson = new Gson();
+
+        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
+        if (container != null && container.beacons != null && container.beacons.containsKey(deviceId)) {
+
+            container.beacons.remove(deviceId);
+
+            prefs.edit().putString(BEACONS_KEY, gson.toJson(container, BeaconsContainer.class)).apply();
+            return;
+        }
+
+        throw new CouldNotFindBeaconByIdException();
+
     }
 }

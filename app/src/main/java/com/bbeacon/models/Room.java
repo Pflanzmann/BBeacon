@@ -1,18 +1,20 @@
 package com.bbeacon.models;
 
-public class Room {
+import java.io.Serializable;
 
-    private BeaconPosition[] beaconPositions;
+public class Room implements Serializable {
 
-    public Room(BeaconPosition[] beaconPositions) {
+    private PositionedBeacon[] beaconPositions;
+
+    public Room(PositionedBeacon[] beaconPositions) {
         this.beaconPositions = beaconPositions;
     }
 
     public Room(int size) {
-        this.beaconPositions = new BeaconPosition[size];
+        this.beaconPositions = new PositionedBeacon[size];
     }
 
-    public BeaconPosition[] getBeaconPositions() {
+    public PositionedBeacon[] getBeaconPositions() {
         return beaconPositions;
     }
 }
