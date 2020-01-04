@@ -20,10 +20,10 @@ import io.reactivex.rxjava3.core.Observable;
 @Singleton
 public class BleManager implements BleManagerType {
 
-    BluetoothAdapter bluetoothAdapter;
-    BluetoothLeScanner scanner;
+    private BluetoothAdapter bluetoothAdapter;
+    private BluetoothLeScanner scanner;
 
-    ScanCallback scanCallback;
+    private ScanCallback scanCallback;
 
     @Inject
     public BleManager(BluetoothAdapter bluetoothAdapter) {
@@ -72,7 +72,7 @@ public class BleManager implements BleManagerType {
 
     @Override
     public void stopScanning() {
-        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled() && scanCallback != null) {
             scanner.stopScan(scanCallback);
             Log.d("OwnLog", "bleScan stop");
         }

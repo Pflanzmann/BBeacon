@@ -3,9 +3,10 @@ package com.bbeacon.managers;
 import android.util.Log;
 
 import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.NoRoomFoundException;
 import com.bbeacon.exceptions.PositionIndexOutOfBound;
 import com.bbeacon.managers.Storage.BeaconStorageManagerType;
-import com.bbeacon.managers.Storage.RoomStorageManagerType;
+import com.bbeacon.managers.Storage.SingleRoomStorageManagerType;
 import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
 
@@ -16,15 +17,19 @@ import javax.inject.Singleton;
 public class RoomManager implements RoomManagerType {
 
     private Room room;
-    private RoomStorageManagerType roomStorageManager;
+    private SingleRoomStorageManagerType roomStorageManager;
     private BeaconStorageManagerType beaconStorageManager;
 
     @Inject
-    public RoomManager(RoomStorageManagerType roomStorageManager, BeaconStorageManagerType beaconStorageManager) {
+    public RoomManager(SingleRoomStorageManagerType roomStorageManager, BeaconStorageManagerType beaconStorageManager) {
         this.roomStorageManager = roomStorageManager;
         this.beaconStorageManager = beaconStorageManager;
 
-        room = roomStorageManager.loadRoom();
+        try {
+            room = roomStorageManager.loadRoom();
+        } catch (NoRoomFoundException e) {
+            room = new Room(4);
+        }
     }
 
     @Override

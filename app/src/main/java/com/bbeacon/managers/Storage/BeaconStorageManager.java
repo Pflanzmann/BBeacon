@@ -1,16 +1,14 @@
 package com.bbeacon.managers.Storage;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.NothingToLoadException;
 import com.bbeacon.models.CalibratedBeacon;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -19,100 +17,76 @@ import javax.inject.Singleton;
 @Singleton
 public class BeaconStorageManager implements BeaconStorageManagerType {
 
-    private final String PREFS_KEY = "bbeacon";
-    private final String DEFAULT_VALUE = "";
-
-    private final String BEACONS_KEY = "beacons";
-
-    Context context;
+    StorageLocker storageLocker;
 
     @Inject
-    public BeaconStorageManager(Context context) {
-        this.context = context;
+    public BeaconStorageManager(StorageLocker storageLocker) {
+        this.storageLocker = storageLocker;
     }
 
     @Override
     public void storeBeacon(CalibratedBeacon beacon) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-
         Gson gson = new Gson();
+        String jsonString;
 
-        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
+        Map<String, CalibratedBeacon> beacons = loadAllBeacons();
+        beacons.put(beacon.getDeviceId(), beacon);
+        jsonString = gson.toJson(beacons);
 
-        if (container != null && container.beacons != null) {
-            if (!container.beacons.containsKey(beacon.getDeviceId())) {
-                container.beacons.put(beacon.getDeviceId(), beacon);
-                Log.d("OwnLog", "storeBeacon: put");
-            } else {
-                container.beacons.replace(beacon.getDeviceId(), beacon);
-                Log.d("OwnLog", "storeBeacon: replace");
-            }
-        } else {
-            container = new BeaconsContainer(new HashMap<>());
-            container.beacons.put(beacon.getDeviceId(), beacon);
-            Log.d("OwnLog", "storeBeacon: new ocntainer and put");
-        }
-
-        prefs.edit().putString(BEACONS_KEY, gson.toJson(container, BeaconsContainer.class)).apply();
+        storageLocker.store(jsonString, StorageLocker.StorageKey.BEACON);
     }
 
     @Override
-    public List<CalibratedBeacon> loadAllBeacons() {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+    public HashMap<String, CalibratedBeacon> loadAllBeacons() {
+        Type type = new TypeToken<HashMap<String, CalibratedBeacon>>() {
+        }.getType();
 
         Gson gson = new Gson();
+        String jsonString;
 
-        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
-
-        if (container != null && container.beacons != null) {
-            Map<String, CalibratedBeacon> beacons = container.beacons;
-            return new ArrayList<>(beacons.values());
+        try {
+            jsonString = storageLocker.load(StorageLocker.StorageKey.BEACON);
+        } catch (NothingToLoadException nothingToLoad) {
+            return new HashMap<>();
         }
 
-        return new ArrayList<>();
+        HashMap<String, CalibratedBeacon> beacons = gson.fromJson(jsonString, type);
 
+        return beacons;
     }
 
     @Override
     public CalibratedBeacon loadBeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        Type type = new TypeToken<HashMap<String, CalibratedBeacon>>() {
+        }.getType();
 
         Gson gson = new Gson();
+        String jsonString;
 
-        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
+        Map<String, CalibratedBeacon> beacons = loadAllBeacons();
 
-        if (container != null && container.beacons != null) {
-            Map<String, CalibratedBeacon> beacons = container.beacons;
+        if (!beacons.containsKey(deviceId))
+            throw new CouldNotFindBeaconByIdException();
 
-            return beacons.get(deviceId);
-        }
-
-        throw new CouldNotFindBeaconByIdException();
+        return beacons.get(deviceId);
     }
 
     @Override
-    public void deletebeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+    public void deleteBeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
+        Type type = new TypeToken<HashMap<String, CalibratedBeacon>>() {
+        }.getType();
 
         Gson gson = new Gson();
+        String jsonString;
 
-        BeaconsContainer container = gson.fromJson(prefs.getString(BEACONS_KEY, DEFAULT_VALUE), BeaconsContainer.class);
-        if (container != null && container.beacons != null && container.beacons.containsKey(deviceId)) {
+        HashMap<String, CalibratedBeacon> beacons = loadAllBeacons();
 
-            container.beacons.remove(deviceId);
+        if (!beacons.containsKey(deviceId))
+            throw new CouldNotFindBeaconByIdException();
 
-            prefs.edit().putString(BEACONS_KEY, gson.toJson(container, BeaconsContainer.class)).apply();
-            return;
-        }
+        beacons.remove(deviceId);
+        jsonString = gson.toJson(beacons);
 
-        throw new CouldNotFindBeaconByIdException();
-    }
-
-    private class BeaconsContainer {
-        private Map<String, CalibratedBeacon> beacons;
-
-        private BeaconsContainer(Map<String, CalibratedBeacon> beacons) {
-            this.beacons = beacons;
-        }
+        storageLocker.store(jsonString, StorageLocker.StorageKey.BEACON);
     }
 }
