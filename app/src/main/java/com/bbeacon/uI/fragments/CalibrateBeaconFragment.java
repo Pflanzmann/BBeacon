@@ -72,7 +72,7 @@ public class CalibrateBeaconFragment extends DaggerFragment {
             stepText.setText(integer + " Meter");
         });
 
-        viewModel.getLatestError().observe(getViewLifecycleOwner(), text -> {
+        viewModel.getLatestErrorMessage().observe(getViewLifecycleOwner(), text -> {
             errorText.setText(text);
         });
     }

@@ -13,5 +13,5 @@ public interface RoomManagerType {
 
     PositionedBeacon getBeaconByIndex(int index) throws CouldNotFindBeaconByIdException;
 
-    void deleteBeaconFromRoom(String deviceId) throws CouldNotFindBeaconByIdException;
+    void removeBeaconFromRoomById(String deviceId);
 }

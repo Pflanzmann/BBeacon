@@ -32,16 +32,17 @@ public class KnownBeaconListViewModel extends ViewModel {
         return knownBeacons;
     }
 
-    public void loadCalibratedBeacons(){
+    public void loadCalibratedBeacons() {
         knownBeacons.postValue(new ArrayList<>(storageManager.loadAllBeacons().values()));
     }
 
-    public void deleteCalibratedBeacon(String deviceId){
+    public void deleteCalibratedBeacon(String deviceId) {
         try {
             storageManager.deleteBeaconById(deviceId);
-            roomManager.deleteBeaconFromRoom(deviceId);
         } catch (CouldNotFindBeaconByIdException e) {
             Log.e("OwnTag", "deleteCalibratedBeacon: ", e);
         }
+
+        roomManager.removeBeaconFromRoomById(deviceId);
     }
 }

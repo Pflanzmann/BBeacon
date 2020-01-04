@@ -5,7 +5,6 @@ import android.util.Log;
 import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.exceptions.NoRoomFoundException;
 import com.bbeacon.exceptions.PositionIndexOutOfBound;
-import com.bbeacon.managers.Storage.BeaconStorageManagerType;
 import com.bbeacon.managers.Storage.SingleRoomStorageManagerType;
 import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
@@ -18,12 +17,10 @@ public class RoomManager implements RoomManagerType {
 
     private Room room;
     private SingleRoomStorageManagerType roomStorageManager;
-    private BeaconStorageManagerType beaconStorageManager;
 
     @Inject
-    public RoomManager(SingleRoomStorageManagerType roomStorageManager, BeaconStorageManagerType beaconStorageManager) {
+    public RoomManager(SingleRoomStorageManagerType roomStorageManager) {
         this.roomStorageManager = roomStorageManager;
-        this.beaconStorageManager = beaconStorageManager;
 
         try {
             room = roomStorageManager.loadRoom();
@@ -71,7 +68,7 @@ public class RoomManager implements RoomManagerType {
     }
 
     @Override
-    public void deleteBeaconFromRoom(String deviceId) throws CouldNotFindBeaconByIdException {
+    public void removeBeaconFromRoomById(String deviceId) {
         PositionedBeacon[] positions = room.getBeaconPositions();
 
         for (int i = 0; i < positions.length; i++) {

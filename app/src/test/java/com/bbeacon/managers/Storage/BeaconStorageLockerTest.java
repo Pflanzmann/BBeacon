@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-class BeaconStorageLockerTest {
+class BeaconStorageManagerTest {
 
     private StorageLocker mockStorageLocker;
     private BeaconStorageManager beaconStorageManager;
