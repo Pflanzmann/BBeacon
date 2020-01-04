@@ -1,13 +1,7 @@
 package com.bbeacon.managers;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
-import android.os.Handler;
-import android.util.Log;
+import com.bbeacon.exceptions.ScanFilterInvalidException;
+import com.bbeacon.models.BleScanResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,65 +10,39 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 @Singleton
 public class BleManager implements BleManagerType {
 
-    private BluetoothAdapter bluetoothAdapter;
-    private BluetoothLeScanner scanner;
+    private BluetoothFinderType bluetoothFinder;
 
-    private ScanCallback scanCallback;
+    private PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
 
     @Inject
-    public BleManager(BluetoothAdapter bluetoothAdapter) {
-        this.bluetoothAdapter = bluetoothAdapter;
-
-        scanner = bluetoothAdapter.getBluetoothLeScanner();
+    public BleManager(BluetoothFinderType bluetoothFinder) {
+        this.bluetoothFinder = bluetoothFinder;
     }
 
-    public Observable<List<ScanResult>> getScanningObservable(ArrayList<ScanFilter> filters) {
-        return Observable.create(emitter -> {
+    public Observable<List<BleScanResult>> getScanningObservable(ArrayList<String> macAddressFilter) throws ScanFilterInvalidException {
 
-            scanCallback = new ScanCallback() {
-                @Override
-                public void onBatchScanResults(List<ScanResult> results) {
-                    if (results.size() != 0) {
-                        emitter.onNext(results);
-                    }
-                }
-            };
-
-            if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-                Handler mHandler = new Handler();
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        scanner.stopScan(scanCallback);
-                        scanner.flushPendingScanResults(scanCallback);
-                        ScanSettings settings = new ScanSettings.Builder()
-                                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                                .setReportDelay(1l)
-                                .build();
-
-                        Log.d("OwnLog", "BleScan Start " );
-                        scanner.flushPendingScanResults(scanCallback);
-                        scanner.startScan(filters, settings, scanCallback);
-
-                    }
-                }, 0);
-                try {
-                } catch (Exception e) {
-                    Log.d("OwnLog", "leScan failure: \n" + e);
-                }
+        bluetoothFinder.StartFinding(macAddressFilter, new BluetoothCallback() {
+            @Override
+            public void onNewScanResults(List<BleScanResult> results) {
+                publisher.onNext(results);
             }
         });
+
+        return publisher;
     }
 
     @Override
     public void stopScanning() {
-        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled() && scanCallback != null) {
-            scanner.stopScan(scanCallback);
-            Log.d("OwnLog", "bleScan stop");
+        bluetoothFinder.stopScanning();
+    }
+
+    abstract class BluetoothCallback {
+        public void onNewScanResults(List<BleScanResult> results) {
         }
     }
 }

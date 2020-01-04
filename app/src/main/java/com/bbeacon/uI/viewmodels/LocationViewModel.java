@@ -1,13 +1,12 @@
 package com.bbeacon.uI.viewmodels;
 
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-
 import com.bbeacon.backend.AverageRanger;
 import com.bbeacon.backend.CalculatorType;
 import com.bbeacon.backend.RangerType;
+import com.bbeacon.exceptions.ScanFilterInvalidException;
 import com.bbeacon.managers.BleManagerType;
 import com.bbeacon.managers.RoomManagerType;
+import com.bbeacon.models.BleScanResult;
 import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.RangedBeaconPosition;
@@ -51,7 +50,7 @@ public class LocationViewModel extends ViewModel {
     }
 
     public void startLocating() {
-        final ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
+        final ArrayList<String> filters = new ArrayList<>();
 
         PositionedBeacon[] positionedBeacon = roomManager.getRoom().getBeaconPositions();
 
@@ -62,15 +61,19 @@ public class LocationViewModel extends ViewModel {
 
             rangers.put(roomManager.getRoom().getBeaconPositions()[i].getMacAddress(), new AverageRanger(positionedBeacon[i]));
 
-            filters.add(new ScanFilter.Builder().setDeviceAddress(positionedBeacon[i].getMacAddress()).build());
+            filters.add(positionedBeacon[i].getMacAddress());
         }
 
-        bleManager.getScanningObservable(filters)
-                .subscribe(lists -> onNewResult(lists));
+        try {
+            bleManager.getScanningObservable(filters)
+                    .subscribe(lists -> onNewResult(lists));
+        } catch (ScanFilterInvalidException e) {
+            //TODO: DO SOMETHING ABOUT THE ERROR
+        }
 
     }
 
-    private void onNewResult(List<ScanResult> results) {
+    private void onNewResult(List<BleScanResult> results) {
         if (results.size() < 3)
             return;
 
@@ -78,7 +81,7 @@ public class LocationViewModel extends ViewModel {
 
         for (int i = 0; i < results.size(); i++) {
 
-            RangerType ranger = rangers.get(results.get(i).getDevice().getAddress());
+            RangerType ranger = rangers.get(results.get(i).getMacAddress());
 
             try {
                 PositionedBeacon position = roomManager.getBeaconByIndex(i);
@@ -105,26 +108,28 @@ public class LocationViewModel extends ViewModel {
     }
 
     public void startTestRanging() {
-        final ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
+        final ArrayList<String> filters = new ArrayList<>();
 
         try {
             CalibratedBeacon beacon = roomManager.getBeaconByIndex(0);
 
             rangers.put(beacon.getMacAddress(), new AverageRanger(beacon));
 
-            filters.add(new ScanFilter.Builder().setDeviceAddress(beacon.getMacAddress()).build());
+            filters.add(beacon.getMacAddress());
+
+            bleManager.getScanningObservable(filters)
+                    .subscribe(lists -> onNewResultTest(lists));
 
         } catch (Exception e) {
+            //TODO: DO SOMETHING ABOUT THE ERROR´s
             e.printStackTrace();
         }
-        bleManager.getScanningObservable(filters)
-                .subscribe(lists -> onNewResultTest(lists));
     }
 
-    private void onNewResultTest(List<ScanResult> results) {
+    private void onNewResultTest(List<BleScanResult> results) {
         int rssi = results.get(0).getRssi();
 
-        RangerType ranger = rangers.get(results.get(0).getDevice().getAddress());
+        RangerType ranger = rangers.get(results.get(0).getMacAddress());
 
         if (ranger != null)
             currentTest.postValue("Distance: " + ranger.computeDistance(rssi) + " RSSI: " + rssi);

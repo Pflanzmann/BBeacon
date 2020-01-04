@@ -1,12 +1,12 @@
 package com.bbeacon.uI.viewmodels;
 
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
 import android.util.Log;
 
 import com.bbeacon.backend.EvaluatorType;
 import com.bbeacon.exceptions.DataSetDoesNotFitException;
+import com.bbeacon.exceptions.ScanFilterInvalidException;
 import com.bbeacon.managers.BleManagerType;
+import com.bbeacon.models.BleScanResult;
 import com.bbeacon.models.RawDataSet;
 import com.bbeacon.models.UncalibratedBeacon;
 
@@ -26,17 +26,16 @@ public class CalibrateBeaconViewModel extends ViewModel {
     private MutableLiveData<CalibrationState> currentState = new MutableLiveData<>(CalibrationState.IDLE);
     private MutableLiveData<Integer> currentProgress = new MutableLiveData<>(0);
     private MutableLiveData<Integer> currentStep = new MutableLiveData<>(0);
-
     private MutableLiveData<String> latestErrorMessage = new MutableLiveData<>("");
 
-    private BleManagerType scanner;
+    private BleManagerType bleManager;
     private EvaluatorType evaluator;
 
     private Disposable disposable;
 
     @Inject
-    public CalibrateBeaconViewModel(BleManagerType scanner, EvaluatorType evaluator) {
-        this.scanner = scanner;
+    public CalibrateBeaconViewModel(BleManagerType bleManager, EvaluatorType evaluator) {
+        this.bleManager = bleManager;
         this.evaluator = evaluator;
     }
 
@@ -44,7 +43,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
         return currentState;
     }
 
-    public MutableLiveData<Integer> getCurrentProgress() {
+    public LiveData<Integer> getCurrentProgress() {
         return currentProgress;
     }
 
@@ -56,85 +55,87 @@ public class CalibrateBeaconViewModel extends ViewModel {
         return latestErrorMessage;
     }
 
+    int currentProgessCache = 0;
+
     public void calibrate(UncalibratedBeacon uncalibratedBeacon) {
-        if (currentState.getValue() != CalibrationState.IDLE && currentState.getValue() != CalibrationState.READY)
-            return;
-
-        Log.d("OwnLog", "calibration started");
-        currentProgress.postValue(0);
-        latestErrorMessage.postValue("");
-        currentState.postValue(CalibrationState.CALIBRATION);
-
-        //Filter setup for the scanner
-        final ArrayList<ScanFilter> filters = new ArrayList<ScanFilter>();
-        ScanFilter scanFilter;
-        try {
-            scanFilter = new ScanFilter.Builder().setDeviceAddress(uncalibratedBeacon.getMacAddress()).build();
-        } catch (Exception e) {
-            Log.d("OwnLog", "calibrate: ScanFilter is invalid");
-            latestErrorMessage.postValue("ScanFilter is invalid");
-            currentState.postValue(CalibrationState.ERROR);
+        if (currentState.getValue() != CalibrationState.IDLE && currentState.getValue() != CalibrationState.READY_FOR_NEXT) {
+            latestErrorMessage.postValue("Calibration is already going");
             return;
         }
 
-        filters.add(new ScanFilter.Builder().setDeviceAddress(uncalibratedBeacon.getMacAddress()).build());
+        Log.d("OwnLog", "calibration started");
+        currentProgessCache = 0;
+        currentProgress.postValue(currentProgessCache);
+        latestErrorMessage.postValue("");
+        currentState.postValue(CalibrationState.CALIBRATION);
 
-        disposable = scanner.getScanningObservable(filters)
-                .doOnNext(lists -> currentProgress.postValue(currentProgress.getValue() + 1))
-                .timeout(15, TimeUnit.SECONDS, observer -> {
-                    Log.d("OwnLog", "Timeout: calibration disposed");
-                    latestErrorMessage.postValue("Timeout - could not find the beacon.");
-                    currentState.postValue(CalibrationState.ERROR);
-                    disposable.dispose();
-                })
-                .buffer(uncalibratedBeacon.getMeasurementCount())
-                .subscribe(lists -> {
-                    scanner.stopScanning();
-
-                    ArrayList<Integer> tempMeasurements = new ArrayList<>();
-
-                    for (List<ScanResult> results : lists)
-                        for (ScanResult result : results)
-                            tempMeasurements.add(result.getRssi());
+        ArrayList<String> filterString = new ArrayList<>();
+        filterString.add(uncalibratedBeacon.getMacAddress());
 
 
-                    if (tempMeasurements.size() != uncalibratedBeacon.getMeasurementCount()) {
-                        Log.d("OwnLog", "calibration disposed");
+        try {
+
+            disposable = bleManager.getScanningObservable(filterString)
+                    .doOnEach(lists -> currentProgress.postValue(++currentProgessCache))
+                    .timeout(15, TimeUnit.SECONDS, observer -> {
+                        Log.d("OwnLog", "Timeout: calibration disposed");
+                        latestErrorMessage.postValue("Timeout - could not find the beacon.");
                         currentState.postValue(CalibrationState.ERROR);
                         disposable.dispose();
-                        return;
-                    }
+                    })
+                    .buffer(uncalibratedBeacon.getMeasurementCount())
+                    .subscribe(lists -> {
+                        bleManager.stopScanning();
 
-                    try {
-                        evaluator.insertRawDataSet(new RawDataSet<Integer>(currentStep.getValue(), tempMeasurements.toArray(new Integer[uncalibratedBeacon.getMeasurementCount()])));
-                    } catch (DataSetDoesNotFitException e) {
-                        Log.d("OwnLog", "Invalid DataSet");
-                        latestErrorMessage.postValue("DataSet is invalid and does not fit.");
-                        currentState.postValue(CalibrationState.ERROR);
-                        disposable.dispose();
-                        return;
-                    }
+                        ArrayList<Integer> tempMeasurements = new ArrayList<>();
 
-                    if (currentStep.getValue() == uncalibratedBeacon.getCalibrationSteps() - 1) {
-                        evaluator.evaluateAndFinish(uncalibratedBeacon);
-                        currentState.postValue(CalibrationState.DONE);
-                    } else {
-                        currentStep.postValue(currentStep.getValue() + 1);
-                        currentState.postValue(CalibrationState.READY);
-                        disposable.dispose();
-                    }
-                });
+                        for (List<BleScanResult> results : lists) {
+                            for (BleScanResult result : results) {
+                                tempMeasurements.add(result.getRssi());
+                            }
+                        }
+
+                        if (tempMeasurements.size() != uncalibratedBeacon.getMeasurementCount()) {
+                            Log.d("OwnLog", "calibration disposed: wrong measurements-count");
+                            currentState.postValue(CalibrationState.ERROR);
+                            disposable.dispose();
+                            return;
+                        }
+
+                        try {
+                            evaluator.insertRawDataSet(new RawDataSet<Integer>(currentStep.getValue(), tempMeasurements.toArray(new Integer[uncalibratedBeacon.getMeasurementCount()])));
+                        } catch (DataSetDoesNotFitException e) {
+                            Log.d("OwnLog", "Invalid DataSet");
+                            latestErrorMessage.postValue(e.getMessage());
+                            currentState.postValue(CalibrationState.ERROR);
+                            disposable.dispose();
+                            return;
+                        }
+
+                        if (currentStep.getValue() == uncalibratedBeacon.getCalibrationSteps() - 1) {
+                            evaluator.evaluateAndFinish(uncalibratedBeacon);
+                            currentState.postValue(CalibrationState.DONE);
+                        } else {
+                            currentStep.postValue(currentStep.getValue() + 1);
+                            currentState.postValue(CalibrationState.READY_FOR_NEXT);
+                            disposable.dispose();
+                        }
+                    });
+        } catch (ScanFilterInvalidException e) {
+            currentState.postValue(CalibrationState.ERROR);
+            latestErrorMessage.postValue("MacAddress is invalid");
+        }
     }
 
     public void stopScanning() {
         if (disposable != null)
             disposable.dispose();
 
-        scanner.stopScanning();
+        bleManager.stopScanning();
     }
 
     public void quitError() {
-        scanner.stopScanning();
+        bleManager.stopScanning();
 
         if (disposable != null)
             disposable.dispose();
@@ -146,7 +147,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
         IDLE,
         ERROR,
         CALIBRATION,
-        READY,
+        READY_FOR_NEXT,
         DONE
     }
 }

@@ -1,10 +1,11 @@
 package com.bbeacon;
 
-import android.bluetooth.le.ScanFilter;
-import android.net.MacAddress;
 import android.os.Build;
 
+import com.bbeacon.backend.EvaluatorType;
+import com.bbeacon.managers.BleManagerType;
 import com.bbeacon.models.UncalibratedBeacon;
+import com.bbeacon.uI.viewmodels.CalibrateBeaconViewModel;
 
 import androidx.annotation.RequiresApi;
 
@@ -19,10 +20,16 @@ public class TestMain {
                 42,
                 42);
 
+        CalibrateBeaconViewModel calibrateBeaconViewModel;
+        BleManagerType mockBleManager = null;
+        EvaluatorType mockEvaluator = null;
 
-        ScanFilter scanFilter = new ScanFilter.Builder().setDeviceAddress("01:02:03:AB:CD:EF").build();
+        calibrateBeaconViewModel = new CalibrateBeaconViewModel(mockBleManager, mockEvaluator);
 
-        System.out.println(MacAddress.fromString("01:02:03:AB:CD:EF"));
+
+        calibrateBeaconViewModel.getCurrentState().observe(null, calibrationState -> {
+        });
+
     }
 
 }

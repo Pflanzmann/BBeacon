@@ -1,10 +1,10 @@
 package com.bbeacon.uI.viewmodels;
 
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
 import android.util.Log;
 
+import com.bbeacon.exceptions.ScanFilterInvalidException;
 import com.bbeacon.managers.BleManagerType;
+import com.bbeacon.models.BleScanResult;
 import com.bbeacon.models.UnknownBeacon;
 
 import java.util.ArrayList;
@@ -32,21 +32,25 @@ public class FindBeaconViewModel extends ViewModel {
     }
 
     public void findBluetoothDevices() {
-        scanner.getScanningObservable(new ArrayList<ScanFilter>()).subscribe(scanResults -> addToList(scanResults));
+        try {
+            scanner.getScanningObservable(new ArrayList<>()).subscribe(scanResults -> addToList(scanResults));
+        } catch (ScanFilterInvalidException e) {
+            //TODO: DO SOMETHING ABOUT THE ERROR
+        }
     }
 
     public void stopBluetoothScan() {
         scanner.stopScanning();
     }
 
-    private void addToList(List<ScanResult> results) {
+    private void addToList(List<BleScanResult> results) {
 
         UnknownBeacon unknownBeacon;
         ArrayList<UnknownBeacon> beacons = foundBLEDevices.getValue();
 
-        for (ScanResult result : results) {
-            String address = result.getDevice().getAddress();
-            String name = result.getDevice().getName();
+        for (BleScanResult result : results) {
+            String address = result.getMacAddress();
+            String name = result.getDeviceName();
             String rssi = String.valueOf(result.getRssi());
 
             if (address == null)

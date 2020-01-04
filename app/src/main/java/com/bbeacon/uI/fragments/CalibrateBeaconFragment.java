@@ -96,13 +96,12 @@ public class CalibrateBeaconFragment extends DaggerFragment {
                 progressBar.setVisibility(View.VISIBLE);
                 break;
 
-            case READY:
+            case READY_FOR_NEXT:
                 progressBar.setVisibility(View.INVISIBLE);
                 break;
 
             case DONE:
                 progressBar.setVisibility(View.INVISIBLE);
-                viewModel.quitError();
 
                 Navigation.findNavController(getView()).navigate(R.id.action_calibrateBeacon_to_knownBeaconList);
                 break;

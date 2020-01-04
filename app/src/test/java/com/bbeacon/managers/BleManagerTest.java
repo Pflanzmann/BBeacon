@@ -1,52 +1,63 @@
 package com.bbeacon.managers;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
+import com.bbeacon.exceptions.ScanFilterInvalidException;
+import com.bbeacon.models.BleScanResult;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class BleManagerTest {
-    private BluetoothAdapter mockBluetoothAdapter;
+    private BluetoothFinder mockFinder;
     private BleManager bleManager;
 
-    private BluetoothLeScanner mockLeScanner;
 
     @BeforeEach
     void setUp() {
-        mockBluetoothAdapter = mock(BluetoothAdapter.class);
-        bleManager = new BleManager(mockBluetoothAdapter);
-        mockLeScanner = mock(BluetoothLeScanner.class);
-
-        when(mockBluetoothAdapter.getBluetoothLeScanner()).thenReturn(mockLeScanner);
+        mockFinder = mock(BluetoothFinder.class);
+        bleManager = new BleManager(mockFinder);
     }
 
     @AfterEach
     void tearDown() {
-        mockBluetoothAdapter = null;
+        mockFinder = null;
         bleManager = null;
     }
 
     @Test
-    void getScanningObservable_NotNull() {
+    void getScanningObservable_TestCallbackFunction() throws ScanFilterInvalidException {
+        ArrayList<String> filters = new ArrayList<>();
+        filters.add("testString");
 
-        ArrayList<ScanFilter> filters = new ArrayList<>();
-        ArrayList<ScanResult> expectedScanResults = new ArrayList<>();
+        ArrayList<BleScanResult> scanResults = new ArrayList<>();
+        BleScanResult testBleScanResult = new BleScanResult("macAddress", -55, "deviceName");
+        scanResults.add(testBleScanResult);
 
-        Assert.assertNotNull(bleManager.getScanningObservable(filters));
+        ArgumentCaptor<BleManager.BluetoothCallback> callbackArgumentCaptor = ArgumentCaptor.forClass(BleManager.BluetoothCallback.class);
+
+        bleManager.getScanningObservable(filters).doOnNext(bleScanResults -> {
+            Assert.assertEquals(scanResults, bleScanResults);
+        });
+
+        verify(mockFinder, times(1)).StartFinding(any(ArrayList.class), callbackArgumentCaptor.capture());
+
+        BleManager.BluetoothCallback callback = callbackArgumentCaptor.getValue();
+        callback.onNewScanResults(scanResults);
     }
 
     @Test
     void stopScanning() {
         bleManager.stopScanning();
+
+        verify(mockFinder, times(1)).stopScanning();
     }
 }
