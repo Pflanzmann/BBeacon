@@ -72,9 +72,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
         ArrayList<String> filterString = new ArrayList<>();
         filterString.add(uncalibratedBeacon.getMacAddress());
 
-
         try {
-
             disposable = bleManager.getScanningObservable(filterString)
                     .doOnEach(lists -> currentProgress.postValue(++currentProgessCache))
                     .timeout(15, TimeUnit.SECONDS, observer -> {
@@ -97,6 +95,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
 
                         if (tempMeasurements.size() != uncalibratedBeacon.getMeasurementCount()) {
                             Log.d("OwnLog", "calibration disposed: wrong measurements-count");
+                            latestErrorMessage.postValue("MeasurementCount does not fit");
                             currentState.postValue(CalibrationState.ERROR);
                             disposable.dispose();
                             return;
@@ -105,8 +104,9 @@ public class CalibrateBeaconViewModel extends ViewModel {
                         try {
                             evaluator.insertRawDataSet(new RawDataSet<Integer>(currentStep.getValue(), tempMeasurements.toArray(new Integer[uncalibratedBeacon.getMeasurementCount()])));
                         } catch (DataSetDoesNotFitException e) {
+                            System.out.println("we are in the case");
                             Log.d("OwnLog", "Invalid DataSet");
-                            latestErrorMessage.postValue(e.getMessage());
+                            latestErrorMessage.postValue("DataSet is Invalid");
                             currentState.postValue(CalibrationState.ERROR);
                             disposable.dispose();
                             return;
@@ -115,6 +115,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
                         if (currentStep.getValue() == uncalibratedBeacon.getCalibrationSteps() - 1) {
                             evaluator.evaluateAndFinish(uncalibratedBeacon);
                             currentState.postValue(CalibrationState.DONE);
+                            disposable.dispose();
                         } else {
                             currentStep.postValue(currentStep.getValue() + 1);
                             currentState.postValue(CalibrationState.READY_FOR_NEXT);

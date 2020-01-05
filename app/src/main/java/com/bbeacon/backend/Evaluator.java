@@ -27,7 +27,7 @@ public class Evaluator implements EvaluatorType {
     public void insertRawDataSet(RawDataSet<Integer> dataSet) throws DataSetDoesNotFitException {
         int currentSimpleAverage = average(dataSet);
 
-        if (currentSimpleAverage > lastSimpleAverage + 10000)
+        if (currentSimpleAverage > lastSimpleAverage)
             throw new DataSetDoesNotFitException("DataSet is invalid and does not fit.");
 
         dataSets.add(dataSet);
