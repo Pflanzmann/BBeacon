@@ -1,7 +1,7 @@
 package com.bbeacon.backend;
 
 import com.bbeacon.exceptions.DataSetDoesNotFitException;
-import com.bbeacon.managers.Storage.BeaconStorageManagerType;
+import com.bbeacon.managers.storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.RawDataSet;
 import com.bbeacon.models.UncalibratedBeacon;

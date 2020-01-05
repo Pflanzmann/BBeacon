@@ -1,4 +1,4 @@
-package com.bbeacon.managers.Storage;
+package com.bbeacon.managers.storage;
 
 import android.content.SharedPreferences;
 

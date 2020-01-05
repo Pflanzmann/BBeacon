@@ -3,7 +3,7 @@ package com.bbeacon.managers;
 import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.exceptions.NoRoomFoundException;
 import com.bbeacon.exceptions.PositionIndexOutOfBound;
-import com.bbeacon.managers.Storage.SingleRoomStorageManager;
+import com.bbeacon.managers.storage.SingleRoomStorageManager;
 import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
 

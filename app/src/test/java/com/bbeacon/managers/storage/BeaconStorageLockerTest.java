@@ -1,4 +1,4 @@
-package com.bbeacon.managers.Storage;
+package com.bbeacon.managers.storage;
 
 import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.exceptions.NothingToLoadException;

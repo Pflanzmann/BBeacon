@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.managers.RoomManagerType;
-import com.bbeacon.managers.Storage.BeaconStorageManagerType;
+import com.bbeacon.managers.storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
 
 import java.util.ArrayList;

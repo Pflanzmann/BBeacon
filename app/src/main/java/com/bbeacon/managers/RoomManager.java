@@ -5,7 +5,7 @@ import android.util.Log;
 import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.exceptions.NoRoomFoundException;
 import com.bbeacon.exceptions.PositionIndexOutOfBound;
-import com.bbeacon.managers.Storage.SingleRoomStorageManagerType;
+import com.bbeacon.managers.storage.SingleRoomStorageManagerType;
 import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
 

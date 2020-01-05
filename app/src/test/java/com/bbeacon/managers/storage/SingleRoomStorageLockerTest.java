@@ -1,4 +1,4 @@
-package com.bbeacon.managers.Storage;
+package com.bbeacon.managers.storage;
 
 import com.bbeacon.exceptions.NoRoomFoundException;
 import com.bbeacon.exceptions.NothingToLoadException;
