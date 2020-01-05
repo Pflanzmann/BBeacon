@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.bbeacon.exceptions.PositionIndexOutOfBound;
 import com.bbeacon.managers.RoomManagerType;
-import com.bbeacon.managers.Storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.Room;
@@ -17,17 +16,15 @@ import androidx.lifecycle.ViewModel;
 
 public class ConfigRoomViewModel extends ViewModel {
 
-    private MutableLiveData<Room> currentRoom = new MutableLiveData<Room>();
+    private MutableLiveData<Room> currentRoom;
 
     private RoomManagerType roomManagerType;
-    private BeaconStorageManagerType beaconStorageManager;
 
     @Inject
-    public ConfigRoomViewModel(RoomManagerType roomManagerType, BeaconStorageManagerType beaconStorageManager) {
+    public ConfigRoomViewModel(RoomManagerType roomManagerType) {
         this.roomManagerType = roomManagerType;
-        this.beaconStorageManager = beaconStorageManager;
 
-        currentRoom.postValue(roomManagerType.getRoom());
+        currentRoom = new MutableLiveData<>(roomManagerType.getRoom());
     }
 
     public LiveData<Room> getCurrentRoom() {
@@ -46,24 +43,27 @@ public class ConfigRoomViewModel extends ViewModel {
                 break;
 
             case 1:
-                x = 1;
+                x = 4;
                 y = 0;
                 break;
 
             case 2:
                 x = 0;
-                y = 1;
+                y = 4;
                 break;
 
             case 3:
-                x = 1;
-                y = 1;
+                x = 4;
+                y = 4;
                 break;
 
             default:
                 Log.d("OwnLog", "setBeaconOn: default: " + index);
                 return;
         }
+
+        if (calibratedBeacon == null)
+            return;
 
         PositionedBeacon positionedBeacon = new PositionedBeacon(calibratedBeacon, x, y);
 

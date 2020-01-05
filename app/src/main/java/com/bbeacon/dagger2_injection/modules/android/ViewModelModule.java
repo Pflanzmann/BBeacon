@@ -4,7 +4,6 @@ package com.bbeacon.dagger2_injection.modules.android;
 import com.bbeacon.dagger2_injection.setup.ViewModelKey;
 import com.bbeacon.uI.viewmodels.CalibrateBeaconViewModel;
 import com.bbeacon.uI.viewmodels.ConfigRoomViewModel;
-import com.bbeacon.uI.viewmodels.DefineBeaconViewModel;
 import com.bbeacon.uI.viewmodels.FindBeaconViewModel;
 import com.bbeacon.uI.viewmodels.KnownBeaconListViewModel;
 import com.bbeacon.uI.viewmodels.LocationViewModel;
@@ -41,9 +40,4 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LocationViewModel.class)
     public abstract ViewModel bindLocationViewModel(LocationViewModel viewModel);
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(DefineBeaconViewModel.class)
-    public abstract ViewModel bindDefineBeaconViewModel(DefineBeaconViewModel viewModel);
 }
