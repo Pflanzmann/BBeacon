@@ -1,6 +1,7 @@
 package com.bbeacon.managers;
 
 import com.bbeacon.exceptions.ScanFilterInvalidException;
+import com.bbeacon.managers.android.BluetoothFinder;
 import com.bbeacon.models.BleScanResult;
 
 import org.junit.Assert;

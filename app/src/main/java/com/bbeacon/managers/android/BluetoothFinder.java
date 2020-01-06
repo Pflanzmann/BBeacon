@@ -1,4 +1,4 @@
-package com.bbeacon.managers;
+package com.bbeacon.managers.android;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.bbeacon.exceptions.ScanFilterInvalidException;
+import com.bbeacon.managers.BleManager;
 import com.bbeacon.models.BleScanResult;
 
 import java.util.ArrayList;

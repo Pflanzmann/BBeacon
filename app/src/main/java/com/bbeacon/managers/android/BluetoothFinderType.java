@@ -1,6 +1,7 @@
-package com.bbeacon.managers;
+package com.bbeacon.managers.android;
 
 import com.bbeacon.exceptions.ScanFilterInvalidException;
+import com.bbeacon.managers.BleManager;
 
 import java.util.ArrayList;
 

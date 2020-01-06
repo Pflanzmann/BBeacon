@@ -20,9 +20,9 @@ public class Calculator implements CalculatorType {
         if (rangedPositions.size() != 3)
             return null;
 
-        float distanceA = rangedPositions.get(0).getRange();
-        float distanceB = rangedPositions.get(1).getRange();
-        float distanceC = rangedPositions.get(2).getRange();
+        double distanceA = rangedPositions.get(0).getRange();
+        double distanceB = rangedPositions.get(1).getRange();
+        double distanceC = rangedPositions.get(2).getRange();
 
         float pointA1 = rangedPositions.get(0).getPositionedBeacon().getX();
         float pointA2 = rangedPositions.get(0).getPositionedBeacon().getY();

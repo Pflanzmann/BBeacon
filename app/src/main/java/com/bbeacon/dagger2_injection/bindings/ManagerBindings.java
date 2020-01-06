@@ -2,8 +2,8 @@ package com.bbeacon.dagger2_injection.bindings;
 
 import com.bbeacon.managers.BleManager;
 import com.bbeacon.managers.BleManagerType;
-import com.bbeacon.managers.BluetoothFinder;
-import com.bbeacon.managers.BluetoothFinderType;
+import com.bbeacon.managers.android.BluetoothFinder;
+import com.bbeacon.managers.android.BluetoothFinderType;
 import com.bbeacon.managers.RoomManager;
 import com.bbeacon.managers.RoomManagerType;
 

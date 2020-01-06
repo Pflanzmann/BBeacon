@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 public class AverageRanger implements RangerType {
 
-    CalibratedBeacon beacon;
+    private CalibratedBeacon beacon;
 
     int[] averagedDataSets;
 
@@ -24,7 +24,7 @@ public class AverageRanger implements RangerType {
     }
 
     @Override
-    public float computeDistance(int rssi) {
+    public double computeDistance(int rssi) {
         Log.d("OwnLog", "computeDistance RSSi: " + rssi);
         int i = 0;
 
@@ -40,6 +40,10 @@ public class AverageRanger implements RangerType {
         return i;
     }
 
+    @Override
+    public CalibratedBeacon getBeacon() {
+        return beacon;
+    }
 
     private int[] setAverageDatas() {
         ArrayList<RawDataSet<Integer>> dataSets = beacon.getDataSets();

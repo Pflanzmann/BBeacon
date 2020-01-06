@@ -1,6 +1,7 @@
 package com.bbeacon.managers;
 
 import com.bbeacon.exceptions.ScanFilterInvalidException;
+import com.bbeacon.managers.android.BluetoothFinderType;
 import com.bbeacon.models.BleScanResult;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class BleManager implements BleManagerType {
         bluetoothFinder.stopScanning();
     }
 
-    abstract class BluetoothCallback {
+    public abstract class BluetoothCallback {
         public void onNewScanResults(List<BleScanResult> results) {
         }
     }
