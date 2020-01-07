@@ -8,7 +8,7 @@ public class TxPowerRanger implements RangerType {
 
     private CalibratedBeacon beacon;
 
-    private int txPower = -59;
+    private int txPower = -65;
 
     @Inject
     public TxPowerRanger(CalibratedBeacon beacon) {

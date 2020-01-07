@@ -54,12 +54,12 @@ class BeaconStorageManagerTest {
 
         String beaconMapString = new Gson().toJson(beaconMap);
 
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenReturn("[]");
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn("[]");
 
         beaconStorageManager.storeBeacon(beacon);
 
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
-        verify(mockStorageLocker, times(1)).store(beaconMapString, StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).store(beaconMapString, StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -78,12 +78,12 @@ class BeaconStorageManagerTest {
         beaconMap.put(beacon.getDeviceId(), beacon);
 
         String beaconMapString = new Gson().toJson(beaconMap);
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenReturn(beaconMapString);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
         HashMap<String, CalibratedBeacon> beaconReturnMap = beaconStorageManager.loadAllBeacons();
 
         Assert.assertEquals(beaconMap.keySet(), beaconReturnMap.keySet());
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -102,12 +102,12 @@ class BeaconStorageManagerTest {
         beaconMap.put(beacon.getDeviceId(), beacon);
 
         String beaconMapString = new Gson().toJson(beaconMap);
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenThrow(new NothingToLoadException());
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenThrow(new NothingToLoadException());
 
         HashMap<String, CalibratedBeacon> beaconReturnMap = beaconStorageManager.loadAllBeacons();
 
         Assert.assertTrue(beaconReturnMap.isEmpty());
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -126,12 +126,12 @@ class BeaconStorageManagerTest {
         beaconMap.put(beacon.getDeviceId(), beacon);
 
         String beaconMapString = new Gson().toJson(beaconMap);
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenReturn(beaconMapString);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
         CalibratedBeacon returnedBeacon = beaconStorageManager.loadBeaconById(beacon.getDeviceId());
 
         Assert.assertEquals(beacon.getDeviceId(), returnedBeacon.getDeviceId());
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -150,13 +150,13 @@ class BeaconStorageManagerTest {
         beaconMap.put(beacon.getDeviceId(), beacon);
 
         String beaconMapString = new Gson().toJson(beaconMap);
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenReturn(beaconMapString);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
         Assertions.assertThrows(CouldNotFindBeaconByIdException.class, () -> {
             beaconStorageManager.loadBeaconById("randomId");
         });
 
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -174,13 +174,13 @@ class BeaconStorageManagerTest {
         HashMap<String, CalibratedBeacon> beaconMap = new HashMap<>();
 
         String beaconMapString = new Gson().toJson(beaconMap);
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenReturn(beaconMapString);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
         Assertions.assertThrows(CouldNotFindBeaconByIdException.class, () -> {
             beaconStorageManager.loadBeaconById(beacon.getDeviceId());
         });
 
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -201,12 +201,12 @@ class BeaconStorageManagerTest {
         beaconMap.put(beacon.getDeviceId(), beacon);
 
         String beaconMapString = new Gson().toJson(beaconMap);
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenReturn(beaconMapString);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
         beaconStorageManager.deleteBeaconById(beacon.getDeviceId());
 
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
-        verify(mockStorageLocker, times(1)).store(EMPTY_MAP_STRING, StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).store(EMPTY_MAP_STRING, StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -224,12 +224,12 @@ class BeaconStorageManagerTest {
         HashMap<String, CalibratedBeacon> beaconMap = new HashMap<>();
 
         String beaconMapString = new Gson().toJson(beaconMap);
-        when(mockStorageLocker.load(StorageLocker.StorageKey.BEACON)).thenReturn(beaconMapString);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
         Assertions.assertThrows(CouldNotFindBeaconByIdException.class, () -> {
             beaconStorageManager.deleteBeaconById(beacon.getDeviceId());
         });
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.BEACON);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 }

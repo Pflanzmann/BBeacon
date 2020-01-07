@@ -17,10 +17,10 @@ import javax.inject.Singleton;
 @Singleton
 public class BeaconStorageManager implements BeaconStorageManagerType {
 
-    StorageLocker storageLocker;
+    private StorageLockerType storageLocker;
 
     @Inject
-    public BeaconStorageManager(StorageLocker storageLocker) {
+    public BeaconStorageManager(StorageLockerType storageLocker) {
         this.storageLocker = storageLocker;
     }
 
@@ -33,7 +33,7 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
         beacons.put(beacon.getDeviceId(), beacon);
         jsonString = gson.toJson(beacons);
 
-        storageLocker.store(jsonString, StorageLocker.StorageKey.BEACON);
+        storageLocker.store(jsonString, StorageLockerType.StorageKey.BEACON);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
         String jsonString;
 
         try {
-            jsonString = storageLocker.load(StorageLocker.StorageKey.BEACON);
+            jsonString = storageLocker.load(StorageLockerType.StorageKey.BEACON);
         } catch (NothingToLoadException nothingToLoad) {
             return new HashMap<>();
         }
@@ -57,12 +57,6 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
 
     @Override
     public CalibratedBeacon loadBeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
-        Type type = new TypeToken<HashMap<String, CalibratedBeacon>>() {
-        }.getType();
-
-        Gson gson = new Gson();
-        String jsonString;
-
         Map<String, CalibratedBeacon> beacons = loadAllBeacons();
 
         if (!beacons.containsKey(deviceId))
@@ -73,20 +67,14 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
 
     @Override
     public void deleteBeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
-        Type type = new TypeToken<HashMap<String, CalibratedBeacon>>() {
-        }.getType();
-
-        Gson gson = new Gson();
-        String jsonString;
-
         HashMap<String, CalibratedBeacon> beacons = loadAllBeacons();
 
         if (!beacons.containsKey(deviceId))
             throw new CouldNotFindBeaconByIdException();
 
         beacons.remove(deviceId);
-        jsonString = gson.toJson(beacons);
+        String jsonString = new Gson().toJson(beacons);
 
-        storageLocker.store(jsonString, StorageLocker.StorageKey.BEACON);
+        storageLocker.store(jsonString, StorageLockerType.StorageKey.BEACON);
     }
 }

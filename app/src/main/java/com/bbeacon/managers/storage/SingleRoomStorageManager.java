@@ -11,16 +11,16 @@ import javax.inject.Singleton;
 @Singleton
 public class SingleRoomStorageManager implements SingleRoomStorageManagerType {
 
-    private StorageLocker storageLocker;
+    private StorageLockerType storageLocker;
 
     @Inject
-    public SingleRoomStorageManager(StorageLocker storageLocker) {
+    public SingleRoomStorageManager(StorageLockerType storageLocker) {
         this.storageLocker = storageLocker;
     }
 
     @Override
     public void storeRoom(Room room) {
-        storageLocker.store(new Gson().toJson(room), StorageLocker.StorageKey.Single_ROOM);
+        storageLocker.store(new Gson().toJson(room), StorageLockerType.StorageKey.Single_ROOM);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class SingleRoomStorageManager implements SingleRoomStorageManagerType {
 
         String loadedRoomString;
         try {
-            loadedRoomString = storageLocker.load(StorageLocker.StorageKey.Single_ROOM);
+            loadedRoomString = storageLocker.load(StorageLockerType.StorageKey.Single_ROOM);
         } catch (NothingToLoadException e) {
             throw new NoRoomFoundException();
         }

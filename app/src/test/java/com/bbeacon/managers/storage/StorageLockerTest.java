@@ -48,7 +48,7 @@ class StorageLockerTest {
             return mockSharedPrefsEditor;
         });
 
-        storageLocker.store(testJson, StorageLocker.StorageKey.BEACON);
+        storageLocker.store(testJson, StorageLockerType.StorageKey.BEACON);
 
         verify(mockSharedPrefs, times(1)).edit();
         verify(mockSharedPrefsEditor, times(1)).putString("beacon", testJson);
@@ -70,7 +70,7 @@ class StorageLockerTest {
             return mockSharedPrefsEditor;
         });
 
-        storageLocker.store(testJson, StorageLocker.StorageKey.Single_ROOM);
+        storageLocker.store(testJson, StorageLockerType.StorageKey.Single_ROOM);
 
         verify(mockSharedPrefs, times(1)).edit();
         verify(mockSharedPrefsEditor, times(1)).putString("room", testJson);
@@ -85,7 +85,7 @@ class StorageLockerTest {
 
         when(mockSharedPrefs.getString("beacon", null)).thenReturn(testJson);
 
-        String resultString = storageLocker.load(StorageLocker.StorageKey.BEACON);
+        String resultString = storageLocker.load(StorageLockerType.StorageKey.BEACON);
 
         Assert.assertEquals(resultString, testJson);
         verify(mockSharedPrefs, times(1)).getString("beacon", null);
@@ -97,7 +97,7 @@ class StorageLockerTest {
 
         when(mockSharedPrefs.getString("room", null)).thenReturn(testJson);
 
-        String resultString = storageLocker.load(StorageLocker.StorageKey.Single_ROOM);
+        String resultString = storageLocker.load(StorageLockerType.StorageKey.Single_ROOM);
 
         Assert.assertEquals(resultString, testJson);
         verify(mockSharedPrefs, times(1)).getString("room", null);
@@ -110,7 +110,7 @@ class StorageLockerTest {
         when(mockSharedPrefs.getString("beacon", null)).thenReturn(null);
 
         Assertions.assertThrows(NothingToLoadException.class, () -> {
-            storageLocker.load(StorageLocker.StorageKey.BEACON);
+            storageLocker.load(StorageLockerType.StorageKey.BEACON);
         });
 
         verify(mockSharedPrefs, times(1)).getString("beacon", null);

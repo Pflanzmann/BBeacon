@@ -45,7 +45,7 @@ class SingleRoomStorageLockerTest {
 
         roomStorageManager.storeRoom(room);
 
-        verify(mockStorageLocker, times(1)).store(roomJsonString, StorageLocker.StorageKey.Single_ROOM);
+        verify(mockStorageLocker, times(1)).store(roomJsonString, StorageLockerType.StorageKey.Single_ROOM);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -56,12 +56,12 @@ class SingleRoomStorageLockerTest {
         Room room = new Room(random.nextInt(9999999));
         String roomJsonString = new Gson().toJson(room);
 
-        when(mockStorageLocker.load(StorageLocker.StorageKey.Single_ROOM)).thenReturn(roomJsonString);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.Single_ROOM)).thenReturn(roomJsonString);
 
         Room returnedRoom = roomStorageManager.loadRoom();
 
         Assert.assertTrue(room.getBeaconPositions().length == returnedRoom.getBeaconPositions().length);
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.Single_ROOM);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.Single_ROOM);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 
@@ -72,13 +72,13 @@ class SingleRoomStorageLockerTest {
         Room room = new Room(random.nextInt(10000));
         String roomJsonString = new Gson().toJson(room);
 
-        when(mockStorageLocker.load(StorageLocker.StorageKey.Single_ROOM)).thenThrow(NothingToLoadException.class);
+        when(mockStorageLocker.load(StorageLockerType.StorageKey.Single_ROOM)).thenThrow(NothingToLoadException.class);
 
         Assertions.assertThrows(NoRoomFoundException.class, () -> {
             Room returnedRoom = roomStorageManager.loadRoom();
         });
 
-        verify(mockStorageLocker, times(1)).load(StorageLocker.StorageKey.Single_ROOM);
+        verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.Single_ROOM);
         verifyNoMoreInteractions(mockStorageLocker);
     }
 }

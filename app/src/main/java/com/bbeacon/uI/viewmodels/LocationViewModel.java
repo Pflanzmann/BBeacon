@@ -32,6 +32,8 @@ public class LocationViewModel extends ViewModel {
     private MutableLiveData<String> currentTest1 = new MutableLiveData<String>("none");
     private MutableLiveData<String> currentTest2 = new MutableLiveData<String>("none");
     private MutableLiveData<String> currentTest3 = new MutableLiveData<String>("none");
+    private MutableLiveData<String> currentTest4 = new MutableLiveData<String>("none");
+
 
     public LiveData<String> getCurrentTest2() {
         return currentTest2;
@@ -41,30 +43,32 @@ public class LocationViewModel extends ViewModel {
         return currentTest3;
     }
 
-    public LiveData<String> getCurrentTest4() {
-        return currentTest4;
-    }
-
-    private MutableLiveData<String> currentTest4 = new MutableLiveData<String>("none");
-
-    private BleManagerType bleManager;
-    private RoomManagerType roomManager;
-    private CalculatorType calculator;
-    private Map<String, RangerType> rangers = new HashMap<String, RangerType>();
-
-    @Inject
-    public LocationViewModel(BleManagerType bleManager, RoomManagerType roomManager, CalculatorType calculator) {
-        this.bleManager = bleManager;
-        this.roomManager = roomManager;
-        this.calculator = calculator;
-    }
-
     public LiveData<String> getCurrentTest1() {
         return currentTest1;
     }
 
     public LiveData<UserPosition> getCurrentUserPosition() {
         return currentUserPosition;
+    }
+
+    public LiveData<String> getCurrentTest4() {
+        return currentTest4;
+    }
+
+    private BleManagerType bleManager;
+    private RoomManagerType roomManager;
+    private CalculatorType calculator;
+
+    private Map<String, RangerType> rangers = new HashMap<String, RangerType>();
+    private Map<String, RangerType> rangersAlternate = new HashMap<String, RangerType>();
+
+    private boolean rangerType = true;
+
+    @Inject
+    public LocationViewModel(BleManagerType bleManager, RoomManagerType roomManager, CalculatorType calculator) {
+        this.bleManager = bleManager;
+        this.roomManager = roomManager;
+        this.calculator = calculator;
     }
 
     public void startLocating() {
@@ -121,38 +125,6 @@ public class LocationViewModel extends ViewModel {
         currentUserPosition.postValue(userPosition);
     }
 
-    public void stopLocating() {
-        bleManager.stopScanning();
-    }
-
-    public void startTestRanging() {
-        final ArrayList<String> filters = new ArrayList<>();
-
-        try {
-            CalibratedBeacon beacon = roomManager.getBeaconByIndex(0);
-
-            rangers.put(beacon.getMacAddress(), new TxPowerRanger(beacon));
-
-            filters.add(beacon.getMacAddress());
-
-            bleManager.getScanningObservable(filters)
-                    .subscribe(lists -> onNewResultTest(lists));
-
-        } catch (Exception e) {
-            //TODO: DO SOMETHING ABOUT THE ERROR´s
-            e.printStackTrace();
-        }
-    }
-
-    private void onNewResultTest(List<BleScanResult> results) {
-        int rssi = results.get(0).getRssi();
-
-        RangerType ranger = rangers.get(results.get(0).getMacAddress());
-
-        if (ranger != null)
-            currentTest1.postValue("Distance: " + ranger.computeDistance(rssi) + " RSSI: " + rssi);
-    }
-
     public void startTestRangingRoom() {
         final ArrayList<String> filters = new ArrayList<>();
 
@@ -166,6 +138,11 @@ public class LocationViewModel extends ViewModel {
             rangers.put(beacon2.getMacAddress(), new TxPowerRanger(beacon2));
             rangers.put(beacon3.getMacAddress(), new TxPowerRanger(beacon3));
             rangers.put(beacon4.getMacAddress(), new TxPowerRanger(beacon4));
+
+            rangersAlternate.put(beacon1.getMacAddress(), new AverageRanger(beacon1));
+            rangersAlternate.put(beacon2.getMacAddress(), new AverageRanger(beacon2));
+            rangersAlternate.put(beacon3.getMacAddress(), new AverageRanger(beacon3));
+            rangersAlternate.put(beacon4.getMacAddress(), new AverageRanger(beacon4));
 
             filters.add(beacon1.getMacAddress());
             filters.add(beacon2.getMacAddress());
@@ -185,7 +162,13 @@ public class LocationViewModel extends ViewModel {
         for (BleScanResult result : results) {
             String output = "";
 
-            RangerType ranger = rangers.get(result.getMacAddress());
+            RangerType ranger;
+
+            if (rangerType)
+                ranger = rangers.get(result.getMacAddress());
+            else
+                ranger = rangersAlternate.get(result.getMacAddress());
+
 
             int rssi = result.getRssi();
 
@@ -205,5 +188,13 @@ public class LocationViewModel extends ViewModel {
             else if (ranger.getBeacon().getMacAddress() == roomManager.getBeaconByIndex(3).getMacAddress())
                 currentTest4.postValue(output);
         }
+    }
+
+    public void stopLocating() {
+        bleManager.stopScanning();
+    }
+
+    public void ToggleRangerType() {
+        rangerType = !rangerType;
     }
 }
