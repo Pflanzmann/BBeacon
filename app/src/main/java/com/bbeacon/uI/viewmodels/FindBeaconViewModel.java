@@ -52,6 +52,7 @@ public class FindBeaconViewModel extends ViewModel {
             String address = result.getMacAddress();
             String name = result.getDeviceName();
             String rssi = String.valueOf(result.getRssi());
+            String distance = "";
 
             if (address == null)
                 address = "";
@@ -60,11 +61,15 @@ public class FindBeaconViewModel extends ViewModel {
             if (rssi == null)
                 rssi = "-";
 
-            unknownBeacon = new UnknownBeacon(address, name, rssi);
+            if (rssi != null)
+                distance = String.valueOf(Math.round(getDistance(result.getRssi()) * 100.0) / 100.0);
+
+            unknownBeacon = new UnknownBeacon(address, name, distance, rssi);
 
             if (beacons.contains(unknownBeacon)) {
                 int index = beacons.indexOf(unknownBeacon);
                 beacons.get(index).setRssi(rssi);
+                beacons.get(index).setDistamce(distance);
             } else
                 beacons.add(unknownBeacon);
             foundBLEDevices.postValue(beacons);
@@ -77,5 +82,22 @@ public class FindBeaconViewModel extends ViewModel {
 
         Log.d("OwnLog", "onCleared: stopScanning");
         scanner.stopScanning();
+    }
+
+    private double getDistance(int rssi) {
+        int txPower = -60;
+
+        if (rssi == 0) {
+            return -1.0; // if we cannot determine distance, return -1.
+        }
+
+        double ratio = rssi * 1.0 / txPower;
+
+        if (ratio < 1.0) {
+            return Math.pow(ratio, 10);
+        } else {
+            double accuracy = (0.89976) * Math.pow(ratio, 7.7095) + 0.111;
+            return accuracy;
+        }
     }
 }

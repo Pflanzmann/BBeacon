@@ -20,5 +20,5 @@ public abstract class BackendBindings {
     public abstract RangerType bindAverageRanger(TxPowerRanger ranger);
 
     @Binds
-    public abstract CalculatorType bindCalculator(Calculator calculator);
+    public abstract CalculatorType bindCalculator(Calculator calculatorExample);
 }

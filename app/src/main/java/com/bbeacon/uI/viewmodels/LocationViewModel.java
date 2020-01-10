@@ -1,23 +1,22 @@
 package com.bbeacon.uI.viewmodels;
 
-import com.bbeacon.backend.AverageRanger;
 import com.bbeacon.backend.CalculatorType;
 import com.bbeacon.backend.RangerType;
 import com.bbeacon.backend.TxPowerRanger;
-import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
 import com.bbeacon.exceptions.ScanFilterInvalidException;
 import com.bbeacon.managers.BleManagerType;
 import com.bbeacon.managers.RoomManagerType;
 import com.bbeacon.models.BleScanResult;
-import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.PositionedBeacon;
 import com.bbeacon.models.RangedBeaconPosition;
 import com.bbeacon.models.UserPosition;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import javax.inject.Inject;
 
@@ -47,12 +46,12 @@ public class LocationViewModel extends ViewModel {
         return currentTest1;
     }
 
-    public LiveData<UserPosition> getCurrentUserPosition() {
-        return currentUserPosition;
-    }
-
     public LiveData<String> getCurrentTest4() {
         return currentTest4;
+    }
+
+    public LiveData<UserPosition> getCurrentUserPosition() {
+        return currentUserPosition;
     }
 
     private BleManagerType bleManager;
@@ -60,9 +59,7 @@ public class LocationViewModel extends ViewModel {
     private CalculatorType calculator;
 
     private Map<String, RangerType> rangers = new HashMap<String, RangerType>();
-    private Map<String, RangerType> rangersAlternate = new HashMap<String, RangerType>();
-
-    private boolean rangerType = true;
+    private Queue<UserPosition> latestPositions = new ArrayDeque<>();
 
     @Inject
     public LocationViewModel(BleManagerType bleManager, RoomManagerType roomManager, CalculatorType calculator) {
@@ -81,7 +78,7 @@ public class LocationViewModel extends ViewModel {
             if (positionedBeacon[i] == null)
                 break;
 
-            rangers.put(roomManager.getRoom().getBeaconPositions()[i].getMacAddress(), new AverageRanger(positionedBeacon[i]));
+            rangers.put(roomManager.getRoom().getBeaconPositions()[i].getMacAddress(), new TxPowerRanger(positionedBeacon[i]));
 
             filters.add(positionedBeacon[i].getMacAddress());
         }
@@ -121,80 +118,50 @@ public class LocationViewModel extends ViewModel {
 
         UserPosition userPosition = calculator.getCoordinate(rangedBeaconPositions);
 
-        currentTest1.postValue("X: " + userPosition.getX() + " Y: " + userPosition.getY());
+        if (latestPositions.size() >= 10) {
+            latestPositions.poll();
+        }
+
+        latestPositions.add(userPosition);
+
+        UserPosition[] allPositions = new UserPosition[10];
+        latestPositions.toArray(allPositions);
+
+
+        double averageX = 0, averageY = 0, count = 0;
+
+        for (UserPosition user : allPositions) {
+            if (user == null)
+                break;
+
+            averageX += clamp(user.getX(), 0, 4);
+            averageY += clamp(user.getY(), 0, 4);
+
+            count++;
+        }
+
+        averageX = averageX / count;
+        averageY = averageY / count;
+
+        currentTest1.postValue("current X: " + userPosition.getX() + " Y: " + userPosition.getY());
+        currentTest2.postValue("Average X: " + decima2(averageX)+ " Y: " + decima2(averageY));
         currentUserPosition.postValue(userPosition);
-    }
-
-    public void startTestRangingRoom() {
-        final ArrayList<String> filters = new ArrayList<>();
-
-        try {
-            CalibratedBeacon beacon1 = roomManager.getBeaconByIndex(0);
-            CalibratedBeacon beacon2 = roomManager.getBeaconByIndex(1);
-            CalibratedBeacon beacon3 = roomManager.getBeaconByIndex(2);
-            CalibratedBeacon beacon4 = roomManager.getBeaconByIndex(3);
-
-            rangers.put(beacon1.getMacAddress(), new TxPowerRanger(beacon1));
-            rangers.put(beacon2.getMacAddress(), new TxPowerRanger(beacon2));
-            rangers.put(beacon3.getMacAddress(), new TxPowerRanger(beacon3));
-            rangers.put(beacon4.getMacAddress(), new TxPowerRanger(beacon4));
-
-            rangersAlternate.put(beacon1.getMacAddress(), new AverageRanger(beacon1));
-            rangersAlternate.put(beacon2.getMacAddress(), new AverageRanger(beacon2));
-            rangersAlternate.put(beacon3.getMacAddress(), new AverageRanger(beacon3));
-            rangersAlternate.put(beacon4.getMacAddress(), new AverageRanger(beacon4));
-
-            filters.add(beacon1.getMacAddress());
-            filters.add(beacon2.getMacAddress());
-            filters.add(beacon3.getMacAddress());
-            filters.add(beacon4.getMacAddress());
-
-            bleManager.getScanningObservable(filters)
-                    .subscribe(lists -> onNewResultTestRoom(lists));
-
-        } catch (Exception e) {
-            //TODO: DO SOMETHING ABOUT THE ERROR´s
-            e.printStackTrace();
-        }
-    }
-
-    private void onNewResultTestRoom(List<BleScanResult> results) throws CouldNotFindBeaconByIdException {
-        for (BleScanResult result : results) {
-            String output = "";
-
-            RangerType ranger;
-
-            if (rangerType)
-                ranger = rangers.get(result.getMacAddress());
-            else
-                ranger = rangersAlternate.get(result.getMacAddress());
-
-
-            int rssi = result.getRssi();
-
-            double distance = ranger.computeDistance(rssi);
-            distance = Math.round(distance * 100.0) / 100.0;
-
-            if (ranger != null) {
-                output += ranger.getBeacon().getDeviceId() + "->\t\tDistance: " + distance + "\t\tRSSI: " + rssi;
-            }
-
-            if (ranger.getBeacon().getMacAddress() == roomManager.getBeaconByIndex(0).getMacAddress())
-                currentTest1.postValue(output);
-            else if (ranger.getBeacon().getMacAddress() == roomManager.getBeaconByIndex(1).getMacAddress())
-                currentTest2.postValue(output);
-            else if (ranger.getBeacon().getMacAddress() == roomManager.getBeaconByIndex(2).getMacAddress())
-                currentTest3.postValue(output);
-            else if (ranger.getBeacon().getMacAddress() == roomManager.getBeaconByIndex(3).getMacAddress())
-                currentTest4.postValue(output);
-        }
     }
 
     public void stopLocating() {
         bleManager.stopScanning();
     }
 
-    public void ToggleRangerType() {
-        rangerType = !rangerType;
+    private double decima2(double value){
+        return Math.round(value * 100.0) / 100.0;
+    }
+
+    private double clamp(double value, int min, int max) {
+        if (value < min)
+            return min;
+        else if (value > max)
+            return max;
+        else
+            return value;
     }
 }

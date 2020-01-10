@@ -56,6 +56,23 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/distanceTagTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="5dp"
+        android:gravity="center|center_horizontal"
+        android:text="@string/unknownBeaconListItem_DistanceTag"
+        tools:text="Entfernung" />
+
+    <TextView
+        android:id="@+id/distanceValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="10dp"
+        android:gravity="center|center_horizontal"
+        tools:text="999" />
+
+    <TextView
         android:id="@+id/rssiTagTextView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

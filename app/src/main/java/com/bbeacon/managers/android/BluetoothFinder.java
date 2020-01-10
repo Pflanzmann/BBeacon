@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class BluetoothFinder implements BluetoothFinderType{
+public class BluetoothFinder implements BluetoothFinderType {
 
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner scanner;

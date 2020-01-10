@@ -1,7 +1,5 @@
 package com.bbeacon.backend;
 
-import android.util.Log;
-
 import com.bbeacon.models.RangedBeaconPosition;
 import com.bbeacon.models.UserPosition;
 
@@ -17,41 +15,46 @@ public class Calculator implements CalculatorType {
 
     @Override
     public UserPosition getCoordinate(List<RangedBeaconPosition> rangedPositions) {
-        if (rangedPositions.size() != 3)
+        if (rangedPositions.size() <= 2)
             return null;
 
-        double distanceA = rangedPositions.get(0).getRange();
-        double distanceB = rangedPositions.get(1).getRange();
-        double distanceC = rangedPositions.get(2).getRange();
+        rangedPositions.sort((o1, o2) -> {
+            if (o1.getRange() > o2.getRange())
+                return 1;
+            else
+                return -1;
+        });
 
-        float pointA1 = rangedPositions.get(0).getPositionedBeacon().getX();
-        float pointA2 = rangedPositions.get(0).getPositionedBeacon().getY();
+        double x1 = rangedPositions.get(0).getPositionedBeacon().getX();
+        double y1 = rangedPositions.get(0).getPositionedBeacon().getY();
+        double range1 = clamp(rangedPositions.get(0).getRange(), 0, 5);
 
-        float pointB1 = rangedPositions.get(1).getPositionedBeacon().getX();
-        float pointB2 = rangedPositions.get(1).getPositionedBeacon().getY();
+        double x2 = rangedPositions.get(1).getPositionedBeacon().getX();
+        double y2 = rangedPositions.get(1).getPositionedBeacon().getY();
+        double range2 = clamp(rangedPositions.get(1).getRange(), 0, 5);
 
-        float pointC1 = rangedPositions.get(2).getPositionedBeacon().getX();
-        float pointC2 = rangedPositions.get(2).getPositionedBeacon().getY();
+        double x3 = rangedPositions.get(2).getPositionedBeacon().getX();
+        double y3 = rangedPositions.get(2).getPositionedBeacon().getY();
+        double range3 = clamp(rangedPositions.get(2).getRange(), 0, 5);
 
-        double w, z, x, y, y2;
+        double a = 2 * x2 - 2 * x1;
+        double b = 2 * y2 - 2 * y1;
+        double c = Math.pow(range1, 2) - Math.pow(range2, 2) - Math.pow(x1, 2) + Math.pow(x2, 2) - Math.pow(y1, 2) + Math.pow(y2, 2);
+        double d = 2 * x3 - 2 * x2;
+        double e = 2 * y3 - 2 * y2;
+        double f = Math.pow(range2, 2) - Math.pow(range3, 2) - Math.pow(x2, 2) + Math.pow(x3, 2) - Math.pow(y2, 2) + Math.pow(y3, 2);
+        double x = ((c * e - f * b) / (e * a - b * d));
+        double y = ((c * d - a * f) / (b * d - a * e));
 
+        return new UserPosition(clamp(x, 0, 4), clamp(y, 0, 4));
+    }
 
-        w = distanceA * distanceA - distanceB * distanceB - pointA1 * pointA1 - pointA2 * pointA2 + pointB1 * pointB1 + pointB2 * pointB2;
-
-        z = distanceB * distanceB - distanceC * distanceC - pointB1 * pointB1 - pointB2 * pointB2 + pointC1 * pointC1 + pointC2 * pointC2;
-
-        x = (w * (pointC2 - pointB2) - z * (pointB2 - pointA2)) / (2 * ((pointB1 - pointA1) * (pointC1 - pointB2) - (pointC1 - pointB1) * (pointB2 - pointA2)));
-
-        y = (w - 2 * x * (pointB1 - pointA1)) / (2 * (pointB2 - pointA2));
-        Log.d("OwnLog", "getCoordinate: Y: " + y);
-
-        y2 = (z - 2 * x * (pointC1 - pointB1)) / (2 * (pointC1 - pointB2));
-
-        y = (y + y2) / 2;
-
-        Log.d("OwnLog", "getCoordinate: Y2: " + y2);
-        Log.d("OwnLog", "getCoordinate: Y3: " + y);
-
-        return new UserPosition(y, y2);
+    private double clamp(double value, int min, int max) {
+        if (value < min)
+            return min;
+        else if (value > max)
+            return max;
+        else
+            return value;
     }
 }

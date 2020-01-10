@@ -10,6 +10,8 @@
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
+        android:hardwareAccelerated="false"
+
         android:name=".BBeaconApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,5 +27,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

@@ -6,21 +6,22 @@ import androidx.annotation.Nullable;
 
 public class UnknownBeacon implements Serializable {
 
-    private String macAddress;
-    private String deviceName;
-
-    private String rssi;
-
-    public UnknownBeacon(String macAddress, String deviceName, String rssi) {
+    public UnknownBeacon(String macAddress, String deviceName, String distance, String rssi) {
         this.macAddress = macAddress;
         this.deviceName = deviceName;
+        this.distance = distance;
         this.rssi = rssi;
     }
 
-    public UnknownBeacon(String macAddress, String deviceName) {
-        this.macAddress = macAddress;
-        this.deviceName = deviceName;
+    private String macAddress;
+    private String deviceName;
+    private String distance;
+    private String rssi;
+
+    public String getDistance() {
+        return distance;
     }
+
     public String getMacAddress() {
         return macAddress;
     }
@@ -48,5 +49,9 @@ public class UnknownBeacon implements Serializable {
             return true;
 
         return false;
+    }
+
+    public void setDistamce(String distance) {
+        this.distance = distance;
     }
 }

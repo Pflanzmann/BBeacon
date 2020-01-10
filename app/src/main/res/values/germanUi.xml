@@ -11,6 +11,7 @@
 
     <string name="unknownBeaconListItem_RssiTag">RSSI</string>
     <string name="unknownBeaconListItem_MacAddressTag">MAC-Adresse:</string>
+    <string name="unknownBeaconListItem_DistanceTag">Entfernung:</string>
 
     <string name="knownBeaconListItem_Delete">Löschen</string>
     <string name="knownBeaconListItem_MacAddressTag">MAC-Adresse:</string>

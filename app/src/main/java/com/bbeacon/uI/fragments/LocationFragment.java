@@ -49,10 +49,6 @@ public class LocationFragment extends DaggerFragment {
         testText3 = getView().findViewById(R.id.testTextView3);
         testText4 = getView().findViewById(R.id.testTextView4);
 
-        getView().findViewById(R.id.toggleButton).setOnClickListener(v -> {
-            viewModel.ToggleRangerType();
-        });
-
         viewModel.getCurrentUserPosition().observe(getViewLifecycleOwner(), userPosition -> {
             //TODO Show UserPosition
         });
@@ -70,7 +66,7 @@ public class LocationFragment extends DaggerFragment {
             onTextChanged4(String.valueOf(text));
         });
 
-        viewModel.startTestRangingRoom();
+        viewModel.startLocating();
     }
 
     private void onTextChanged1(String textRange) {

@@ -86,6 +86,7 @@ public class FindBeaconFragment extends DaggerFragment {
 
             holder.macAddressText.setText(beacons.get(position).getMacAddress());
             holder.rssiText.setText(beacons.get(position).getRssi());
+            holder.distanceText.setText(beacons.get(position).getDistance());
 
             holder.itemView.setOnClickListener(view -> {
                 viewModel.stopBluetoothScan();
@@ -106,6 +107,7 @@ public class FindBeaconFragment extends DaggerFragment {
             TextView nameText;
             TextView macAddressText;
             TextView rssiText;
+            TextView distanceText;
 
             private ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -113,6 +115,7 @@ public class FindBeaconFragment extends DaggerFragment {
                 nameText = itemView.findViewById(R.id.beaconNameTextView);
                 macAddressText = itemView.findViewById(R.id.macAddressTagTextView);
                 rssiText = itemView.findViewById(R.id.rssiValueTextView);
+                distanceText = itemView.findViewById(R.id.distanceValueTextView);
             }
         }
     }
