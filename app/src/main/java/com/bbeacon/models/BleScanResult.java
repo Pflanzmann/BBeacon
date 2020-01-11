@@ -5,6 +5,7 @@ public class BleScanResult {
     private String macAddress;
     private int rssi;
     private String deviceName;
+    private int txPower;
 
     public String getMacAddress() {
         return macAddress;
@@ -18,9 +19,14 @@ public class BleScanResult {
         return deviceName;
     }
 
-    public BleScanResult(String macAddress, int rssi, String deviceName) {
+    public int getTxPower() {
+        return txPower;
+    }
+
+    public BleScanResult(String macAddress, int rssi, String deviceName, int txPower) {
         this.macAddress = macAddress;
         this.rssi = rssi;
         this.deviceName = deviceName;
+        this.txPower = txPower;
     }
 }

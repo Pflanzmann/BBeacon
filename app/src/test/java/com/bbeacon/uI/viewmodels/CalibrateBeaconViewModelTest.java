@@ -78,7 +78,7 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
 
         int emitCounts = 0;
 
@@ -151,7 +151,7 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
 
         int emitCounts = 0;
 
@@ -266,11 +266,11 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
 
         int emitCounts = 0;
 
@@ -335,7 +335,7 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
 
         int emitCounts = 0;
 

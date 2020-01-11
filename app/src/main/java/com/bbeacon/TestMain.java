@@ -2,10 +2,9 @@ package com.bbeacon;
 
 import android.os.Build;
 
-import com.bbeacon.backend.EvaluatorType;
-import com.bbeacon.managers.BleManagerType;
-import com.bbeacon.models.UncalibratedBeacon;
-import com.bbeacon.uI.viewmodels.CalibrateBeaconViewModel;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import androidx.annotation.RequiresApi;
 
@@ -13,23 +12,28 @@ public class TestMain {
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     public static void main(String[] args) {
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon(
-                "DeviceName",
-                "00:02:02:34:72:a5",
-                "DeviceName",
-                42,
-                42);
 
-        CalibrateBeaconViewModel calibrateBeaconViewModel;
-        BleManagerType mockBleManager = null;
-        EvaluatorType mockEvaluator = null;
+        List<Integer> liste = new ArrayList<>();
+        liste.add(2);
+        liste.add(0);
+        liste.add(9);
+        liste.add(6);
+        liste.add(5);
 
-        calibrateBeaconViewModel = new CalibrateBeaconViewModel(mockBleManager, mockEvaluator);
-
-
-        calibrateBeaconViewModel.getCurrentState().observe(null, calibrationState -> {
+                liste.sort((o1, o2) -> {
+            if (o1 > o2)
+                return 1;
+            else
+                return -1;
         });
 
+        Iterator<Integer> iterator = liste.iterator();
+
+        while(iterator.hasNext())
+        {
+            //System.out.println(itr.next());
+            System.out.println(iterator.next());
+        }
     }
 
 }

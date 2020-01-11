@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SeekBar;
 
 import com.bbeacon.R;
@@ -47,13 +48,21 @@ public class DefineBeaconFragment extends DaggerFragment {
         TextInputLayout inputText = getView().findViewById(R.id.nameTextInput);
         SeekBar seekbarMeasurement = getView().findViewById(R.id.measurementSeekBar);
         SeekBar seekbarStep = getView().findViewById(R.id.stepSeekBar);
+        EditText txPowerEditText = getView().findViewById(R.id.txPowerEditText);
+
+        int txPower = 0;
+
+        try {
+            txPower = Integer.valueOf(txPowerEditText.getText().toString());
+        } catch(Exception e){ }
 
         UncalibratedBeacon uncalibratedBeacon = new UncalibratedBeacon(
                 inputText.getEditText().getText().toString(),
                 args.getUnknownBeacon().getMacAddress(),
                 args.getUnknownBeacon().getDeviceName(),
                 seekbarMeasurement.getProgress(),
-                seekbarStep.getProgress());
+                seekbarStep.getProgress(),
+                txPower);
 
         Navigation.findNavController(getView())
                 .navigate(DefineBeaconFragmentDirections.actionDefineBeaconToCalibrateBeacon(uncalibratedBeacon));

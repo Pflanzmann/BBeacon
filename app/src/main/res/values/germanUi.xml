@@ -22,8 +22,9 @@
     <string name="defineBeacon_TitleText">Definiere den Sender</string>
     <string name="defineBeacon_BeaconNameText">Name des Beacons</string>
     <string name="defineBeacon_BeaconNameEditTextExample">Jörg</string>
-    <string name="defineBeacon_MeasurementCountText">Messungen/ Schritt</string>
-    <string name="defineBeacon_StepCountText">Anzahl der Schritte</string>
+    <string name="defineBeacon_MeasurementCountText">Messungen/ Schritt:</string>
+    <string name="defineBeacon_StepCountText">Anzahl der Schritte:</string>
+    <string name="defineBeacon_TxPowerText">TxPower:</string>
     <string name="defineBeacon_StartButton">Start</string>
 
 

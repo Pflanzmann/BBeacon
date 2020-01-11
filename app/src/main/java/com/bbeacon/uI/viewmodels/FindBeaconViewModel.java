@@ -64,7 +64,8 @@ public class FindBeaconViewModel extends ViewModel {
             if (rssi != null)
                 distance = String.valueOf(Math.round(getDistance(result.getRssi()) * 100.0) / 100.0);
 
-            unknownBeacon = new UnknownBeacon(address, name, distance, rssi);
+
+            unknownBeacon = new UnknownBeacon(address, name, distance, rssi, 0);
 
             if (beacons.contains(unknownBeacon)) {
                 int index = beacons.indexOf(unknownBeacon);
@@ -85,7 +86,7 @@ public class FindBeaconViewModel extends ViewModel {
     }
 
     private double getDistance(int rssi) {
-        int txPower = -60;
+        int txPower = -59;
 
         if (rssi == 0) {
             return -1.0; // if we cannot determine distance, return -1.

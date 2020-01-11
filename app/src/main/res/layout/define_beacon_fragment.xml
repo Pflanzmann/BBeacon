@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".uI.fragments.DefineBeaconFragment" >
 
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/defineBeacon_TitleText"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Define your beacon" />
-
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="0dp"
@@ -114,7 +102,7 @@
         <SeekBar
             android:id="@+id/stepSeekBar"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
@@ -122,6 +110,48 @@
             android:min="1"
             android:progress="1" />
 
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/defineBeacon_TitleText"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Define your beacon" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:background="#00910404"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:gravity="center_vertical"
+            android:text="@string/defineBeacon_TxPowerText"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/txPowerEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="3"
+            android:inputType="number"
+            android:maxEms="3"
+            android:text="-" />
     </LinearLayout>
 
     <Button
@@ -132,6 +162,6 @@
         android:text="@string/defineBeacon_StartButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

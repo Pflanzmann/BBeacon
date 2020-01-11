@@ -61,6 +61,8 @@ public class LocationViewModel extends ViewModel {
     private Map<String, RangerType> rangers = new HashMap<String, RangerType>();
     private Queue<UserPosition> latestPositions = new ArrayDeque<>();
 
+    private final int averageSize = 5;
+
     @Inject
     public LocationViewModel(BleManagerType bleManager, RoomManagerType roomManager, CalculatorType calculator) {
         this.bleManager = bleManager;
@@ -93,9 +95,6 @@ public class LocationViewModel extends ViewModel {
     }
 
     private void onNewResult(List<BleScanResult> results) {
-        if (results.size() < 3)
-            return;
-
         List<RangedBeaconPosition> rangedBeaconPositions = new ArrayList<>();
 
         for (int i = 0; i < results.size(); i++) {
@@ -108,23 +107,22 @@ public class LocationViewModel extends ViewModel {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            if (rangedBeaconPositions.size() == 3)
-                break;
         }
-
-        if (rangedBeaconPositions.size() != 3)
-            return;
 
         UserPosition userPosition = calculator.getCoordinate(rangedBeaconPositions);
 
-        if (latestPositions.size() >= 10) {
+        if (userPosition == null) {
+            currentTest1.postValue("current  X: --- | Y: ---");
+            return;
+        }
+
+        while (latestPositions.size() >= averageSize) {
             latestPositions.poll();
         }
 
         latestPositions.add(userPosition);
 
-        UserPosition[] allPositions = new UserPosition[10];
+        UserPosition[] allPositions = new UserPosition[averageSize];
         latestPositions.toArray(allPositions);
 
 
@@ -134,8 +132,8 @@ public class LocationViewModel extends ViewModel {
             if (user == null)
                 break;
 
-            averageX += clamp(user.getX(), 0, 4);
-            averageY += clamp(user.getY(), 0, 4);
+            averageX += clamp(user.getX(), -1, 4);
+            averageY += clamp(user.getY(), -1, 4);
 
             count++;
         }
@@ -143,8 +141,8 @@ public class LocationViewModel extends ViewModel {
         averageX = averageX / count;
         averageY = averageY / count;
 
-        currentTest1.postValue("current X: " + userPosition.getX() + " Y: " + userPosition.getY());
-        currentTest2.postValue("Average X: " + decima2(averageX)+ " Y: " + decima2(averageY));
+        currentTest1.postValue("current X: " + decima2(userPosition.getX()) + " Y: " + decima2(userPosition.getY()));
+        currentTest2.postValue("Average X: " + decima2(averageX) + " Y: " + decima2(averageY));
         currentUserPosition.postValue(userPosition);
     }
 
@@ -152,7 +150,7 @@ public class LocationViewModel extends ViewModel {
         bleManager.stopScanning();
     }
 
-    private double decima2(double value){
+    private double decima2(double value) {
         return Math.round(value * 100.0) / 100.0;
     }
 

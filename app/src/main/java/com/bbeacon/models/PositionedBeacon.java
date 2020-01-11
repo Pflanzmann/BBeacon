@@ -13,6 +13,7 @@ public class PositionedBeacon extends CalibratedBeacon implements Serializable {
                 calibratedBeacon.getDeviceName(),
                 calibratedBeacon.getMeasurementCount(),
                 calibratedBeacon.getCalibrationSteps(),
+                calibratedBeacon.getTxPower(),
                 calibratedBeacon.getCalibrationDate(),
                 calibratedBeacon.getDataSets());
         this.x = x;

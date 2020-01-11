@@ -25,6 +25,11 @@ public class Calculator implements CalculatorType {
                 return -1;
         });
 
+        if(rangedPositions.get(0).getRange() <= 1.2d){
+
+        }
+
+
         double x1 = rangedPositions.get(0).getPositionedBeacon().getX();
         double y1 = rangedPositions.get(0).getPositionedBeacon().getY();
         double range1 = clamp(rangedPositions.get(0).getRange(), 0, 5);

@@ -55,8 +55,8 @@ public class BluetoothFinder implements BluetoothFinderType {
                         bleScanResults.add(new BleScanResult(
                                 scanResult.getDevice().getAddress(),
                                 scanResult.getRssi(),
-                                scanResult.getDevice().getName()
-                        ));
+                                scanResult.getDevice().getName(),
+                                scanResult.getTxPower()));
                     }
                     bleCallback.onNewScanResults(bleScanResults);
                 }

@@ -10,8 +10,8 @@ public class CalibratedBeacon extends UncalibratedBeacon implements Serializable
 
     private ArrayList<RawDataSet<Integer>> dataSets;
 
-    public CalibratedBeacon(String deviceId, String macAddress, String deviceName, int measurementCount, int calibrationSteps, Date calibrationDate, ArrayList<RawDataSet<Integer>> dataSets) {
-        super(deviceId, macAddress, deviceName, measurementCount, calibrationSteps);
+    public CalibratedBeacon(String deviceId, String macAddress, String deviceName, int measurementCount, int calibrationSteps, int txPower, Date calibrationDate, ArrayList<RawDataSet<Integer>> dataSets) {
+        super(deviceId, macAddress, deviceName, measurementCount, calibrationSteps, txPower);
         this.calibrationDate = calibrationDate;
         this.dataSets = dataSets;
     }
@@ -21,7 +21,8 @@ public class CalibratedBeacon extends UncalibratedBeacon implements Serializable
                 uncalibratedBeacon.getMacAddress(),
                 uncalibratedBeacon.getDeviceName(),
                 uncalibratedBeacon.getMeasurementCount(),
-                uncalibratedBeacon.getCalibrationSteps());
+                uncalibratedBeacon.getCalibrationSteps(),
+                uncalibratedBeacon.getTxPower());
 
         this.calibrationDate = calibrationDate;
         this.dataSets = dataSets;

@@ -1,9 +1,9 @@
 package com.bbeacon.dagger2_injection.bindings;
 
-import com.bbeacon.backend.Calculator;
 import com.bbeacon.backend.CalculatorType;
 import com.bbeacon.backend.Evaluator;
 import com.bbeacon.backend.EvaluatorType;
+import com.bbeacon.backend.MSECalculator;
 import com.bbeacon.backend.RangerType;
 import com.bbeacon.backend.TxPowerRanger;
 
@@ -20,5 +20,5 @@ public abstract class BackendBindings {
     public abstract RangerType bindAverageRanger(TxPowerRanger ranger);
 
     @Binds
-    public abstract CalculatorType bindCalculator(Calculator calculatorExample);
+    public abstract CalculatorType bindCalculator(MSECalculator calculator);
 }
