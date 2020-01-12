@@ -27,8 +27,6 @@ public class LocationFragment extends DaggerFragment {
 
     TextView testText1;
     TextView testText2;
-    TextView testText3;
-    TextView testText4;
 
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -46,24 +44,12 @@ public class LocationFragment extends DaggerFragment {
 
         testText1 = getView().findViewById(R.id.testTextView);
         testText2 = getView().findViewById(R.id.testTextView2);
-        testText3 = getView().findViewById(R.id.testTextView3);
-        testText4 = getView().findViewById(R.id.testTextView4);
-
-        viewModel.getCurrentUserPosition().observe(getViewLifecycleOwner(), userPosition -> {
-            //TODO Show UserPosition
-        });
 
         viewModel.getCurrentTest1().observe(getViewLifecycleOwner(), text -> {
             onTextChanged1(String.valueOf(text));
         });
         viewModel.getCurrentTest2().observe(getViewLifecycleOwner(), text -> {
             onTextChanged2(String.valueOf(text));
-        });
-        viewModel.getCurrentTest3().observe(getViewLifecycleOwner(), text -> {
-            onTextChanged3(String.valueOf(text));
-        });
-        viewModel.getCurrentTest4().observe(getViewLifecycleOwner(), text -> {
-            onTextChanged4(String.valueOf(text));
         });
 
         viewModel.startLocating();
@@ -74,12 +60,6 @@ public class LocationFragment extends DaggerFragment {
     }
     private void onTextChanged2(String textRange) {
         testText2.setText(textRange);
-    }
-    private void onTextChanged3(String textRange) {
-        testText3.setText(textRange);
-    }
-    private void onTextChanged4(String textRange) {
-        testText4.setText(textRange);
     }
 
     @Override

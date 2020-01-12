@@ -116,7 +116,7 @@ public class CalibrateBeaconViewModel extends ViewModel {
                         }
 
                         if (currentStep.getValue() == uncalibratedBeacon.getCalibrationSteps() - 1) {
-                            evaluator.evaluateAndFinish(uncalibratedBeacon);
+                            beaconStorageManager.storeBeacon(evaluator.evaluateAndFinish(uncalibratedBeacon));
                             currentState.postValue(CalibrationState.DONE);
                             disposable.dispose();
                         } else {

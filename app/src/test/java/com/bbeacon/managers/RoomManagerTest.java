@@ -41,7 +41,7 @@ class RoomManagerTest {
 
     @Test
     void getRoom_Success() throws NoRoomFoundException {
-        Room testRoom = new Room(new Random().nextInt(9999999));
+        Room testRoom = new Room(new Random().nextInt(9999999 + 1));
 
         when(mockSingleRoomStorageManager.loadRoom()).thenReturn(testRoom);
         roomManager = new RoomManager(mockSingleRoomStorageManager);
@@ -69,7 +69,7 @@ class RoomManagerTest {
 
     @Test
     void setPositionOn_Success_RandomRoomSize_RandomIndex() throws NoRoomFoundException, PositionIndexOutOfBound {
-        final int testRoomSize = new Random().nextInt(999);
+        final int testRoomSize = new Random().nextInt(999 + 1);
         final int testRoomPosition = new Random().nextInt(testRoomSize);
 
         PositionedBeacon mockBeacon1 = mock(PositionedBeacon.class);
@@ -90,7 +90,7 @@ class RoomManagerTest {
 
     @Test
     void setPositionOn_PositionIndexOutOfBound_TooLarge() throws NoRoomFoundException {
-        final int testRoomSize = new Random().nextInt(999);
+        final int testRoomSize = new Random().nextInt(999 + 1);
         final int testRoomPosition = testRoomSize + 1;
 
         PositionedBeacon mockBeacon = mock(PositionedBeacon.class);
@@ -105,7 +105,7 @@ class RoomManagerTest {
 
     @Test
     void setPositionOn_PositionIndexOutOfBound_NegativeNumber() throws NoRoomFoundException {
-        final int testRoomSize = new Random().nextInt(999);
+        final int testRoomSize = new Random().nextInt(999 + 1);
         final int testRoomPosition = -1;
 
         PositionedBeacon mockBeacon = mock(PositionedBeacon.class);
@@ -121,7 +121,7 @@ class RoomManagerTest {
 
     @Test
     void getBeaconByIndex_Success() throws NoRoomFoundException, CouldNotFindBeaconByIndexException {
-        final int testRoomSize = new Random().nextInt(999);
+        final int testRoomSize = new Random().nextInt(999 +1);
         final int testRoomPosition = new Random().nextInt(testRoomSize);
 
         PositionedBeacon mockBeacon = mock(PositionedBeacon.class);
@@ -139,10 +139,9 @@ class RoomManagerTest {
 
     @Test
     void getBeaconByIndex_CouldNotFindBeaconByIdException() throws NoRoomFoundException, CouldNotFindBeaconByIndexException {
-        final int testRoomSize = new Random().nextInt(999);
+        final int testRoomSize = new Random().nextInt(999 + 1);
         final int testRoomPosition = new Random().nextInt(testRoomSize);
 
-        PositionedBeacon mockBeacon = mock(PositionedBeacon.class);
         PositionedBeacon[] positionedBeacons = new PositionedBeacon[testRoomSize];
 
         Room testRoom = new Room(positionedBeacons);
@@ -156,7 +155,7 @@ class RoomManagerTest {
 
     @Test
     void removeBeaconFromRoom() throws NoRoomFoundException {
-        final int testRoomSize = new Random().nextInt(999);
+        final int testRoomSize = new Random().nextInt(999 + 1);
         final int testRoomPosition = new Random().nextInt(testRoomSize);
         final String testDeviceId = "DeviceId";
 

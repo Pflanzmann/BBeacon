@@ -1,7 +1,6 @@
 package com.bbeacon.backend;
 
 import com.bbeacon.exceptions.DataSetDoesNotFitException;
-import com.bbeacon.managers.storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.RawDataSet;
 import com.bbeacon.models.UncalibratedBeacon;
@@ -16,11 +15,8 @@ public class Evaluator implements EvaluatorType {
     private ArrayList<RawDataSet<Integer>> dataSets = new ArrayList<>();
     private int lastSimpleAverage = 0;
 
-    private BeaconStorageManagerType storageManager;
-
     @Inject
-    public Evaluator(BeaconStorageManagerType storageManager) {
-        this.storageManager = storageManager;
+    public Evaluator() {
     }
 
     @Override

@@ -26,32 +26,14 @@ import androidx.lifecycle.ViewModel;
 
 public class LocationViewModel extends ViewModel {
 
-    private MutableLiveData<UserPosition> currentUserPosition = new MutableLiveData<>(new UserPosition(0, 0));
-
     private MutableLiveData<String> currentTest1 = new MutableLiveData<String>("none");
     private MutableLiveData<String> currentTest2 = new MutableLiveData<String>("none");
-    private MutableLiveData<String> currentTest3 = new MutableLiveData<String>("none");
-    private MutableLiveData<String> currentTest4 = new MutableLiveData<String>("none");
-
 
     public LiveData<String> getCurrentTest2() {
         return currentTest2;
     }
-
-    public LiveData<String> getCurrentTest3() {
-        return currentTest3;
-    }
-
     public LiveData<String> getCurrentTest1() {
         return currentTest1;
-    }
-
-    public LiveData<String> getCurrentTest4() {
-        return currentTest4;
-    }
-
-    public LiveData<UserPosition> getCurrentUserPosition() {
-        return currentUserPosition;
     }
 
     private BleManagerType bleManager;
@@ -78,7 +60,7 @@ public class LocationViewModel extends ViewModel {
         for (int i = 0; i < positionedBeacon.length; i++) {
 
             if (positionedBeacon[i] == null)
-                break;
+                continue;
 
             rangers.put(roomManager.getRoom().getBeaconPositions()[i].getMacAddress(), new TxPowerRanger(positionedBeacon[i]));
 
@@ -105,7 +87,7 @@ public class LocationViewModel extends ViewModel {
                 PositionedBeacon position = roomManager.getBeaconByIndex(i);
                 rangedBeaconPositions.add(new RangedBeaconPosition(position, ranger.computeDistance(results.get(i).getRssi())));
             } catch (Exception e) {
-                e.printStackTrace();
+                continue;
             }
         }
 
@@ -143,7 +125,6 @@ public class LocationViewModel extends ViewModel {
 
         currentTest1.postValue("current X: " + decima2(userPosition.getX()) + " Y: " + decima2(userPosition.getY()));
         currentTest2.postValue("Average X: " + decima2(averageX) + " Y: " + decima2(averageY));
-        currentUserPosition.postValue(userPosition);
     }
 
     public void stopLocating() {

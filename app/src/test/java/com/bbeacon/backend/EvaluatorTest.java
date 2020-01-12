@@ -1,7 +1,6 @@
 package com.bbeacon.backend;
 
 import com.bbeacon.exceptions.DataSetDoesNotFitException;
-import com.bbeacon.managers.storage.BeaconStorageManager;
 import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.RawDataSet;
 import com.bbeacon.models.UncalibratedBeacon;
@@ -11,28 +10,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 class EvaluatorTest {
 
     private Evaluator evaluator;
-    private BeaconStorageManager mockBeaconStorageManager;
 
     @BeforeEach
     void setUp() {
-        mockBeaconStorageManager = mock(BeaconStorageManager.class);
-        evaluator = new Evaluator(mockBeaconStorageManager);
+        evaluator = new Evaluator();
     }
 
     @AfterEach
     void tearDown() {
-        mockBeaconStorageManager = null;
         evaluator = null;
     }
 
@@ -67,7 +56,6 @@ class EvaluatorTest {
             evaluator.insertRawDataSet(testDataSet3);
             evaluator.insertRawDataSet(testDataSet1);
         });
-        verifyZeroInteractions(mockBeaconStorageManager);
     }
 
     @Test
@@ -80,7 +68,6 @@ class EvaluatorTest {
         Assertions.assertThrows(DataSetDoesNotFitException.class, () -> {
             evaluator.insertRawDataSet(testDataSet1);
         });
-        verifyZeroInteractions(mockBeaconStorageManager);
     }
 
     @Test
@@ -89,27 +76,20 @@ class EvaluatorTest {
         final Integer[] testSet1 = {1, 1, 1, 1};
         RawDataSet<Integer> testDataSet1 = new RawDataSet<Integer>(testKey, testSet1);
 
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon("deviceId", "macAddress", "deviceName", 42, 42);
-
-        ArgumentCaptor<CalibratedBeacon> beaconArgumentCaptor = ArgumentCaptor.forClass(CalibratedBeacon.class);
+        UncalibratedBeacon testBeacon = new UncalibratedBeacon("deviceId", "macAddress", "deviceName", 42, 42, -60);
 
         Assertions.assertDoesNotThrow(() -> {
             evaluator.insertRawDataSet(testDataSet1);
         });
 
-        evaluator.evaluateAndFinish(testBeacon);
+        CalibratedBeacon resultBeacon = evaluator.evaluateAndFinish(testBeacon);
 
-        verify(mockBeaconStorageManager, times(1)).storeBeacon(beaconArgumentCaptor.capture());
-
-        CalibratedBeacon beaconResult = beaconArgumentCaptor.getValue();
-
-        Assert.assertEquals(testBeacon.getDeviceId(), beaconResult.getDeviceId());
-        Assert.assertEquals(testBeacon.getMacAddress(), beaconResult.getMacAddress());
-        Assert.assertEquals(testBeacon.getDeviceName(), beaconResult.getDeviceName());
-        Assert.assertEquals(testBeacon.getMeasurementCount(), beaconResult.getMeasurementCount());
-        Assert.assertEquals(testBeacon.getCalibrationSteps(), beaconResult.getCalibrationSteps());
-        Assert.assertEquals(1, beaconResult.getDataSets().size());
-        verifyNoMoreInteractions(mockBeaconStorageManager);
+        Assert.assertEquals(testBeacon.getDeviceId(), resultBeacon.getDeviceId());
+        Assert.assertEquals(testBeacon.getMacAddress(), resultBeacon.getMacAddress());
+        Assert.assertEquals(testBeacon.getDeviceName(), resultBeacon.getDeviceName());
+        Assert.assertEquals(testBeacon.getMeasurementCount(), resultBeacon.getMeasurementCount());
+        Assert.assertEquals(testBeacon.getCalibrationSteps(), resultBeacon.getCalibrationSteps());
+        Assert.assertEquals(1, resultBeacon.getDataSets().size());
     }
 
     @Test
@@ -123,9 +103,8 @@ class EvaluatorTest {
         RawDataSet<Integer> testDataSet2 = new RawDataSet<Integer>(testKey, testSet2);
         RawDataSet<Integer> testDataSet3 = new RawDataSet<Integer>(testKey, testSet3);
 
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon("deviceId", "macAddress", "deviceName", 42, 42);
+        UncalibratedBeacon testBeacon = new UncalibratedBeacon("deviceId", "macAddress", "deviceName", 42, 42, -60);
 
-        ArgumentCaptor<CalibratedBeacon> beaconArgumentCaptor = ArgumentCaptor.forClass(CalibratedBeacon.class);
 
         Assertions.assertDoesNotThrow(() -> {
             evaluator.insertRawDataSet(testDataSet1);
@@ -133,18 +112,13 @@ class EvaluatorTest {
             evaluator.insertRawDataSet(testDataSet3);
         });
 
-        evaluator.evaluateAndFinish(testBeacon);
+        CalibratedBeacon resultBeacon = evaluator.evaluateAndFinish(testBeacon);
 
-        verify(mockBeaconStorageManager, times(1)).storeBeacon(beaconArgumentCaptor.capture());
-
-        CalibratedBeacon beaconResult = beaconArgumentCaptor.getValue();
-
-        Assert.assertEquals(testBeacon.getDeviceId(), beaconResult.getDeviceId());
-        Assert.assertEquals(testBeacon.getMacAddress(), beaconResult.getMacAddress());
-        Assert.assertEquals(testBeacon.getDeviceName(), beaconResult.getDeviceName());
-        Assert.assertEquals(testBeacon.getMeasurementCount(), beaconResult.getMeasurementCount());
-        Assert.assertEquals(testBeacon.getCalibrationSteps(), beaconResult.getCalibrationSteps());
-        Assert.assertEquals(3, beaconResult.getDataSets().size());
-        verifyNoMoreInteractions(mockBeaconStorageManager);
+        Assert.assertEquals(testBeacon.getDeviceId(), resultBeacon.getDeviceId());
+        Assert.assertEquals(testBeacon.getMacAddress(), resultBeacon.getMacAddress());
+        Assert.assertEquals(testBeacon.getDeviceName(), resultBeacon.getDeviceName());
+        Assert.assertEquals(testBeacon.getMeasurementCount(), resultBeacon.getMeasurementCount());
+        Assert.assertEquals(testBeacon.getCalibrationSteps(), resultBeacon.getCalibrationSteps());
+        Assert.assertEquals(3, resultBeacon.getDataSets().size());
     }
 }

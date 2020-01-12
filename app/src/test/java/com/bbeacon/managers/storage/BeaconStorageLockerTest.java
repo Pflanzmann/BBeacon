@@ -46,6 +46,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 
@@ -71,6 +72,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 
@@ -95,6 +97,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 
@@ -119,6 +122,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 
@@ -143,6 +147,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 
@@ -168,6 +173,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 
@@ -194,6 +200,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 
@@ -218,6 +225,7 @@ class BeaconStorageManagerTest {
                 "deviceName",
                 42,
                 42,
+                -70,
                 new Date(30),
                 new ArrayList<>());
 

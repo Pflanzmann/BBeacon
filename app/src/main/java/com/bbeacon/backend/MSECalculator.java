@@ -18,15 +18,8 @@ public class MSECalculator implements CalculatorType {
 
     @Override
     public UserPosition getCoordinate(List<RangedBeaconPosition> rangedPositions) {
-        if (rangedPositions.size() == 0)
+        if (rangedPositions.size() < 3)
             return null;
-
-        rangedPositions.sort((o1, o2) -> {
-            if (o1.getRange() < o2.getRange())
-                return -1;
-            else
-                return 1;
-        });
 
         Log.d("OwnLog", "getCoordinate: " + rangedPositions.get(0).getRange());
 
@@ -34,13 +27,10 @@ public class MSECalculator implements CalculatorType {
         double temp = 0;
         double bestX = -1;
         double bestY = -1;
-        float closestX = rangedPositions.get(0).getPositionedBeacon().getX();
-        float closestY = rangedPositions.get(0).getPositionedBeacon().getY();
-
 
         for (double i = 0; i < 4.1; i += 0.2f) {
             for (double j = 0; j < 4.1; j += 0.2f) {
-                temp = mse(i, j, rangedPositions, closestX, closestY);
+                temp = mse(i, j, rangedPositions);
                 if (temp < latestBest && temp > 0) {
                     bestX = i;
                     bestY = j;
@@ -52,11 +42,7 @@ public class MSECalculator implements CalculatorType {
         return new UserPosition(bestX, bestY);
     }
 
-    private double mse(double positionX, double positionY, List<RangedBeaconPosition> beacons, float closestX, float closestY) {
-//        double dis2 = Math.sqrt((positionX - closestX) * (positionX - closestX) + (positionY - closestY) * (positionY - closestY));
-//
-//        if (dis2 > 3)
-//            return -1;
+    private double mse(double positionX, double positionY, List<RangedBeaconPosition> beacons) {
 
         float x = 0;
         float y = 0;

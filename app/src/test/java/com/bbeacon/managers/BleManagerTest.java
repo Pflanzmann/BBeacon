@@ -40,7 +40,7 @@ class BleManagerTest {
         filters.add("testString");
 
         ArrayList<BleScanResult> scanResults = new ArrayList<>();
-        BleScanResult testBleScanResult = new BleScanResult("macAddress", -55, "deviceName", txPower);
+        BleScanResult testBleScanResult = new BleScanResult("macAddress", -55, "deviceName", -70);
         scanResults.add(testBleScanResult);
 
         ArgumentCaptor<BleManager.BluetoothCallback> callbackArgumentCaptor = ArgumentCaptor.forClass(BleManager.BluetoothCallback.class);

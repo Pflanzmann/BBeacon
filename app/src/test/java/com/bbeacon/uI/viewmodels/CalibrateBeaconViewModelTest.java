@@ -4,7 +4,9 @@ import com.bbeacon.backend.Evaluator;
 import com.bbeacon.exceptions.DataSetDoesNotFitException;
 import com.bbeacon.exceptions.ScanFilterInvalidException;
 import com.bbeacon.managers.BleManager;
+import com.bbeacon.managers.storage.BeaconStorageManager;
 import com.bbeacon.models.BleScanResult;
+import com.bbeacon.models.CalibratedBeacon;
 import com.bbeacon.models.RawDataSet;
 import com.bbeacon.models.UncalibratedBeacon;
 
@@ -28,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public class CalibrateBeaconViewModelTest {
@@ -38,6 +41,7 @@ public class CalibrateBeaconViewModelTest {
 
     private BleManager mockBleManager;
     private Evaluator mockEvaluator;
+    private BeaconStorageManager mockBeaconStorageManager;
     private CalibrateBeaconViewModel calibrateBeaconViewModel;
 
     @Before
@@ -45,13 +49,15 @@ public class CalibrateBeaconViewModelTest {
 
         mockBleManager = mock(BleManager.class);
         mockEvaluator = mock(Evaluator.class);
-        calibrateBeaconViewModel = new CalibrateBeaconViewModel(mockBleManager, mockEvaluator);
+        mockBeaconStorageManager = mock(BeaconStorageManager.class);
+        calibrateBeaconViewModel = new CalibrateBeaconViewModel(mockBleManager, mockEvaluator, mockBeaconStorageManager);
     }
 
     @After
     public void tearDown() {
         mockBleManager = null;
         mockEvaluator = null;
+        mockBeaconStorageManager = null;
         calibrateBeaconViewModel = null;
     }
 
@@ -63,8 +69,9 @@ public class CalibrateBeaconViewModelTest {
         final String testDeviceName = "deviceName";
         final int testMeasurementCount = 3;
         final int testStepCount = 3;
+        final int testTxPower = -70;
 
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount);
+        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount, testTxPower);
 
         Queue<CalibrateBeaconViewModel.CalibrationState> stateQueue = new ArrayDeque<>();
         Queue<Integer> progressQueue = new ArrayDeque<>();
@@ -78,7 +85,7 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
 
         int emitCounts = 0;
 
@@ -124,6 +131,7 @@ public class CalibrateBeaconViewModelTest {
         verify(mockBleManager, times(1)).getScanningObservable(any(ArrayList.class));
         verify(mockBleManager, times(1)).stopScanning();
 
+        verifyZeroInteractions(mockBeaconStorageManager);
         verifyNoMoreInteractions(mockBleManager);
         verifyNoMoreInteractions(mockEvaluator);
     }
@@ -136,8 +144,9 @@ public class CalibrateBeaconViewModelTest {
         final String testDeviceName = "deviceName";
         final int testMeasurementCount = 3;
         final int testStepCount = 3;
+        final int testTxPower = -70;
 
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount);
+        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount, testTxPower);
 
         Queue<CalibrateBeaconViewModel.CalibrationState> stateQueue = new ArrayDeque<>();
         Queue<Integer> progressQueue = new ArrayDeque<>();
@@ -151,7 +160,7 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
 
         int emitCounts = 0;
 
@@ -197,6 +206,7 @@ public class CalibrateBeaconViewModelTest {
         verify(mockBleManager, times(1)).getScanningObservable(any(ArrayList.class));
         verify(mockBleManager, times(1)).stopScanning();
 
+        verifyZeroInteractions(mockBeaconStorageManager);
         verifyNoMoreInteractions(mockBleManager);
         verifyNoMoreInteractions(mockEvaluator);
     }
@@ -209,8 +219,9 @@ public class CalibrateBeaconViewModelTest {
         final String testDeviceName = "deviceName";
         final int testMeasurementCount = 3;
         final int testStepCount = 3;
+        final int testTxPower = -70;
 
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount);
+        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount, testTxPower);
 
         Queue<CalibrateBeaconViewModel.CalibrationState> stateQueue = new ArrayDeque<>();
         Queue<String> errorMessageQueue = new ArrayDeque<>();
@@ -251,8 +262,9 @@ public class CalibrateBeaconViewModelTest {
         final String testDeviceName = "deviceName";
         final int testMeasurementCount = 3;
         final int testStepCount = 3;
+        final int testTxPower = -70;
 
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount);
+        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount, testTxPower);
 
         Queue<CalibrateBeaconViewModel.CalibrationState> stateQueue = new ArrayDeque<>();
         Queue<Integer> progressQueue = new ArrayDeque<>();
@@ -266,11 +278,11 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
 
         int emitCounts = 0;
 
@@ -320,8 +332,10 @@ public class CalibrateBeaconViewModelTest {
         final String testDeviceName = "deviceName";
         final int testMeasurementCount = 3;
         final int testStepCount = 2;
+        final int testTxPower = -70;
 
-        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount);
+        UncalibratedBeacon testBeacon = new UncalibratedBeacon(testDeviceId, testMacAddress, testDeviceName, testMeasurementCount, testStepCount, testTxPower);
+        CalibratedBeacon testCalibratedBeacon = mock(CalibratedBeacon.class);
 
         Queue<CalibrateBeaconViewModel.CalibrationState> stateQueue = new ArrayDeque<>();
         Queue<Integer> progressQueue = new ArrayDeque<>();
@@ -335,11 +349,12 @@ public class CalibrateBeaconViewModelTest {
 
         PublishSubject<List<BleScanResult>> publisher = PublishSubject.create();
         List<BleScanResult> results = new ArrayList<>();
-        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, txPower));
+        results.add(new BleScanResult(testMacAddress, -42, testDeviceName, testTxPower));
 
         int emitCounts = 0;
 
         when(mockBleManager.getScanningObservable(any())).thenReturn(publisher);
+        when(mockEvaluator.evaluateAndFinish(any(UncalibratedBeacon.class))).thenReturn(testCalibratedBeacon);
 
         calibrateBeaconViewModel.calibrate(testBeacon);
         while (calibrateBeaconViewModel.getCurrentState().getValue() != CalibrateBeaconViewModel.CalibrationState.READY_FOR_NEXT) {
@@ -393,7 +408,10 @@ public class CalibrateBeaconViewModelTest {
         verify(mockEvaluator, times(1)).evaluateAndFinish(testBeacon);
         verify(mockBleManager, times(2)).getScanningObservable(any(ArrayList.class));
         verify(mockBleManager, times(2)).stopScanning();
+        verify(mockBeaconStorageManager, times(1)).storeBeacon(testCalibratedBeacon);
 
+
+        verifyNoMoreInteractions(mockBeaconStorageManager);
         verifyNoMoreInteractions(mockBleManager);
         verifyNoMoreInteractions(mockEvaluator);
     }
