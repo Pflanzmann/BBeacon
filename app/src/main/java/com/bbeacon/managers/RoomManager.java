@@ -2,7 +2,7 @@ package com.bbeacon.managers;
 
 import android.util.Log;
 
-import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.CouldNotFindBeaconByIndexException;
 import com.bbeacon.exceptions.NoRoomFoundException;
 import com.bbeacon.exceptions.PositionIndexOutOfBound;
 import com.bbeacon.managers.storage.SingleRoomStorageManagerType;
@@ -55,14 +55,14 @@ public class RoomManager implements RoomManagerType {
     }
 
     @Override
-    public PositionedBeacon getBeaconByIndex(int index) throws CouldNotFindBeaconByIdException {
+    public PositionedBeacon getBeaconByIndex(int index) throws CouldNotFindBeaconByIndexException {
         if (room.getBeaconPositions().length <= index || index < 0)
             throw new IndexOutOfBoundsException();
 
         PositionedBeacon[] positions = room.getBeaconPositions();
 
         if (positions[index] == null)
-            throw new CouldNotFindBeaconByIdException();
+            throw new CouldNotFindBeaconByIndexException();
 
         return positions[index];
     }

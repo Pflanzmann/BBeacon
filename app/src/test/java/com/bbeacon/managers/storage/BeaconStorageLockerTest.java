@@ -1,6 +1,6 @@
 package com.bbeacon.managers.storage;
 
-import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.CouldNotFindBeaconByIndexException;
 import com.bbeacon.exceptions.NothingToLoadException;
 import com.bbeacon.models.CalibratedBeacon;
 import com.google.gson.Gson;
@@ -112,7 +112,7 @@ class BeaconStorageManagerTest {
     }
 
     @Test
-    void loadBeaconById_Success() throws CouldNotFindBeaconByIdException, NothingToLoadException {
+    void loadBeaconById_Success() throws CouldNotFindBeaconByIndexException, NothingToLoadException {
         CalibratedBeacon beacon = new CalibratedBeacon(
                 "deviceId",
                 "macAddress",
@@ -152,7 +152,7 @@ class BeaconStorageManagerTest {
         String beaconMapString = new Gson().toJson(beaconMap);
         when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
-        Assertions.assertThrows(CouldNotFindBeaconByIdException.class, () -> {
+        Assertions.assertThrows(CouldNotFindBeaconByIndexException.class, () -> {
             beaconStorageManager.loadBeaconById("randomId");
         });
 
@@ -176,7 +176,7 @@ class BeaconStorageManagerTest {
         String beaconMapString = new Gson().toJson(beaconMap);
         when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
-        Assertions.assertThrows(CouldNotFindBeaconByIdException.class, () -> {
+        Assertions.assertThrows(CouldNotFindBeaconByIndexException.class, () -> {
             beaconStorageManager.loadBeaconById(beacon.getDeviceId());
         });
 
@@ -185,7 +185,7 @@ class BeaconStorageManagerTest {
     }
 
     @Test
-    void deletebeaconById_Success() throws NothingToLoadException, CouldNotFindBeaconByIdException {
+    void deletebeaconById_Success() throws NothingToLoadException, CouldNotFindBeaconByIndexException {
         final String EMPTY_MAP_STRING = "{}";
 
         CalibratedBeacon beacon = new CalibratedBeacon(
@@ -211,7 +211,7 @@ class BeaconStorageManagerTest {
     }
 
     @Test
-    void deletebeaconById_CouldNotFindBeaconByIdException() throws NothingToLoadException, CouldNotFindBeaconByIdException {
+    void deletebeaconById_CouldNotFindBeaconByIdException() throws NothingToLoadException, CouldNotFindBeaconByIndexException {
         CalibratedBeacon beacon = new CalibratedBeacon(
                 "deviceId",
                 "macAddress",
@@ -226,7 +226,7 @@ class BeaconStorageManagerTest {
         String beaconMapString = new Gson().toJson(beaconMap);
         when(mockStorageLocker.load(StorageLockerType.StorageKey.BEACON)).thenReturn(beaconMapString);
 
-        Assertions.assertThrows(CouldNotFindBeaconByIdException.class, () -> {
+        Assertions.assertThrows(CouldNotFindBeaconByIndexException.class, () -> {
             beaconStorageManager.deleteBeaconById(beacon.getDeviceId());
         });
         verify(mockStorageLocker, times(1)).load(StorageLockerType.StorageKey.BEACON);

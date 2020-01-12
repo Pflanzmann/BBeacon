@@ -2,7 +2,7 @@ package com.bbeacon.uI.viewmodels;
 
 import android.util.Log;
 
-import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.CouldNotFindBeaconByIndexException;
 import com.bbeacon.managers.RoomManagerType;
 import com.bbeacon.managers.storage.BeaconStorageManagerType;
 import com.bbeacon.models.CalibratedBeacon;
@@ -39,7 +39,7 @@ public class KnownBeaconListViewModel extends ViewModel {
     public void deleteCalibratedBeacon(String deviceId) {
         try {
             storageManager.deleteBeaconById(deviceId);
-        } catch (CouldNotFindBeaconByIdException e) {
+        } catch (CouldNotFindBeaconByIndexException e) {
             Log.e("OwnTag", "deleteCalibratedBeacon: ", e);
         }
 

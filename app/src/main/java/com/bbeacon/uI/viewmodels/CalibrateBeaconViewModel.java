@@ -6,6 +6,7 @@ import com.bbeacon.backend.EvaluatorType;
 import com.bbeacon.exceptions.DataSetDoesNotFitException;
 import com.bbeacon.exceptions.ScanFilterInvalidException;
 import com.bbeacon.managers.BleManagerType;
+import com.bbeacon.managers.storage.BeaconStorageManagerType;
 import com.bbeacon.models.BleScanResult;
 import com.bbeacon.models.RawDataSet;
 import com.bbeacon.models.UncalibratedBeacon;
@@ -30,13 +31,15 @@ public class CalibrateBeaconViewModel extends ViewModel {
 
     private BleManagerType bleManager;
     private EvaluatorType evaluator;
+    private BeaconStorageManagerType beaconStorageManager;
 
     private Disposable disposable;
 
     @Inject
-    public CalibrateBeaconViewModel(BleManagerType bleManager, EvaluatorType evaluator) {
+    public CalibrateBeaconViewModel(BleManagerType bleManager, EvaluatorType evaluator, BeaconStorageManagerType beaconStorageManager) {
         this.bleManager = bleManager;
         this.evaluator = evaluator;
+        this.beaconStorageManager = beaconStorageManager;
     }
 
     public LiveData<CalibrationState> getCurrentState() {

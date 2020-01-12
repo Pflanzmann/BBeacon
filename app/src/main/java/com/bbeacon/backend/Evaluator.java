@@ -35,8 +35,8 @@ public class Evaluator implements EvaluatorType {
     }
 
     @Override
-    public void evaluateAndFinish(UncalibratedBeacon uncalibratedBeacon) {
-        storageManager.storeBeacon(new CalibratedBeacon(uncalibratedBeacon, new Date(), dataSets));
+    public CalibratedBeacon evaluateAndFinish(UncalibratedBeacon uncalibratedBeacon) {
+        return new CalibratedBeacon(uncalibratedBeacon, new Date(), dataSets);
     }
 
     private int average(RawDataSet<Integer> dataSet) {

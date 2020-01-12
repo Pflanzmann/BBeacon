@@ -1,7 +1,7 @@
 package com.bbeacon.managers.storage;
 
 
-import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.CouldNotFindBeaconByIndexException;
 import com.bbeacon.exceptions.NothingToLoadException;
 import com.bbeacon.models.CalibratedBeacon;
 import com.google.gson.Gson;
@@ -56,21 +56,21 @@ public class BeaconStorageManager implements BeaconStorageManagerType {
     }
 
     @Override
-    public CalibratedBeacon loadBeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
+    public CalibratedBeacon loadBeaconById(String deviceId) throws CouldNotFindBeaconByIndexException {
         Map<String, CalibratedBeacon> beacons = loadAllBeacons();
 
         if (!beacons.containsKey(deviceId))
-            throw new CouldNotFindBeaconByIdException();
+            throw new CouldNotFindBeaconByIndexException();
 
         return beacons.get(deviceId);
     }
 
     @Override
-    public void deleteBeaconById(String deviceId) throws CouldNotFindBeaconByIdException {
+    public void deleteBeaconById(String deviceId) throws CouldNotFindBeaconByIndexException {
         HashMap<String, CalibratedBeacon> beacons = loadAllBeacons();
 
         if (!beacons.containsKey(deviceId))
-            throw new CouldNotFindBeaconByIdException();
+            throw new CouldNotFindBeaconByIndexException();
 
         beacons.remove(deviceId);
         String jsonString = new Gson().toJson(beacons);

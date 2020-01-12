@@ -1,6 +1,6 @@
 package com.bbeacon.managers;
 
-import com.bbeacon.exceptions.CouldNotFindBeaconByIdException;
+import com.bbeacon.exceptions.CouldNotFindBeaconByIndexException;
 import com.bbeacon.exceptions.NoRoomFoundException;
 import com.bbeacon.exceptions.PositionIndexOutOfBound;
 import com.bbeacon.managers.storage.SingleRoomStorageManager;
@@ -120,7 +120,7 @@ class RoomManagerTest {
     }
 
     @Test
-    void getBeaconByIndex_Success() throws NoRoomFoundException, CouldNotFindBeaconByIdException {
+    void getBeaconByIndex_Success() throws NoRoomFoundException, CouldNotFindBeaconByIndexException {
         final int testRoomSize = new Random().nextInt(999);
         final int testRoomPosition = new Random().nextInt(testRoomSize);
 
@@ -138,7 +138,7 @@ class RoomManagerTest {
     }
 
     @Test
-    void getBeaconByIndex_CouldNotFindBeaconByIdException() throws NoRoomFoundException, CouldNotFindBeaconByIdException {
+    void getBeaconByIndex_CouldNotFindBeaconByIdException() throws NoRoomFoundException, CouldNotFindBeaconByIndexException {
         final int testRoomSize = new Random().nextInt(999);
         final int testRoomPosition = new Random().nextInt(testRoomSize);
 
@@ -149,7 +149,7 @@ class RoomManagerTest {
         when(mockSingleRoomStorageManager.loadRoom()).thenReturn(testRoom);
         roomManager = new RoomManager(mockSingleRoomStorageManager);
 
-        Assertions.assertThrows(CouldNotFindBeaconByIdException.class, () -> {
+        Assertions.assertThrows(CouldNotFindBeaconByIndexException.class, () -> {
             roomManager.getBeaconByIndex(testRoomPosition);
         });
     }
