@@ -38,28 +38,23 @@ public class MSECalculator implements CalculatorType {
                 }
             }
         }
-
         return new UserPosition(bestX, bestY);
     }
 
     private double mse(double positionX, double positionY, List<RangedBeaconPosition> beacons) {
 
-        float x = 0;
-        float y = 0;
-
+        float x, y;
         double temp = 0;
-        double dis = 0;
 
         for (RangedBeaconPosition beacon : beacons) {
             x = beacon.getPositionedBeacon().getX();
             y = beacon.getPositionedBeacon().getY();
 
-            dis = Math.sqrt((positionX - x) * (positionX - x) + (positionY - y) * (positionY - y));
+            double dis = Math.sqrt((positionX - x) * (positionX - x) + (positionY - y) * (positionY - y));
 
             temp += ((beacon.getRange() - dis) * (beacon.getRange() - dis));
         }
 
-        //range1-dist(X, beacon1)^2
         return temp;
     }
 }

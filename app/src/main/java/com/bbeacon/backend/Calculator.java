@@ -18,29 +18,17 @@ public class Calculator implements CalculatorType {
         if (rangedPositions.size() <= 2)
             return null;
 
-        rangedPositions.sort((o1, o2) -> {
-            if (o1.getRange() > o2.getRange())
-                return 1;
-            else
-                return -1;
-        });
-
-        if(rangedPositions.get(0).getRange() <= 1.2d){
-
-        }
-
-
         double x1 = rangedPositions.get(0).getPositionedBeacon().getX();
         double y1 = rangedPositions.get(0).getPositionedBeacon().getY();
-        double range1 = clamp(rangedPositions.get(0).getRange(), 0, 5);
+        double range1 = rangedPositions.get(0).getRange();
 
         double x2 = rangedPositions.get(1).getPositionedBeacon().getX();
         double y2 = rangedPositions.get(1).getPositionedBeacon().getY();
-        double range2 = clamp(rangedPositions.get(1).getRange(), 0, 5);
+        double range2 = rangedPositions.get(1).getRange();
 
         double x3 = rangedPositions.get(2).getPositionedBeacon().getX();
         double y3 = rangedPositions.get(2).getPositionedBeacon().getY();
-        double range3 = clamp(rangedPositions.get(2).getRange(), 0, 5);
+        double range3 = rangedPositions.get(2).getRange();
 
         double a = 2 * x2 - 2 * x1;
         double b = 2 * y2 - 2 * y1;
@@ -51,15 +39,6 @@ public class Calculator implements CalculatorType {
         double x = ((c * e - f * b) / (e * a - b * d));
         double y = ((c * d - a * f) / (b * d - a * e));
 
-        return new UserPosition(clamp(x, 0, 4), clamp(y, 0, 4));
-    }
-
-    private double clamp(double value, int min, int max) {
-        if (value < min)
-            return min;
-        else if (value > max)
-            return max;
-        else
-            return value;
+        return new UserPosition(x, y);
     }
 }
